@@ -1,17 +1,16 @@
 import React, {Component, useState} from "react"
 import type { CSSProperties } from 'react';
-import { message, Tabs } from 'antd';
+import { message, Tabs, Button  } from 'antd';
 import { LoginForm, ProFormText, ProFormCaptcha, ProFormCheckbox } from '@ant-design/pro-form';
 import { UserOutlined, MobileOutlined, LockOutlined } from '@ant-design/icons';
 
 import logo from './images/bg.jpg'
-import './login.less'
+import './login.css'
 
-export default class Login extends Component{
-    render() {
-        const [loginType, setLoginType] = useState<LoginType>('email');
-        type LoginType = 'email' | 'account';
-        const iconStyles: CSSProperties = {
+export default () => {
+        const [loginType, setLoginType] = useState<LoginType>('phone');
+        type LoginType = 'phone' | 'account';
+        const iconStyles = {
           marginLeft: '16px',
           color: 'rgba(0, 0, 0, 0.2)',
           fontSize: '24px',
@@ -22,13 +21,15 @@ export default class Login extends Component{
         return (
             <div className="login">
                 <div className='bg'></div>
-
+                <div className="App">
+                    <Button type="primary">Button</Button>
+                </div>
                 <header className="login-header">
                     <img src={logo} alt="logo" />
                     <h1>React-ts项目：在线编程平台</h1>
                 </header>
 
-                <div style={{ backgroundColor: 'white' }} className="login-content">
+                <div className="login-content">
                     <h2>用户登录</h2>
                     <LoginForm
                         // logo={logo}
@@ -74,7 +75,7 @@ export default class Login extends Component{
                         )}
 
                         {/* 待修改 */}
-                        {loginType === 'email' && (
+                        {loginType === 'phone' && (
                         <>
                             <ProFormText
                             fieldProps={{
@@ -131,4 +132,3 @@ export default class Login extends Component{
             </div>
         )
     }
-}

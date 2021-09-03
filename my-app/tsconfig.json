@@ -22,6 +22,7 @@
   },
   "include": [
     "src",
-    "src/declaration/img.d.ts"
-, "craco.config.js"  ]
+    "src/declaration/img.d.ts",
+    "src/declaration/runoob.d.ts",
+    "craco.config.js"  ]
 }
