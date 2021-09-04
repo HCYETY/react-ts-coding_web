@@ -1,6 +1,0 @@
-// declare module 'react'
-declare module 'react-router-dom'
-// declare module 'customize-cra'
-declare module 'antd'
-declare module '@ant-design/pro-form'
-declare module '@ant-design/icons'
