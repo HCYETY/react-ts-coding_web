@@ -1,29 +1,27 @@
-import React, {Component, useState} from "react"
-import type { CSSProperties } from 'react';
-import { message, Tabs, Button  } from 'antd';
+import React, {useState} from "react"
+// import type { CSSProperties } from 'react';
+import { message, Tabs } from 'antd';
 import { LoginForm, ProFormText, ProFormCaptcha, ProFormCheckbox } from '@ant-design/pro-form';
 import { UserOutlined, MobileOutlined, LockOutlined } from '@ant-design/icons';
 
 import logo from './images/bg.jpg'
-import './login.css'
+import './login.less'
 
 export default () => {
-        const [loginType, setLoginType] = useState<LoginType>('phone');
-        type LoginType = 'phone' | 'account';
-        const iconStyles = {
-          marginLeft: '16px',
-          color: 'rgba(0, 0, 0, 0.2)',
-          fontSize: '24px',
-          verticalAlign: 'middle',
-          cursor: 'pointer',
-        };
+        const [loginType, setLoginType] = useState<LoginType>('account');
+        type LoginType = 'email' | 'account';
+        // const iconStyles:CSSProperties = {
+        //   marginLeft: '16px',
+        //   color: 'rgba(0, 0, 0, 0.2)',
+        //   fontSize: '24px',
+        //   verticalAlign: 'middle',
+        //   cursor: 'pointer',
+        // };
 
         return (
             <div className="login">
                 <div className='bg'></div>
-                <div className="App">
-                    <Button type="primary">Button</Button>
-                </div>
+
                 <header className="login-header">
                     <img src={logo} alt="logo" />
                     <h1>React-ts项目：在线编程平台</h1>
@@ -38,7 +36,7 @@ export default () => {
                     >
                         <Tabs activeKey={loginType} onChange={(activeKey: string) => setLoginType(activeKey as LoginType)}>
                             <Tabs.TabPane key={'account'} tab={'账号密码登录'} />
-                            <Tabs.TabPane key={'email'} tab={'邮箱登录'} />
+                            <Tabs.TabPane key={'phone'} tab={'邮箱登录'} />
                         </Tabs>
 
                         {loginType === 'account' && (
@@ -75,7 +73,7 @@ export default () => {
                         )}
 
                         {/* 待修改 */}
-                        {loginType === 'phone' && (
+                        {loginType === 'email' && (
                         <>
                             <ProFormText
                             fieldProps={{
@@ -83,16 +81,12 @@ export default () => {
                                 prefix: <MobileOutlined className={'prefixIcon'} />,
                             }}
                             name="mobile"
-                            placeholder={'手机号'}
+                            placeholder={'邮箱账号或手机号码'}
                             rules={[
-                                {
-                                required: true,
-                                message: '请输入手机号！',
-                                },
-                                {
-                                pattern: /^1\d{10}$/,
-                                message: '手机号格式错误！',
-                                },
+                                {required: true, whitespace:true, message: '请输入邮箱账号或手机号!'},
+                                {min:10, message:'邮箱账号为10位数!'},
+                                {max:11, message:'手机号为12位数!'},
+                                {pattern:/^1\d{10}$/, message:'邮箱账号或手机号格式错误！'}
                             ]}
                             />
                             <ProFormCaptcha
@@ -124,7 +118,7 @@ export default () => {
                         </>
                         )}
 
-                        <div style={{ marginBottom: 24 }} >
+                        <div className="register">
                             <a style={{float: 'right'}} > 点击注册 </a>
                         </div>
                     </LoginForm>
