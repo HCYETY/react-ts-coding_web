@@ -8,15 +8,6 @@ import logoImg from 'img/logo.png';
 const onFinish = (values: any) => {
   console.log('Received values of form: ', values);
 };
-// const { Option } = Select;
-// const suffixSelector = (
-//   <Form.Item name="suffix" noStyle>
-//     <Select style={{ width: 55 }}>
-//       <Option value="USD">@qq.com</Option>
-//       <Option value="CNY">¥</Option>
-//     </Select>
-//   </Form.Item>
-// );
 
 class App extends PureComponent {
   render() {
