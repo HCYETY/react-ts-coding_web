@@ -65,7 +65,7 @@ class App extends PureComponent {
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" className="login-form-button">登录</Button>
-              还没注册？<a className="register" href="">点击注册</a>
+              还没注册？<a className="register" href="../register/index">点击注册</a>
             </Form.Item>
           </Form>
         </div>

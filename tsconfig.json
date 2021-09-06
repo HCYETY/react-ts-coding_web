@@ -10,10 +10,11 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
-      "src/*": ["./src/*"],
       "img/*": ["./img/*"],
-      "pages/*": ["./src/pages/*"],
+      "server/*": ["./server*"],
+      "src/*": ["./src/*"],
       "api/*": ["./src/api/*"],
+      "pages/*": ["./src/pages/*"],
     }
   },
   "include": [
