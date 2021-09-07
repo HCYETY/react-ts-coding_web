@@ -12,13 +12,13 @@
     "paths": {
       "img/*": ["./img/*"],
 
-      "server/*": ["./server*"],
-      "config/*": ["./server/config"],
-      "controller/*": ["./server/controller"],
-      "lib/*": ["./server/lib"],
-      "model/*": ["./server/model"],
-      "routers/*": ["./server/routers"],
-      "service/*": ["./server/service"],
+      // "server/*": ["./server*"],
+      // "config/*": ["./server/config"],
+      // "controller/*": ["./server/controller"],
+      // "lib/*": ["./server/lib"],
+      // "model/*": ["./server/model"],
+      // "routers/*": ["./server/routers"],
+      // "service/*": ["./server/service"],
 
       "src/*": ["./src/*"],
       "api/*": ["./src/api/*"],

@@ -25,11 +25,12 @@
 
 
 const Koa = require('koa');
-const Router = require('routers/index');
+const Router = require('./routers/index');
+// const Router = require('routers/index');
 const app = new Koa(); // 创建 koa应用
-const router = new Router(); // 创建路由，支持传递参数
+// const router = new Router(); // 创建路由，支持传递参数
 
-app.use(router.routes()); // 启动路由
+app.use(Router.routes()); // 启动路由
 
 app.listen(3000, () => {
   console.log('&网站服务器启动成功，请访问 http://localhost:3000')

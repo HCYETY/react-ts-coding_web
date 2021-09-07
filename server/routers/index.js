@@ -1,5 +1,5 @@
 const Router = require('koa-router')
-const user = require('routers/userRoute')
+const user = require('./useRoute')
 
 const router = new Router()
 router.use(user.routes())
