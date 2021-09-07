@@ -6,7 +6,10 @@ import './style.less';
 import logoImg from 'img/logo.png';
 
 const onFinish = (values: any) => {
-  console.log('Received values of form: ', values);
+  const {account, password, remember} = values
+  if (account == 1164939253 && password == 123456) {
+    console.log('Received values of form: ', values);
+  }
 };
 
 class App extends PureComponent {
@@ -29,7 +32,7 @@ class App extends PureComponent {
             onFinish={onFinish}
           >
             <Form.Item
-              name="username"
+              name="account"
               rules={[
                 {required: true, whitespace:true, message: '请输入邮箱账号或者手机号码!'},
                 {min:10, message:'邮箱账号为10位数!'},
