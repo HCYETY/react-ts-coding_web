@@ -4,6 +4,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import './style.less';
 import logoImg from 'img/logo.png';
+import {test_login} from 'api/modules/demo'
 
 const onFinish = (values: any) => {
   const {account, password, remember} = values
@@ -14,6 +15,15 @@ const onFinish = (values: any) => {
 
 class App extends PureComponent {
   render() {
+    const login = async () => {
+      const data = {account, password}
+      try {
+        const res = await test_login(data)
+        console.log("前端调用后端接口成功", res)
+      } catch(err) {
+        console.log(err)
+      }
+    }
     return (
       <div className="app-container">
         <div className="app-background"></div>

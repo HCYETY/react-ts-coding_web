@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export function generateHttpApi(method: 'get' | 'post') {
+export function generateHttpApi(method: 'get' | 'post' | 'delete') {
   return (url: string, params?: any) => {
     const data = method === 'get' ? {
       params
