@@ -8,15 +8,10 @@ import {test_login} from 'api/modules/demo'
 
 const onFinish = async (values: any) => {
   const {account, password, remember} = values
-  if (account == 1164939253 && password == 123456) {
-    console.log('登录成功: ', values);
-  } else {
-    alert('账号或密码输入错误，请重新输入')
-    return;
-  }
-  const data = { account:1, password:6 }
+  const data = { account, password }
   try {
     const res = await test_login(data)
+    console.log('登录成功: ', values);
     console.log("前端调用后端接口成功", res.data)
   } catch(err) {
     console.log(err)
