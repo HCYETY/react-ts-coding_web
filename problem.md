@@ -17,4 +17,13 @@
 > > 附：服务一直显示“正在启动”，则 [解决方法传送门](https://www.yisu.com/zixun/28154.html)。如果出现“错误: 无法终止 PID 为 7432 的进程。”则是你的权限问题，可以用管理员权限打开cmd，然后输入命令。   
 > 接下来就是连接数据库了
 6. 后端服务的着手实现？
-> 本项目的后端所采用的的技术栈是 koa+mysql ，这篇文章：[Koa中间件使用之koa-router](https://www.jianshu.com/p/f169c342b4d5) 对刚入门的我很有帮助。
+> 本项目的后端所采用的的技术栈是 koa+mysql ，这篇文章：[Koa中间件使用之koa-router](https://www.jianshu.com/p/f169c342b4d5)
+7. React中实现翻转卡片效果之登录注册，却报错：Cannot read properties of null (reading 'style')？
+![](img/2.png)![](img/3.png)
+> 本人最后使用antd的Card组件----页签卡片
+8. ts报错：string 元素隐式具有 “any“ 类型，类型为 “string“ 的表达式不能用于索引类型 “{}“？
+> 解决方法：在tsconfig.json文件添加配置：
+`"suppressImplicitAnyIndexErrors": true`
+9. 前端axios发送请求后，接收不到后端响应的数据，报错 Error: Request failed with status code 404？
+![](img/4.jpg)
+> 解决方法：
