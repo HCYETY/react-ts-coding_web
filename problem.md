@@ -26,4 +26,13 @@
 `"suppressImplicitAnyIndexErrors": true`
 9. 前端axios发送请求后，接收不到后端响应的数据，报错 Error: Request failed with status code 404？
 ![](img/4.jpg)
-> 解决方法：
+> 解决方法：我这里是因为对mysql数据库的处理有误：注册的时候没有new一个用户对象，而是直接将前端传过来的用户信息直接存储。因此，使用正确的typeorm语句，即可解决报错
+10. 基于Token的身份验证？
+> 流程：
+> - 用户使用用户名密码来请求服务器
+> - 服务器进行验证用户的信息
+> - 服务器经过验证后发送给用户一个token
+> - 客户端获取 token 并将其存储在 localStorage ，并在每次请求时附送上这个 token 值
+> - 服务端验证 token 值，并返回数据
+11. 自己封装的 axios 该如何设置 token 到请求头？
+> 

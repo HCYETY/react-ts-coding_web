@@ -6,13 +6,11 @@ export function generateHttpApi(method: 'get' | 'post') {
       params
     } : {
       data: params
-      // data:JSON.stringify(params)
     };
     return axios({
       url,
       method,
       ...data
-      // headers:{'Content-Type':'application/json'}
     }).then(response => {
       return response.data;
     }).catch(error => {
