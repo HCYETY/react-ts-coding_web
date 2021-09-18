@@ -15,3 +15,7 @@ export async function test_login(data: object) {
 export async function test_register(data: object) {
   return post('http://localhost:3001/register', data)
 }
+
+export async function test_submit() {
+  return post('http://localhost:3001/submit')
+}

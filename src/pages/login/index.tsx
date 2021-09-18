@@ -2,21 +2,11 @@ import React, { PureComponent } from 'react';
 // import {browserHistory} from 'react-router-dom'
 import { Form, Input, Button, Checkbox, Card } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import axios from 'axios'
 
 import './style.less';
 import logoImg from 'img/logo.png';
 import {test_login} from 'api/modules/demo'
 import {test_register} from 'api/modules/demo'
-
-function setAuthToken(token:string) {
-  if (token) {
-    axios.defaults.headers.common['Authorization'] = 'JWT' + token
-    console.log('token已添加请求头')
-  } else {
-    delete axios.defaults.headers.common['Authorization']
-  }
-}
 
 class Login extends PureComponent {
   // 登录
@@ -24,21 +14,13 @@ class Login extends PureComponent {
     try {
       const {account, password, remember} = values
       const data = { account, password }
-      console.log(data)
       const res = await test_login(data)
-
+      console.log(res)
       // 登录成功
-      if (res.status === true) {
-        // 获取服务端传来的 token，并存储在localStorage
-        // 注意：存储完 token 后，还要在请求头中加上这个 token 值
-        localStorage.setItem("jwToken", res.data)
-        console.log(res)
-        console.log(res.data)
-        setAuthToken(res.data)
-        // this.token = res.data
-        // console.log(this.token)
+      if (res.session.isLogin === true) {
+        alert(res.message)
         // token存储完毕，在当前页跳转至项目首页
-        // window.location.href = '/'
+        window.location.href = '/'
       } else {
         // 登录失败
         alert(res.message)
@@ -58,7 +40,7 @@ class Login extends PureComponent {
         // 在当前页跳转至登录界面
         window.location.href = '/login'
       } else {
-        alert(res.message)
+        alert(res)
       }
       // this.props.history.push({})
     } catch(err) { console.log(err) }
