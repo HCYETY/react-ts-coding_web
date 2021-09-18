@@ -40,7 +40,7 @@ class Login extends PureComponent {
         // 在当前页跳转至登录界面
         window.location.href = '/login'
       } else {
-        alert(res)
+        alert(res.message)
       }
       // this.props.history.push({})
     } catch(err) { console.log(err) }

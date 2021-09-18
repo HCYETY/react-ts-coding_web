@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 
 import {test_submit} from '../../api/modules/demo'
+
 class Home extends PureComponent {
   submit = async() => {
     const res = await test_submit()
