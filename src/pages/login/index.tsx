@@ -17,7 +17,7 @@ class Login extends PureComponent {
       const res = await test_login(data)
       console.log(res)
       // 登录成功
-      if (res.session.isLogin === true) {
+      if (res.isLogin === true) {
         alert(res.message)
         // token存储完毕，在当前页跳转至项目首页
         window.location.href = '/'

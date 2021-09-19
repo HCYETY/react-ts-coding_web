@@ -6,7 +6,7 @@ import './style.less';
 import Home from 'pages/home'
 import Login from 'pages/login';
 
-const isHasAuth = cookie.load('account')
+const isHasAuth = cookie.load('session')
 console.log(isHasAuth)
 
 class App extends PureComponent {
