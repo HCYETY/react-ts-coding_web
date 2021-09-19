@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-d
 import cookie from 'react-cookies'
 
 import './style.less';
-import Home from 'pages/home'
+import Home from 'pages/home';
 import Login from 'pages/login';
 
 const isHasAuth = cookie.load('session')
