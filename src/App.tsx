@@ -1,18 +1,16 @@
 import React, { PureComponent } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
-import cookie from 'react-cookies'
 
 import './style.less';
-import Home from 'pages/home';
+import Interviewer from 'src/pages/interviewer';
+import Candidate from 'src/pages/candidate';
 import Login from 'pages/login';
 
-const isHasAuth = cookie.load('session')
-console.log(isHasAuth)
+const isHasAuth = document.cookie;
 
 class App extends PureComponent {
   render() {
     if (!isHasAuth) {
-      console.log(isHasAuth)
       return (
         <Router>
           <Route path="/login" component={Login}></Route>
@@ -23,8 +21,10 @@ class App extends PureComponent {
       return (
         <Router>
           <Switch>
-            <Route path="/" exact component={Home}></Route>
+            {/* <Route path="/" exact component={Candidate}></Route> */}
             <Route path="/login" component={Login}></Route>
+            <Route path="/interviewer" exact component={Interviewer}></Route>
+            <Route path="/candidate" exact component={Candidate}></Route>
             <Redirect to='/'></Redirect>
           </Switch>
         </Router>

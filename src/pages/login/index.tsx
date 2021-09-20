@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
-// import {browserHistory} from 'react-router-dom'
-import { Form, Input, Button, Checkbox, Card, Radio } from 'antd';
+import { Form, Input, Button, Checkbox, Card, Radio, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import './style.less';
@@ -10,47 +9,52 @@ import { testRegister } from 'api/modules/demo';
 
 class Login extends PureComponent {
   // 登录
-  submit_login = async (values: any) => {
+  submitLogin = async (values: any) => {
     try {
-      const {account, password, remember} = values;
+      const { account, password, remember } = values;
       const data = { account, password };
       const res = await testLogin(data);
       console.log(res);
       // 登录成功
       if (res.isLogin === true) {
-        alert(res.message);
+        message.success(res.message);
         // token存储完毕，在当前页跳转至项目首页
-        window.location.href = '/';
+        if (res.identity === true) {
+          // this.props.history.push("/interviewer");
+          // window.location.href = '/interviewer';
+        } else {
+          // window.location.href = '/candidate';
+          // this.props.history.push("/candidate");
+        }
       } else {
         // 登录失败
-        alert(res.message);
+        message.error(res.message);
       }
-    } catch(err) { console.log(err); }
+    } catch(err) { message.error(err); }
   };
   // 注册
-  // const [form] = Form.useForm();
-  submit_register = async (values: any) => {
+  submitRegister = async (values: any) => {
     try {
-      const {account, password, identity, radiogroup} = values;
-      console.log(values);
-      const data = { account, password };
+      const { account, password, identity } = values;
+      const data = { account, password, identity };
       const res = await testRegister(data);
       // 注册成功
       if (res.status === true) {
-        alert('恭喜您，注册成功！请前往登录');
+        message.success('恭喜您，注册成功！请前往登录');
         // 在当前页跳转至登录界面
         window.location.href = '/login';
       } else {
-        alert(res.message);
+        message.error(res.message);
       }
       // this.props.history.push({})
-    } catch(err) { console.log(err); }
+    } catch(err) { message.error(err); }
   };
 
   // 页签切换
   state = {
     key: 'login',
-    noTitleKey: 'login'
+    noTitleKey: 'login',
+    value: 0
   };
   tabListNoTitle = [
     { key: 'login', tab: '登录' },
@@ -60,13 +64,16 @@ class Login extends PureComponent {
     console.log(key, type);
     this.setState({ [type]: key });
   };
+  onChange = (e: any) => {
+    this.setState({value: e.target.value})
+  }
   contentListNoTitle = {
     login: (
       <Form 
         name="normal_login" 
         className="login-form" 
         initialValues={{ remember: true }} 
-        onFinish={this.submit_login} 
+        onFinish={this.submitLogin} 
       >
         <Form.Item
           name="account"
@@ -145,12 +152,10 @@ class Login extends PureComponent {
 
     register: (
       <Form
-        // {...formItemLayout}
-        // form={form}
         name="register"
         className="register-form box"
         id="front"
-        onFinish={this.submit_register}
+        onFinish={this.submitRegister}
         scrollToFirstError   // 提交失败自动滚动到第一个错误字段
       >
         <Form.Item
@@ -230,32 +235,13 @@ class Login extends PureComponent {
           <Input.Password />
         </Form.Item>
 
-        <Form.Item 
-          name="identity"
-          label="面试官"
-          valuePropName="identity" 
-        >
-          <label>面试官：</label>
-          <label>是</label><Input type="radio" name="identity" value="yes"/>&nbsp;&nbsp;&nbsp;
-          <label>否</label><Input type="radio" name="identity" value="no"/>
-          {/* <Radio.Group name="radiogroup" defaultValue={1}>
+        <Form.Item  name="identity"  label="面试官">
+          <Radio.Group onChange={this.onChange} value={this.state.value}>
             <Radio value={1}>是</Radio>
-            <Radio value={2}>否</Radio>
-          </Radio.Group> */}
+            <Radio value={0}>否</Radio>
+          </Radio.Group>
         </Form.Item>
-        <Form.Item
-          {...formItemLayout}
-          label="面试官"
-        > 
-          {getFieldDecorator('activityType', {initialValue: '1'})(
-            <Radio.Group>
-              <Radio value="1">是</Radio>
-              <Radio value="2">否</Radio>
-            </Radio.Group>
-          )}
-      </Form.Item>
         
-      {/* <Form.Item {...tailFormItemLayout}> */}
       <Form.Item>
           <Button type="primary" htmlType="submit" className="register-form-button">注册</Button>
         </Form.Item>
