@@ -21,9 +21,9 @@ class Login extends PureComponent {
         // token存储完毕，在当前页跳转至项目首页
         if (res.identity === true) {
           // this.props.history.push("/interviewer");
-          // window.location.href = '/interviewer';
+          window.location.href = '/interviewer';
         } else {
-          // window.location.href = '/candidate';
+          window.location.href = '/candidate';
           // this.props.history.push("/candidate");
         }
       } else {

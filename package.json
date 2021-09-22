@@ -2,6 +2,7 @@
   "name": "Online-programming-platform",
   "version": "1.0.0",
   "main": "index.js",
+  "homepage": ".",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --config webpack/webpack.dev.js",
@@ -16,7 +17,6 @@
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-react": "^7.10.4",
     "@types/react": "^16.9.48",
-    "@types/react-cookies": "^0.1.0",
     "@types/react-dom": "^16.9.8",
     "@types/react-router-dom": "^5.1.5",
     "autoprefixer": "^9.8.6",
