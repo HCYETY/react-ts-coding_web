@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import { HashRouter  as Router, Route, Switch, Redirect, withRouter } from "react-router-dom";
 
 import './style.less';
-import Interviewer from 'src/pages/interviewer';
-import Candidate from 'src/pages/candidate';
+import Interviewer from 'pages/interviewer';
+import Candidate from 'pages/candidate';
 import Login from 'pages/login';
 
 const isHasAuth = document.cookie;
@@ -21,10 +21,9 @@ class App extends PureComponent {
       return (
         <Router>
           <Switch>
-            {/* <Route path="/" exact component={Candidate}></Route> */}
             <Route path="/login" component={Login}></Route>
-            <Route path="/interviewer" exact component={Interviewer}></Route>
-            <Route path="/candidate" exact component={Candidate}></Route>
+            <Route path="/interviewer" component={Interviewer}></Route>
+            <Route path="/candidate" component={Candidate}></Route>
             <Redirect to='/'></Redirect>
           </Switch>
         </Router>

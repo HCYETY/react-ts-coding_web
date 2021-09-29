@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
-import { testSubmit } from 'api/modules/demo';
+import { showPaper } from 'api/modules/interface';
 
 class Candidate extends PureComponent {
   submit = async () => {
-    const res = await testSubmit();
+    const res = await showPaper();
     alert(res.message);
   }
   render() {

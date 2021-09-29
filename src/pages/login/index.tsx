@@ -1,13 +1,15 @@
 import React, { PureComponent } from 'react';
+// import { withRouter } from 'react-router';
+import {createBrowserHistory} from "history";
 import { Form, Input, Button, Checkbox, Card, Radio, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import './style.less';
 import logoImg from 'img/logo.png';
-import { testLogin } from 'api/modules/demo';
-import { testRegister } from 'api/modules/demo';
+import { testLogin } from 'api/modules/interface';
+import { testRegister } from 'api/modules/interface';
 
-class Login extends PureComponent {
+class Login extends PureComponent<any> {
   // 登录
   submitLogin = async (values: any) => {
     try {
@@ -20,11 +22,9 @@ class Login extends PureComponent {
         message.success(res.message);
         // token存储完毕，在当前页跳转至项目首页
         if (res.identity === true) {
-          // this.props.history.push("/interviewer");
           window.location.href = '/interviewer';
         } else {
           window.location.href = '/candidate';
-          // this.props.history.push("/candidate");
         }
       } else {
         // 登录失败
@@ -42,11 +42,12 @@ class Login extends PureComponent {
       if (res.status === true) {
         message.success('恭喜您，注册成功！请前往登录');
         // 在当前页跳转至登录界面
-        window.location.href = '/login';
+        // this.props.history.push({path: "/interviewer",})
+        
+        // window.location.href = '/login';
       } else {
         message.error(res.message);
       }
-      // this.props.history.push({})
     } catch(err) { message.error(err); }
   };
 

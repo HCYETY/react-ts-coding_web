@@ -25,6 +25,7 @@
       "src/*": ["./src/*"],
       "api/*": ["./src/api/*"],
       "pages/*": ["./src/pages/*"],
+      "public/*": ["./src/public/*"],
     }
   },
   "include": [

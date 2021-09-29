@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { REQUESTIP } from '../public/const';
 
 axios.defaults.withCredentials = true;
 
@@ -9,6 +10,7 @@ export function generateHttpApi(method: 'get' | 'post') {
     } : {
       data: params
     };
+    url = REQUESTIP + url;
     return axios({
       url,
       method,
