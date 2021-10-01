@@ -1,7 +1,7 @@
 /**
  * 服务器相关配置
  */
-export default {
+module.exports = {
   id: 'test',
   name: '测试环境',
   host: '120.79.193.126', // ip
