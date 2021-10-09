@@ -1,0 +1,38 @@
+.anchor{
+  min-height: 100vh;
+  /* overflow: auto;
+  width: 100%;
+  height: 100vh;
+  position: fixed;
+  left: 0px; */
+}
+
+.site-layout-header {
+  width: 100%;
+  height: 60px;
+  text-align: center;
+  background-color: skyblue;
+  overflow:hidden;
+}
+.avatar{
+  background-color: #87d068;
+  float: right;
+  align-items: center;
+}
+.logo{
+  height: 32px;
+  margin: 23px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.site-layout-footer{
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+  background-color: green;
+}
+
+.innerCard{
+  margin-bottom: 10px;
+  border-color: bisque;
+}

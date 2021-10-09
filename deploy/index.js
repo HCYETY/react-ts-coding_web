@@ -1,27 +1,19 @@
-const { scp } = require('scp2');
-// const ora = require('ora');
-// const pkg = require('chalk'); /** 提示插件 */
-// const { red, green } = pkg;
-// const server = require('./config.js');
+const client = require('scp2');
+const server = require('./config.js');
+const [ , , host, password] = process.argv;
+server.host = host;
+server.password = password;
 
-// const spinner = ora('正在发布到' + (process.env.NODE_ENV === 'prod' ? '生产' : '测试') + '服务器...');
-// spinner.start();
-// scp(
-//   'dist/',
-//   {
-//     host: server.host,
-//     port: server.port,
-//     username: server.username,
-//     password: server.password,
-//     path: server.path
-//   },
-//   function (err) {
-//     spinner.stop();
-//     if (err) {
-//       console.log(red('发布失败.\n'));
-//       throw err;
-//     } else {
-//       console.log(green('Success! 成功发布到' + (process.env.NODE_ENV === 'prod' ? '生产' : '测试') + '服务器! \n'));
-//     }
-//   }
-// );
+client.scp('dist/', {
+  port: server.port,
+  host: server.host,
+  username: server.username,
+  password: server.password,
+  path: server.path
+}, function(err) {
+  if (err) {
+    console.log('文件上传失败', err)
+  } else {
+    console.log('文件上传成功');
+  }
+})

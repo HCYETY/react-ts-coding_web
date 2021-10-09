@@ -1,20 +1,51 @@
 import React, { PureComponent } from 'react';
-// import { withRouter } from 'react-router';
-import {createBrowserHistory} from "history";
-import { Form, Input, Button, Checkbox, Card, Radio, message } from 'antd';
+import { Form, Input, Button, Checkbox, Card, Radio, message, Cascader, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
-import './style.less';
+import 'style/login.less';
 import logoImg from 'img/logo.png';
-import { testLogin } from 'api/modules/interface';
-import { testRegister } from 'api/modules/interface';
+import { sendEmail, testLogin, testRegister } from 'api/modules/interface';
 
-class Login extends PureComponent<any> {
+export default class Login extends PureComponent<any> {
+  getEmail = (event: any) => {
+    this.setState({email: event.target.value});
+  }
+  //倒计时
+  countDown() {
+    console.log(this.state.count)
+    console.log(this.state.liked)
+    const { count } = this.state
+    if (count === 0) {//当为0的时候，liked设置为true，button按钮显示内容为 获取验证码
+      this.setState({
+        count: 60,
+        liked: true,
+      })
+    } else {
+      this.setState({
+        count: count - 1,
+        liked: false,
+      })
+      setTimeout(() => this.countDown(), 1000)//每一秒调用一次
+    }
+  }
+  // 获取验证码
+  sendCaptcha = async (value: any) => {
+    const parameter = { email: this.state.email}
+    await sendEmail(parameter).then((ans) => {
+      if (ans.status === false) {
+        message.success(ans.data);
+        this.setState({ noTitleKey: 'login' });
+      } else {
+        this.setState({ liked: false });
+        this.countDown();
+      }
+    });
+  }
   // 登录
   submitLogin = async (values: any) => {
     try {
-      const { account, password, remember } = values;
-      const data = { account, password };
+      const { email, cypher, remember } = values;
+      const data = { email, cypher };
       const res = await testLogin(data);
       console.log(res);
       // 登录成功
@@ -35,16 +66,14 @@ class Login extends PureComponent<any> {
   // 注册
   submitRegister = async (values: any) => {
     try {
-      const { account, password, identity } = values;
-      const data = { account, password, identity };
+      const { account, password, identity, email, cypher, captcha } = values;
+      const data = { email, cypher, captcha, identity };
       const res = await testRegister(data);
       // 注册成功
       if (res.status === true) {
         message.success('恭喜您，注册成功！请前往登录');
         // 在当前页跳转至登录界面
-        // this.props.history.push({path: "/interviewer",})
-        
-        // window.location.href = '/login';
+        this.setState({noTitleKey: 'login'});
       } else {
         message.error(res.message);
       }
@@ -55,7 +84,10 @@ class Login extends PureComponent<any> {
   state = {
     key: 'login',
     noTitleKey: 'login',
-    value: 0
+    value: 0, // 身份标识，0 为候选人，1 为面试官
+    liked: true,
+    email: 'coconut', // 获取邮箱账号时动态赋值
+    count: 60, // “获取验证码” 与 “60秒后重发”的更新标记
   };
   tabListNoTitle = [
     { key: 'login', tab: '登录' },
@@ -77,6 +109,33 @@ class Login extends PureComponent<any> {
         onFinish={this.submitLogin} 
       >
         <Form.Item
+          name="email"
+          rules={[
+            {
+              required: true, 
+              whitespace: true, 
+              message: '请输入邮箱账号!'
+            },
+            {
+              min: 15, 
+              message: '邮箱账号最少为 15 位数!'
+            },
+            {
+              max: 17, 
+              message: '邮箱账号最多为 17 位数!'
+            },
+            {
+              pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
+              message: '邮箱账号不符合规范'
+            }
+          ]}
+        >
+          <Input 
+            prefix={<UserOutlined className="site-form-item-icon" />} 
+            placeholder="邮箱账号" 
+          />
+        </Form.Item>
+        {/* <Form.Item
           name="account"
           rules={[
             {
@@ -103,10 +162,10 @@ class Login extends PureComponent<any> {
             placeholder="邮箱账号或者手机号码" 
             suffix="@qq.com"
           />
-        </Form.Item>
+        </Form.Item> */}
       
         <Form.Item
-          name="password"
+          name="cypher"
           rules={[
             {
               required: true, 
@@ -160,6 +219,31 @@ class Login extends PureComponent<any> {
         scrollToFirstError   // 提交失败自动滚动到第一个错误字段
       >
         <Form.Item
+          name="email"
+          label="邮箱账号"
+          rules={[
+            {
+              required: true, 
+              whitespace: true, 
+              message: '请输入您的电子邮箱!'
+            },
+            {
+              min: 15,
+              message: '邮箱最少为15位数！'
+            },
+            {
+              max: 17,
+              message: '邮箱最多为17位数！'
+            },
+            {
+              pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
+              message: '邮箱账号不符合规范'
+            }
+          ]}
+        >
+          <Input onChange={this.getEmail}/>
+        </Form.Item>
+        {/* <Form.Item
           name="account"
           label="邮箱账号"
           rules={[
@@ -179,10 +263,10 @@ class Login extends PureComponent<any> {
           ]}
         >
           <Input suffix="@qq.com"/>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item
-          name="password"
+          name="cypher"
           label="密码"
           rules={[
             {
@@ -204,7 +288,33 @@ class Login extends PureComponent<any> {
           <Input.Password />
         </Form.Item>
 
-        <Form.Item
+        <Form.Item label="验证码" >
+          <Row gutter={8}>
+            <Col span={12}>
+              <Form.Item
+                name="captcha"
+                noStyle
+                rules={[
+                  { 
+                    required: true, 
+                    message: '请输入验证码!' 
+                  }
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Button
+                disabled={this.state.liked ? false : true}
+                onClick={this.sendCaptcha}
+              >
+                {this.state.liked === true ? '获取验证码' : '10秒后重发'}
+              </Button>
+            </Col>
+          </Row>
+        </Form.Item>
+        {/* <Form.Item
           name="confirm"
           label="确认密码"
           dependencies={['password']}
@@ -234,7 +344,7 @@ class Login extends PureComponent<any> {
           ]}
         >
           <Input.Password />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item  name="identity"  label="面试官">
           <Radio.Group onChange={this.onChange} value={this.state.value}>
@@ -276,5 +386,3 @@ class Login extends PureComponent<any> {
     );
   }
 }
-
-export default Login;

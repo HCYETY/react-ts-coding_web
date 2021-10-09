@@ -1,12 +1,12 @@
 /**
  * 服务器相关配置
  */
-module.exports = {
-  id: 'test',
-  name: '测试环境',
-  host: '120.79.193.126', // ip
-  port: 22, // 端口
+const server_list = {
+  host: '', 
+  port: 22,
   username: 'root',
-  password: 'YFZety1127',
-  path: '/usr/local/nginx/html' // 项目静态文件存放地址
-};
+  password: '',
+  path: '/usr/local/nginx/html/dist' 
+}
+
+module.exports = server_list;

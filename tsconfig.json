@@ -26,12 +26,13 @@
       "api/*": ["./src/api/*"],
       "pages/*": ["./src/pages/*"],
       "public/*": ["./src/public/*"],
+      "style/*": ["./src/style/*"],
     }
   },
   "include": [
     "./src/*",
     "./images.d.ts"
-  ],
+, "../Online-programming-platform_service/src/Sendmail.js"  ],
   "exclude": [
     "./node_modules"
   ]
