@@ -94,7 +94,7 @@ deploy.sh: line 2: npm: command not found
 onRow = {(record) => {
   return {
     onClick: () => {
-        console.log(record);//这里是点击行的数据，可以把需要的数据存入state，然后在操作栏调用
+      console.log(record);//这里是点击行的数据，可以把需要的数据存入state，然后在操作栏调用
     }
   }
 }
@@ -116,15 +116,48 @@ export function getUrlParam(key: string) {
 ```
 
 21. 同步获取 promise.then() 中的值？
+解决方法：Promise封装结合async/await
+```js
+async componentDidMount() {
+  await showPaper().then(res => {
+    this.setState({xxx: res.xxx});
+  })
+}
+```
+> [React中setState如何同步更新](https://www.cnblogs.com/younghxp/p/14803548.html)
+
+22. 动态获取后端接口响应回来的对象后，设置默认值报错：Uncaught Error: Objects are not valid as a React child (found: object with keys {}). If you meant to render a collection of children, use an array instead.
+23. 获取后端返回值后，使用antd4的表单组件并将返回值作为初始值赋给表单？
+解决思路：首先查看官方文档，得知可以通过给 <Form> 设置 initialValues ，参数为键值对。但这时候会发现表单值没显示出来，其实是因为 Form 约定 initialValues 只初始化一次。由于本项目使用的是类组件，所以这里通过添加 loading 判断，获取数据成功后设置 false ，再渲染表单
+```js
+export default class Modify extends React.Component{
+  this.state = { loading: true };
+
+  // 调用后端接口，然后将 loading 设置为 false
+  showPaper().then(res => {
+    this.setState({ loading: false });
+  })
+
+  render() {
+    const { loading } = this.state
+    return(
+      {!loading && (
+        <Form initialValues={detail}>
+          <Form.Item name="age" label="age">
+            <Input />
+          </Form.Item>
+        </Form>
+      )}
+    )
+  }
+}
 ```
 
-```
+1.   封装下拉菜单？
 
-22. 封装下拉菜单？
+2.   富文本格式的实现？
 
-23. 富文本格式的实现？
-
-24. 两个字符串（yyyy-mm-dd 形式）如何作减法？
+3.   两个字符串（yyyy-mm-dd 形式）如何作减法？
 解法一：typescript 项目可以导入[ date-fns 包](https://blog.csdn.net/fsxxzq521/article/details/85715213)，这个包封装了对日期的一系列操作，其中可以使用 `differenceInDays(): 获得两个时间相差几天` ，然后再做剑法即可。
 解法二：为了求个日期之间的天数而引入一个包，这样其实不太好，能不依赖包就尽量不依赖比较好，所以我就自己封装了一个方法去求出我想要的数值
 ```js

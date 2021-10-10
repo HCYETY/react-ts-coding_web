@@ -1,6 +1,7 @@
 import React from 'react';
 import { Form, Input, Card } from 'antd';
-import 'style/components.css'
+import Wangeditor from 'public/components/wangeditor';
+import 'style/components.css';
 
 export default class CardPaper extends React.PureComponent{
   render() {
@@ -17,12 +18,11 @@ export default class CardPaper extends React.PureComponent{
 
         <Form.Item 
           name={['user', 'introduction']} 
-          label="试题描述"
           rules={[
             {required: true}
           ]}
         >
-          <Input.TextArea />
+          <Wangeditor />
         </Form.Item>
       </Card>
     )

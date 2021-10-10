@@ -9,7 +9,6 @@ import Navbar from 'public/components/navbar';
 import Head from 'public/components/header';
 import Foot from 'public/components/footer';
 import CardPaper from 'public/components/cardPaper';
-import DropdownMenu from 'public/components/dropdownMenu';
 
 export default class Add extends React.PureComponent{
   state={

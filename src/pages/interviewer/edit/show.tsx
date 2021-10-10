@@ -54,6 +54,7 @@ export default class Edit extends React.PureComponent {
         arr.push(obj)
       }
       this.setState({data: arr});
+      console.log(this.state.data)
     })
   }
 
@@ -109,7 +110,7 @@ export default class Edit extends React.PureComponent {
         render: (tags: [string]) => (
           <span>
             {tags.map(tag => {
-              let color = tag.length > 5 ? 'geekblue' : 'green';
+              let color = tag.length > 2 ? 'geekblue' : 'green';
               if (tag === 'loser') {
                 color = 'volcano';
               }
@@ -133,7 +134,7 @@ export default class Edit extends React.PureComponent {
         dataIndex: 'pass',
         sorter: (a: { pass: number; }, b: { pass: number; }) => a.pass - b.pass,
       },
-      { title: '完成时间', dataIndex: 'time' },
+      { title: '截止时间', dataIndex: 'time' },
       { title: '剩余时间', dataIndex: 'remainingTime' },
       {
         title: '试题数量',
