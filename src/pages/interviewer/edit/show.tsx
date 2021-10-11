@@ -7,6 +7,7 @@ import {
   Space,
   message,
   Popconfirm,
+  Drawer,
 } from 'antd';
 import {
   PlusOutlined,
@@ -31,6 +32,8 @@ export default class Edit extends React.PureComponent {
     selectedRowKeys: [] = [],
     data: [] = [],
     onrow: '',
+    visible: false, 
+    placement: 'left'
   };
 
   // 在页面一渲染就立马从数据库中拿取所有试卷的数据
@@ -43,12 +46,11 @@ export default class Edit extends React.PureComponent {
           key: i,
           paper: res[i].paper,
           tags: res[i].tags,
-          level: res[i].level,
           pass: res[i].pass,
           time: res[i].time,
-          status: res[i].status,
           paperNum: res[i].paperNum,
-          remaining_time: res[i].remaining_time,
+          remainingTime: res[i].remaining_time,
+          candidate: res[i].candidate,
           check: res[i].check === true ? '是' : '否 ',
         }
         arr.push(obj)
@@ -81,6 +83,22 @@ export default class Edit extends React.PureComponent {
   add = async () => {
     window.location.href = '/add';
   };
+  showDrawer = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+  onClose = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+  onChange = (e: { target: { value: any; }; }) => {
+    this.setState({
+      placement: e.target.value,
+    });
+  };
+
 
   // 内容主体
   onSelectChange = (selectedRowKeys: any) => {
@@ -95,7 +113,7 @@ export default class Edit extends React.PureComponent {
 
   render() {
 
-    const { loading, data, selectedRowKeys, onrow } = this.state;
+    const { loading, data, selectedRowKeys, onrow, placement, visible } = this.state;
     const rowSelection = {
       onChange: this.onSelectChange,
       selectedRowKeys,
@@ -103,10 +121,17 @@ export default class Edit extends React.PureComponent {
 
     // 表格内容
     const columns = [
-      { title: '试卷', dataIndex: 'paper' },
+      { 
+        title: '试卷', 
+        dataIndex: 'paper', 
+        key: 'paper', 
+        width: 160, 
+        fixed: 'left' 
+      },
       {
         title: '标签',
         dataIndex: 'tags',
+        key: 'tags',
         render: (tags: [string]) => (
           <span>
             {tags.map(tag => {
@@ -123,34 +148,27 @@ export default class Edit extends React.PureComponent {
           </span>
         ),
       },
+      { title: '试卷过期候选人能否查看', dataIndex: 'check' },
+      { title: '受邀的候选人的邮箱', dataIndex: 'candidate' },
       {
-        title: '难度',
-        dataIndex: 'level',
-        filters: FILTERS_LEVEL,
-        onFilter: (value: any, record: { level: string | any[]; }) => record.level.indexOf(value) === 0
-      },
-      {
-        title: '通过率',
-        dataIndex: 'pass',
-        sorter: (a: { pass: number; }, b: { pass: number; }) => a.pass - b.pass,
+        title: '试题数量',
+        dataIndex: 'paperNum',
+        width: 120,
+        sorter: (a: { paperNum: number; }, b: { paperNum: number; }) => a.paperNum - b.paperNum,
       },
       { title: '截止时间', dataIndex: 'time' },
       { title: '剩余时间', dataIndex: 'remainingTime' },
       {
-        title: '试题数量',
-        dataIndex: 'paperNum',
-        sorter: (a: { paperNum: number; }, b: { paperNum: number; }) => a.paperNum - b.paperNum,
+        title: '通过率',
+        dataIndex: 'pass',
+        width: 120,
+        sorter: (a: { pass: number; }, b: { pass: number; }) => a.pass - b.pass,
       },
-      {
-        title: '状态',
-        dataIndex: 'status',
-        filters: FILTERS_STATUS,
-        onFilter: (value: any, record: { status: string | any[]; }) => record.status.indexOf(value) === 0
-      },
-      { title: '试卷过期候选人能否查看', dataIndex: 'check' },
       {
         title: '操作',
         dataIndex: 'operation',
+        width: 120,
+        fixed: 'right',
         render: (text: any, record: any) => (
           <Space size="middle">
             <a href={`/modify?paper=${onrow}`}>修改试卷</a>
@@ -187,16 +205,53 @@ export default class Edit extends React.PureComponent {
               className="site-layout-content-button" 
               icon={<PlusOutlined/>}
               onClick={this.add} 
-              loading={loading} 
+              // loading={loading} 
               type="primary" 
+              // onClick={this.showDrawer}
             >
               新建试卷
             </Button>
+            <Drawer
+          title="Create a new account"
+          width={720}
+          onClose={this.onClose}
+          visible={this.state.visible}
+          bodyStyle={{ paddingBottom: 80 }}
+          extra={
+            <Space>
+              <Button onClick={this.onClose}>Cancel</Button>
+              <Button onClick={this.onClose} type="primary">
+                Submit
+              </Button>
+            </Space>
+          }
+        >
+            {/* <Drawer
+              title="Basic Drawer"
+              closable={false}
+              onClose={this.onClose}
+              visible={visible}
+              key={placement}
+              width='100%'
+              extra={
+                <Space>
+                  <Button onClick={this.onClose}>Cancel</Button>
+                  <Button onClick={this.onClose} type="primary">
+                    Submit
+                  </Button>
+                </Space>
+              }
+            > */}
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+              <p>Some contents...</p>
+            </Drawer>
             
             <Table 
               rowSelection={rowSelection} 
               columns={columns} 
               dataSource={data} 
+              scroll={{ x: 1500, y: 350 }}
               onRow={(record) => {
                 return {
                   onClick: () => {

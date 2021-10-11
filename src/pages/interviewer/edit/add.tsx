@@ -8,7 +8,7 @@ import { TAGS } from 'public/const';
 import Navbar from 'public/components/navbar';
 import Head from 'public/components/header';
 import Foot from 'public/components/footer';
-import CardPaper from 'public/components/cardPaper';
+// import CardPaper from 'public/components/cardPaper';
 
 export default class Add extends React.PureComponent{
   state={
@@ -45,7 +45,7 @@ export default class Add extends React.PureComponent{
           <Head/>
 
           <div className="form" style={{ padding: 20, background: '#ececec' }}>
-            <Card >
+            <Card title="新建试卷须填信息">
               <Form 
                 // {...layout} 
                 name="nest-messages" 
@@ -72,7 +72,7 @@ export default class Add extends React.PureComponent{
                   </Select>
                 </Form.Item>
 
-                <Form.Item name="time" label="试卷起始时间" className="time">
+                <Form.Item name="time" label="试卷起止时间" className="time">
                   <DatePicker.RangePicker />
                 </Form.Item>
                 
@@ -109,7 +109,7 @@ export default class Add extends React.PureComponent{
                   </Radio.Group>
                 </Form.Item>
 
-                <CardPaper/>
+                {/* <CardPaper/>
                 <Form.List name="names">
                   {(fields, { add, remove }) => (
                     <>
@@ -135,7 +135,7 @@ export default class Add extends React.PureComponent{
                       </Form.Item>
                     </>
                   )}
-                </Form.List>
+                </Form.List> */}
 
                 <Form.Item wrapperCol={{ offset: 8 }}>
                   <Button type="primary" htmlType="submit">

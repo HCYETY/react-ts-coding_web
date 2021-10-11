@@ -89,6 +89,7 @@ export default class Modify extends React.Component{
                     check: inform.check,
                     remaining_time: inform.remaining_time,
                     candidate: inform.candidate,
+                    // time: inform.time,
                   }}
                 >
                   <h3 className="site-card-divide">试卷信息</h3> 
@@ -118,8 +119,6 @@ export default class Modify extends React.Component{
                       </Form.Item>
                     </Col>
                   </Row>
-
-
 
                   <Form.Item name="tags" label="试卷标签" className="tags">
                     <Select 
