@@ -119,64 +119,7 @@ export default class Edit extends React.PureComponent {
       selectedRowKeys,
     };
 
-    // 表格内容
-    const columns = [
-      { 
-        title: '试卷', 
-        dataIndex: 'paper', 
-        key: 'paper', 
-        width: 160, 
-        fixed: 'left' 
-      },
-      {
-        title: '标签',
-        dataIndex: 'tags',
-        key: 'tags',
-        render: (tags: [string]) => (
-          <span>
-            {tags.map(tag => {
-              let color = tag.length > 2 ? 'geekblue' : 'green';
-              if (tag === 'loser') {
-                color = 'volcano';
-              }
-              return (
-                <Tag color={color} key={tag}>
-                  {tag}
-                </Tag>
-              );
-            })}
-          </span>
-        ),
-      },
-      { title: '试卷过期候选人能否查看', dataIndex: 'check' },
-      { title: '受邀的候选人的邮箱', dataIndex: 'candidate' },
-      {
-        title: '试题数量',
-        dataIndex: 'paperNum',
-        width: 120,
-        sorter: (a: { paperNum: number; }, b: { paperNum: number; }) => a.paperNum - b.paperNum,
-      },
-      { title: '截止时间', dataIndex: 'time' },
-      { title: '剩余时间', dataIndex: 'remainingTime' },
-      {
-        title: '通过率',
-        dataIndex: 'pass',
-        width: 120,
-        sorter: (a: { pass: number; }, b: { pass: number; }) => a.pass - b.pass,
-      },
-      {
-        title: '操作',
-        dataIndex: 'operation',
-        width: 120,
-        fixed: 'right',
-        render: (text: any, record: any) => (
-          <Space size="middle">
-            <a href={`/modify?paper=${onrow}`}>修改试卷</a>
-          </Space>
-        ),
-      },
-    ];
-
+    
     return(
       <Layout >
         <Navbar/>
@@ -211,55 +154,84 @@ export default class Edit extends React.PureComponent {
             >
               新建试卷
             </Button>
-            <Drawer
-          title="Create a new account"
-          width={720}
-          onClose={this.onClose}
-          visible={this.state.visible}
-          bodyStyle={{ paddingBottom: 80 }}
-          extra={
-            <Space>
-              <Button onClick={this.onClose}>Cancel</Button>
-              <Button onClick={this.onClose} type="primary">
-                Submit
-              </Button>
-            </Space>
-          }
-        >
-            {/* <Drawer
-              title="Basic Drawer"
-              closable={false}
-              onClose={this.onClose}
-              visible={visible}
-              key={placement}
-              width='100%'
-              extra={
-                <Space>
-                  <Button onClick={this.onClose}>Cancel</Button>
-                  <Button onClick={this.onClose} type="primary">
-                    Submit
-                  </Button>
-                </Space>
-              }
-            > */}
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-              <p>Some contents...</p>
-            </Drawer>
             
             <Table 
-              rowSelection={rowSelection} 
-              columns={columns} 
-              dataSource={data} 
-              scroll={{ x: 1500, y: 350 }}
-              onRow={(record) => {
-                return {
-                  onClick: () => {
-                    this.setState({onrow: record.paper})
-                    console.log(record)
-                  }}
-                }}
-            />
+              rowSelection = {rowSelection} 
+              dataSource = {data} 
+              bordered
+              scroll = {{ x: 1500, y: 350 }}
+              // onRow={(record) => {
+              //   return {
+              //     onClick: () => {
+                //       this.setState({onrow: record.paper})
+              //       console.log(record)
+              //     }}
+              //   }}
+              >
+              <Table.Column 
+                title = '试卷'
+                dataIndex = 'paper'
+                key = 'paper'
+                fixed = 'left'  
+              />
+              <Table.Column 
+                title = '标签'
+                dataIndex = 'tags'
+                key = 'tags'
+                render = {(tags: [string]) => (
+                  <span>
+                    {tags.map(tag => {
+                      let color = tag.length > 2 ? 'geekblue' : 'green';
+                      if (tag === 'loser') {
+                        color = 'volcano';
+                      }
+                      return (
+                        <Tag color={color} key={tag}>
+                          {tag}
+                        </Tag>
+                      );
+                    })}
+                  </span>
+                )}
+              />
+              <Table.ColumnGroup title="候选人">
+                <Table.Column title="邮箱" dataIndex="candidate" key="candidate" />
+                <Table.Column title="试卷过期能否查看" dataIndex="check" key="check" />
+              </Table.ColumnGroup>
+              <Table.Column 
+                title='试题数量'
+                dataIndex='paperNum'
+                key='paperNum'
+                sorter={(a: { paperNum: number; }, b: { paperNum: number; }) => a.paperNum - b.paperNum}
+              />
+              <Table.Column 
+                title='截止时间'
+                dataIndex='time'
+                key='time'
+              />
+              <Table.Column 
+                title='剩余时间'
+                dataIndex='remainingTime'
+                key='remainingTime'
+              />
+              <Table.Column 
+                title='通过率'
+                dataIndex='pass'
+                key='pass'
+                sorter={(a: { pass: number; }, b: { pass: number; }) => a.pass - b.pass}
+              />
+              <Table.Column 
+                title='操作'
+                dataIndex='action'
+                key='action'
+                fixed='right'
+                render={(text: any, record: any) => (
+                  <Space size="middle">
+                    <a href={`/modify?paper=${onrow}`}>修改试卷</a>
+                  </Space>
+                )}
+              />
+            </Table>
           </Content>
 
           <Foot />
@@ -268,3 +240,64 @@ export default class Edit extends React.PureComponent {
     )
   }
 }
+
+
+
+
+  // // 表格内容
+  // const columns: any = [
+  //   { 
+  //     title: '试卷', 
+  //     dataIndex: 'paper', 
+  //     key: 'paper', 
+  //     width: 160, 
+  //     fixed: 'left' 
+  //   },
+  //   {
+  //     title: '标签',
+  //     dataIndex: 'tags',
+  //     key: 'tags',
+  //     render: (tags: [string]) => (
+  //       <span>
+  //         {tags.map(tag => {
+  //           let color = tag.length > 2 ? 'geekblue' : 'green';
+  //           if (tag === 'loser') {
+  //             color = 'volcano';
+  //           }
+  //           return (
+  //             <Tag color={color} key={tag}>
+  //               {tag}
+  //             </Tag>
+  //           );
+  //         })}
+  //       </span>
+  //     ),
+  //   },
+  //   { title: '试卷过期候选人能否查看', dataIndex: 'check' },
+  //   { title: '受邀的候选人的邮箱', dataIndex: 'candidate' },
+  //   {
+  //     title: '试题数量',
+  //     dataIndex: 'paperNum',
+  //     width: 120,
+  //     sorter: (a: { paperNum: number; }, b: { paperNum: number; }) => a.paperNum - b.paperNum,
+  //   },
+  //   { title: '截止时间', dataIndex: 'time' },
+  //   { title: '剩余时间', dataIndex: 'remainingTime' },
+  //   {
+  //     title: '通过率',
+  //     dataIndex: 'pass',
+  //     width: 120,
+  //     sorter: (a: { pass: number; }, b: { pass: number; }) => a.pass - b.pass,
+  //   },
+  //   {
+  //     title: '操作',
+  //     dataIndex: 'operation',
+  //     width: 120,
+  //     fixed: 'right',
+  //     render: (text: any, record: any) => (
+  //       <Space size="middle">
+  //         <a href={`/modify?paper=${onrow}`}>修改试卷</a>
+  //       </Space>
+  //     ),
+  //   },
+  // ];
