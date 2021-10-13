@@ -24,7 +24,7 @@ import {
 } from '@ant-design/icons';
 
 import 'style/add.less';
-import { addPaper } from 'src/api/modules/interface';
+import { addPaper, addTest } from 'src/api/modules/interface';
 import { TAGS } from 'public/const';
 import Navbar from 'public/components/navbar';
 import Head from 'public/components/header';
@@ -36,8 +36,7 @@ export default class Add extends React.PureComponent{
     value: 0,
     visible: false,
     visible2: false,
-    button: false,
-    button2: true,
+    button: true,
     tableArr: [] = [],
   }
   
@@ -48,33 +47,56 @@ export default class Add extends React.PureComponent{
     console.log(`selected ${value}`);
   }
 
-  // 删除试题
-  deleteTest = (values: any) => {
-    console.log('可以删除的元素', values)
-  }
-  // 保存试题
-  saveTest = () => {
-
-  }
-
   // 抽屉提交试卷信息至数据库
   submitPaper = async (values: any) => {
     console.log(values)
-    this.setState({ button: true, button2: false, visible2: false });
-    // const res = await addPaper(values);
-    // if (res.status) {
-    //   message.success(res.msg);
-    //   // window.location.href = '/edit';
-    // } else {
-    //   message.error(res.msg);
-    // }
+    this.setState({ button: false, visible2: false });
+    const res = await addPaper(values);
+    console.log('res is :', res)
+    console.log(this.state.tableArr)
+    if (res.status) {
+      message.success(res.msg);
+      // window.location. = '/edit';
+    } else {
+      message.error(res.msg);
+    }
   };
-  // 创建整张试卷至数据库
-  submitTest = () => {
-    console.log('jjj')
+  // 表格提交试题信息至数据库
+  submitTest = async () => {
+    console.log('添加试题信息')
+    console.log(this.state.tableArr)
+    const res = await addTest(this.state.tableArr);
+    console.log(res)
+    if (res.status) {
+      message.success(res.msg);
+    } else {
+      message.error(res.msg);
+    }
   }
+  // 将添加的试题加载到 testArr 数组中，在调用接口的时候作为参数传递
+  saveTest = async (values: any) => {
+    console.log(this.props)
+    console.log(values)
+    const arr = [];
+    const obj = {
+      num: values.num,
+      testName: values.testName,
+      test: values.test,
+      description: '你好呀，我是 syandeg',
+      answer: values.answer,
+      level: values.level,
+      tags: values.tags,
+      point: values.point,
+    }
+    arr.push(obj);
+    this.setState({ tableArr: arr, visible: false });
+  }
+  // 从 testArr 数组中删除试题
+  deleteTest = (values: any) => {
+    console.log('可以删除的元素', values)
+  }
+ 
   
-  domp = React.createRef();
   // 两个抽屉的开关
   // “添加试卷”的抽屉
   showDrawer = () => {
@@ -92,26 +114,8 @@ export default class Add extends React.PureComponent{
     this.setState({ visible2: false });
   };
 
-  handle = (values: any) => {
-    console.log(this.props)
-    console.log(values)
-    const arr = [];
-    const obj = {
-      num: values.num,
-      testName: values.testName,
-      description: '你好呀，我是 syandeg',
-      answer: values.answer,
-      level: values.level,
-      tags: values.tags,
-      point: values.point,
-    }
-    arr.push(obj);
-    this.setState({ tableArr: arr, visible: false })
-    console.log('hhhhhh',this.state.tableArr);
-  }
-
   render() {
-    const { button, button2, value, visible, visible2, tableArr, } = this.state;
+    const { button, value, visible, visible2, tableArr, } = this.state;
 
     const columns = [
       { title: '题号', dataIndex: 'num', key: 'num' },
@@ -153,19 +157,6 @@ export default class Add extends React.PureComponent{
         ),
       },
     ];
-    
-    const data = [
-      {
-        key: '1',
-        num: 1,
-        testName: 32,
-        point: 30,
-        level: ['简单'],
-        tags: ['双指针'],
-        description: '你好呀，我是syandeg'
-      },
-    ];
-    
   
     return(
       <Layout>
@@ -189,7 +180,7 @@ export default class Add extends React.PureComponent{
               type="primary" 
               onClick={ this.showDrawer2 } 
               icon={ <RightOutlined /> }
-              disabled={ button === false ? false : true }
+              disabled={ tableArr.length > 0 ? false : true }
             >
               下一步
             </Button>
@@ -199,7 +190,7 @@ export default class Add extends React.PureComponent{
               type="primary" 
               onClick={ this.submitTest } 
               icon={ <ProfileOutlined /> }
-              disabled={ button2 === true ? true : false }
+              disabled={ button === true ? true : false }
             >
               创建试卷
             </Button>
@@ -213,113 +204,105 @@ export default class Add extends React.PureComponent{
               onClose={ this.onClose }
               visible={ visible }
               bodyStyle={{ paddingBottom: 80 }}
-              extra={
-                <Space>
-                  {/* icon={ < />} */}
-                  <Button icon={ <CompressOutlined /> }>全屏</Button>
-                  <Button onClick={ this.onClose }>取消</Button>
-                  <Button onClick={ this.saveTest} type="primary">
-                    保存
-                  </Button>
-                </Space>
-              }
+              // extra={
+              //   <Space>
+              //     {/* icon={ < />} */}
+              //     <Button icon={ <CompressOutlined /> }>全屏</Button>
+              //     <Button onClick={ this.onClose }>取消</Button>
+              //     <Button onClick={ this.saveTest } type="primary">
+              //       保存
+              //     </Button>
+              //   </Space>
+              // }
             >
-              <div className="drawer" style={{ display: 'flex' }}>
-                <div className="drawer-left" style={{ flex: '1' }}>
-                  <Form onFinish={ this.handle }>
-                    <Form.Item 
-                      name="num" 
-                      key="num"
-                      label="题号" 
-                      rules={[
-                        { required: true }
-                      ]}
-                    >
-                      <InputNumber min={1}/>
-                    </Form.Item>
+              <Form onFinish={ this.saveTest }>
+                <Form.Item 
+                  name="num" 
+                  key="num"
+                  label="题号" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <InputNumber min={1}/>
+                </Form.Item>
 
-                    <Form.Item 
-                      name="testName" 
-                      key="testName"
-                      label="试题名" 
-                      rules={[
-                        { required: true }
-                      ]}
-                    >
-                      <Input/>
-                    </Form.Item>
+                <Form.Item 
+                  name="testName" 
+                  key="testName"
+                  label="试题名" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <Input/>
+                </Form.Item>
 
-                    <Form.Item 
-                      name="test" 
-                      key="test"
-                      label="题目" 
-                      // rules={[
-                      //   { required: true }
-                      // ]}
-                    >
-                      <Wangeditor/>
-                    </Form.Item>
+                <Form.Item 
+                  name="test" 
+                  key="test"
+                  label="题目" 
+                  // rules={[
+                  //   { required: true }
+                  // ]}
+                >
+                  <Wangeditor/>
+                </Form.Item>
 
-                    <Form.Item 
-                      name="answer" 
-                      key="answer"
-                      label="答案" 
-                      rules={[
-                        { required: true }
-                      ]}
-                    >
-                      <Input.TextArea />
-                    </Form.Item>
-                  
-                    <Form.Item 
-                      name="level" 
-                      key="level"
-                      label="难易度" 
-                      rules={[
-                        { required: true }
-                      ]}
-                    >
-                      <Select  style={{ width: 120 }}>
-                        <Select.Option value="简单">简单</Select.Option>
-                        <Select.Option value="中等">中等</Select.Option>
-                        <Select.Option value="困难">困难</Select.Option>
-                      </Select>
-                    </Form.Item>
+                <Form.Item 
+                  name="answer" 
+                  key="answer"
+                  label="答案" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <Input.TextArea />
+                </Form.Item>
+              
+                <Form.Item 
+                  name="level" 
+                  key="level"
+                  label="难易度" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <Select  style={{ width: 120 }}>
+                    <Select.Option value="简单">简单</Select.Option>
+                    <Select.Option value="中等">中等</Select.Option>
+                    <Select.Option value="困难">困难</Select.Option>
+                  </Select>
+                </Form.Item>
 
-                    <Form.Item 
-                      name="tags" 
-                      key="tags"
-                      label="标签" 
-                      rules={[
-                        { required: true }
-                      ]}
-                    >
-                      <Input/>
-                    </Form.Item>
-                  
-                    <Form.Item 
-                      name="point" 
-                      key="point"
-                      label="分数" 
-                      rules={[
-                        { required: true }
-                      ]}
-                    >
-                      <InputNumber min={0}/>
-                    </Form.Item>
+                <Form.Item 
+                  name="tags" 
+                  key="tags"
+                  label="标签" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <Input/>
+                </Form.Item>
+              
+                <Form.Item 
+                  name="point" 
+                  key="point"
+                  label="分数" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <InputNumber min={0}/>
+                </Form.Item>
 
-                    <Form.Item>
-                      <Button type="primary" htmlType="submit">
-                        保存试卷信息
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                </div>
-                
-                {/* <div className="drawer-right" style={{ flex: '1', backgroundColor: 'skyblue', marginLeft: 10 }}>
-                  <Input.TextArea className="wangeditor-content" />
-                </div> */}
-              </div>
+                <Form.Item>
+                  <Button type="primary" htmlType="submit">
+                    保存试卷信息
+                  </Button>
+                </Form.Item>
+              </Form>
             </Drawer>
 
 

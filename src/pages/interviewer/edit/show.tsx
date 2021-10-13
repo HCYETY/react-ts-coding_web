@@ -39,9 +39,23 @@ export default class Edit extends React.PureComponent {
   // 在页面一渲染就立马从数据库中拿取所有试卷的数据
   componentDidMount() {
     showPaper().then((result: any) => {
-      const arr = [];
+      const arr: any[] = [];
+      const res = result.show;
+      // res.map((arr: any) => {
+      //   const obj = {
+      //     key: arr.paper,
+      //     paper: arr.paper,
+      //     tags: arr.tags,
+      //     pass: arr.pass,
+      //     time: arr.time,
+      //     paperNum: arr.paperNum,
+      //     remainingTime: arr.remaining_time,
+      //     candidate: arr.candidate,
+      //     check: arr.check === true ? '是' : '否 ',
+      //   };
+      //   arr.push(obj);
+      // })
       for (let i = 0; i < result.show.length; i++) {
-        const res = result.show;
         const obj = {
           key: i,
           paper: res[i].paper,
@@ -55,7 +69,7 @@ export default class Edit extends React.PureComponent {
         }
         arr.push(obj)
       }
-      this.setState({data: arr});
+      this.setState({ data: arr });
       console.log(this.state.data)
     })
   }

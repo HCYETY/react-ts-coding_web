@@ -20,6 +20,10 @@ export async function showPaper(data?: any) {
 export async function addPaper(data: any) {
   return post('/add_paper', data)
 }
+// 添加试题接口
+export async function addTest(data: any) {
+  return post('/add_test', data)
+}
 // 删除试卷接口
 export async function deletePaper(data: number[]) {
   return post('/delete_paper', data)
