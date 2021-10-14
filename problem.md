@@ -155,14 +155,12 @@ export default class Modify extends React.Component{
 
 24. 封装下拉菜单？
 
-25. React 封装 wangeditor 富文本编辑器？
-
-26. 两个字符串（yyyy-mm-dd 形式）如何作减法？
+25. 两个字符串（yyyy-mm-dd 形式）如何作减法？
 解法一：typescript 项目可以导入[ date-fns 包](https://blog.csdn.net/fsxxzq521/article/details/85715213)，这个包封装了对日期的一系列操作，其中可以使用 `differenceInDays(): 获得两个时间相差几天` ，然后再做剑法即可。
 解法二：为了求个日期之间的天数而引入一个包，这样其实不太好，能不依赖包就尽量不依赖比较好，所以我就自己封装了一个方法去求出我想要的数值
 ```js
 
 ```
-27. 如何获取富文本编辑器中的内容？
-28. 在一个组件中调用另一个组件中的方法？
+
+26. 在一个组件中调用另一个组件中的方法（组件间的通信）？
 

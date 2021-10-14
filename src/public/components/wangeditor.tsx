@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import E from 'wangeditor';
+import PubSub from 'pubsub-js';
 // import { inject, observer } from 'mobx-react'
 // import { withRouter } from 'react-router-dom'
 
@@ -56,34 +57,15 @@ export default class Wangeditor extends Component<Props,state> {
 			// thumbWidth: 120
 		}
 		editor.config.onchange = () => {
-			console.log(editor.txt.html())
+			PubSub.publish('testInform', { test: editor.txt.html() })
 		}
 		editor.create()
 		editor.txt.html('<h1>你好呀，我是syandeg</h1>')
 	};
 	
-	getHtml = () => {
-		console.log('你真聪明');
-		return editor.txt.html();
-	}
-	
-	getText = () => {
-		console.log('我知道，这还用你说');
-		return editor.txt.text();
-	}
-	
-	setHtml = () => {
-		editor.txt.html('你好呀！syandeg ，今天也要加油呀！')
-	}
-	
-	// 使用 onchange 函数监听内容的变化，并实时更新到 state 中
-	onchange = (newHtml: any) => {
-		console.log(newHtml);
-	}
-
 	render() {
 		return (
-			<div id="div1" ></div>
+			<div id="div1"></div>
 		);
 	}
 }
