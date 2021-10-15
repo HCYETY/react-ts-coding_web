@@ -7,7 +7,6 @@ import {
   Space,
   message,
   Popconfirm,
-  Drawer,
 } from 'antd';
 import {
   PlusOutlined,
@@ -24,16 +23,11 @@ import { deletePaper } from 'src/api/modules/interface';
 
 const { Content } = Layout;
 
-
-
-export default class Edit extends React.PureComponent {
+export default class Edit extends React.Component {
   state = {
-    loading: false,
     selectedRowKeys: [] = [],
     data: [] = [],
     onrow: '',
-    visible: false, 
-    placement: 'left'
   };
 
   // 在页面一渲染就立马从数据库中拿取所有试卷的数据
@@ -41,36 +35,21 @@ export default class Edit extends React.PureComponent {
     showPaper().then((result: any) => {
       const arr: any[] = [];
       const res = result.show;
-      // res.map((arr: any) => {
-      //   const obj = {
-      //     key: arr.paper,
-      //     paper: arr.paper,
-      //     tags: arr.tags,
-      //     pass: arr.pass,
-      //     time: arr.time,
-      //     paperNum: arr.paperNum,
-      //     remainingTime: arr.remaining_time,
-      //     candidate: arr.candidate,
-      //     check: arr.check === true ? '是' : '否 ',
-      //   };
-      //   arr.push(obj);
-      // })
       for (let i = 0; i < result.show.length; i++) {
         const obj = {
           key: i,
           paper: res[i].paper,
-          tags: res[i].tags,
-          pass: res[i].pass,
-          time: res[i].time,
-          paperNum: res[i].paperNum,
-          remainingTime: res[i].remaining_time,
+          paperDescription: res[i].paper_description,
+          paperNum: res[i].tests_num,
+          paperPoint: res[i].paper_point,
           candidate: res[i].candidate,
-          check: res[i].check === true ? '是' : '否 ',
+          check: res[i].check === 1 ? '是' : '否 ',
+          time: res[i].time,
+          remainingTime: res[i].remaining_time,
         }
         arr.push(obj)
       }
       this.setState({ data: arr });
-      console.log(this.state.data)
     })
   }
 
@@ -87,47 +66,26 @@ export default class Edit extends React.PureComponent {
           }
         })
       }
-      await deletePaper(req).then((ans) => {
-        this.setState({data: ans.data});
-        message.success(ans.msg);
-      })
+      console.log('之前的', this.state.data)
+      const res = await deletePaper(req)
+      this.setState({data: res.data});
+      console.log('之后的', this.state.data)
+      message.success(res.msg);
     }
   };
   // 新建试卷的按钮事件
-  add = async () => {
+  add = () => {
     window.location.href = '/add';
   };
-  showDrawer = () => {
-    this.setState({
-      visible: true,
-    });
-  };
-  onClose = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-  onChange = (e: { target: { value: any; }; }) => {
-    this.setState({
-      placement: e.target.value,
-    });
-  };
 
-
-  // 内容主体
+  // 表格复选框的选择情况
   onSelectChange = (selectedRowKeys: any) => {
     this.setState({ selectedRowKeys });
   };
 
-  onRow(key: any, record: number) {//表格行操作
-    console.log('row', key, record)
-    this.setState({ selectedRowKeys: new Array(key) });
-  }
-  
-
   render() {
 
-    const { loading, data, selectedRowKeys, onrow, placement, visible } = this.state;
+    const { data, selectedRowKeys, onrow, } = this.state;
     const rowSelection = {
       onChange: this.onSelectChange,
       selectedRowKeys,
@@ -146,12 +104,11 @@ export default class Edit extends React.PureComponent {
               title="您确定要 删除试卷 吗？" 
               okText="确定删除" 
               cancelText="取消" 
-              onConfirm={this.delete}
+              onConfirm={ this.delete }
             >
               <Button 
                 className="site-layout-content-button" 
-                icon={<DeleteOutlined/>}
-                loading={loading} 
+                icon={ <DeleteOutlined/> }
                 type="primary" 
               >
                 删除试卷
@@ -160,90 +117,92 @@ export default class Edit extends React.PureComponent {
 
             <Button 
               className="site-layout-content-button" 
-              icon={<PlusOutlined/>}
-              onClick={this.add} 
-              // loading={loading} 
+              icon={ <PlusOutlined/> }
+              onClick={ this.add } 
               type="primary" 
-              // onClick={this.showDrawer}
             >
               新建试卷
             </Button>
             
             <Table 
-              rowSelection = {rowSelection} 
-              dataSource = {data} 
+              rowSelection={ rowSelection } 
+              dataSource={ data } 
               bordered
-              scroll = {{ x: 1500, y: 350 }}
-              // onRow={(record) => {
-              //   return {
-              //     onClick: () => {
-                //       this.setState({onrow: record.paper})
-              //       console.log(record)
-              //     }}
-              //   }}
-              >
+              scroll={{ x: 1500, y: 350 }}
+              onRow={
+                record => {
+                  return {
+                    onClick: () => {
+                      this.setState({ onrow: record['paper'] })
+                    }
+                  }
+                }
+              }
+            >
               <Table.Column 
-                title = '试卷'
-                dataIndex = 'paper'
-                key = 'paper'
-                fixed = 'left'  
+                title='试卷'
+                dataIndex='paper'
+                key='paper'
+                fixed='left'  
               />
-              <Table.Column 
-                title = '标签'
-                dataIndex = 'tags'
-                key = 'tags'
-                render = {(tags: [string]) => (
-                  <span>
-                    {tags.map(tag => {
-                      let color = tag.length > 2 ? 'geekblue' : 'green';
-                      if (tag === 'loser') {
-                        color = 'volcano';
-                      }
-                      return (
-                        <Tag color={color} key={tag}>
-                          {tag}
-                        </Tag>
-                      );
-                    })}
-                  </span>
-                )}
+
+              <Table.Column
+                title="试卷描述"
+                dataIndex="paperDescription"
+                key="paperDescription"
               />
-              <Table.ColumnGroup title="候选人">
-                <Table.Column title="邮箱" dataIndex="candidate" key="candidate" />
-                <Table.Column title="试卷过期能否查看" dataIndex="check" key="check" />
-              </Table.ColumnGroup>
+
               <Table.Column 
                 title='试题数量'
                 dataIndex='paperNum'
                 key='paperNum'
-                sorter={(a: { paperNum: number; }, b: { paperNum: number; }) => a.paperNum - b.paperNum}
+                sorter={ (a: { paperNum: number; }, b: { paperNum: number; }) => a.paperNum - b.paperNum }
+                />
+
+              <Table.Column
+                title="试卷总分"
+                dataIndex="paperPoint"
+                key="paperPoint"
+                sorter={ (a: { paperPoint: number; }, b: { paperPoint: number; }) => a.paperPoint - b.paperPoint }
               />
+
+              <Table.ColumnGroup title="候选人">
+                <Table.Column 
+                  title="邮箱" 
+                  dataIndex="candidate" 
+                  key="candidate" 
+                />
+                <Table.Column 
+                  title="试卷过期能否查看" 
+                  dataIndex="check" 
+                  key="check" 
+                />
+              </Table.ColumnGroup>
+
               <Table.Column 
                 title='截止时间'
                 dataIndex='time'
                 key='time'
               />
+
               <Table.Column 
                 title='剩余时间'
                 dataIndex='remainingTime'
                 key='remainingTime'
               />
-              <Table.Column 
-                title='通过率'
-                dataIndex='pass'
-                key='pass'
-                sorter={(a: { pass: number; }, b: { pass: number; }) => a.pass - b.pass}
-              />
+
               <Table.Column 
                 title='操作'
                 dataIndex='action'
                 key='action'
                 fixed='right'
-                render={(text: any, record: any) => (
-                  <Space size="middle">
-                    <a href={`/modify?paper=${onrow}`}>修改试卷</a>
-                  </Space>
-                )}
+                render={
+                  (text: any, record: any) => (
+                    <Space size="middle">
+                      <a href={`/modify?paper=${ onrow }`}>修改试卷</a>
+                    </Space>
+                  )
+                }
               />
             </Table>
           </Content>

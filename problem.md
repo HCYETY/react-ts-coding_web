@@ -163,4 +163,6 @@ export default class Modify extends React.Component{
 ```
 
 26. 在一个组件中调用另一个组件中的方法（组件间的通信）？
+27. Table 组件中表格数据只能渲染第一次，后面的不渲染？
+28. 使用 typeorm 保存一对多/多对一关系，并联表增删查改？
 

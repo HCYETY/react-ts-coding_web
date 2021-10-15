@@ -33,7 +33,7 @@ import Head from 'public/components/header';
 import Foot from 'public/components/footer';
 import Wangeditor from 'public/components/wangeditor';
 
-export default class Add extends React.PureComponent{
+export default class Add extends React.Component{
   state={
     value: 0,
     visible: false,
@@ -79,13 +79,14 @@ export default class Add extends React.PureComponent{
     const res = await addTest(req);
     if (res.status) {
       message.success(res.msg);
-      window.location.href = '/edit';
+      // window.location.href = '/edit';
     } else {
       message.error(res.msg);
     }
   }
   // 将添加的试题加载到 testArr 数组中，在调用接口的时候作为参数传递
   saveTest = async (values: any) => {
+    console.log(this.state.tableArr)
     const arr: { num: any; testName: any; description: string; answer: any; level: any; tags: any; point: any; }[] = this.state.tableArr.length > 0 ? this.state.tableArr : [];
     const obj = {
       num: values.num,
@@ -99,8 +100,9 @@ export default class Add extends React.PureComponent{
     console.log('之前的 arr', arr)
     arr.push(obj);
     console.log('新增后的 arr', arr)
-    console.log(this.state.tableArr)
+    console.log('更新前的tableArr', this.state.tableArr)
     this.setState({ tableArr: arr, visible: false });
+    console.log('更新后的tableArr', this.state.tableArr)
   }
   // 从 testArr 数组中删除试题
   deleteTest = (values: any) => {
@@ -353,6 +355,14 @@ export default class Add extends React.PureComponent{
                   className="paper"
                 >
                   <Input />
+                </Form.Item>
+
+                <Form.Item
+                  name="paperDescription" 
+                  label="试卷描述" 
+                  className="paperDescription"
+                >
+                  <Input.TextArea/>
                 </Form.Item>
 
                 <Form.Item 
