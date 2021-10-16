@@ -34,18 +34,18 @@ export default class Edit extends React.Component {
   componentDidMount() {
     showPaper().then((result: any) => {
       const arr: any[] = [];
-      const res = result.show;
-      for (let i = 0; i < result.show.length; i++) {
+      const res = result.data;
+      for (let i = 0; i < res.length; i++) {
         const obj = {
           key: i,
           paper: res[i].paper,
-          paperDescription: res[i].paper_description,
-          paperNum: res[i].tests_num,
-          paperPoint: res[i].paper_point,
+          paper_description: res[i].paper_description,
+          tests_num: res[i].tests_num,
+          paper_point: res[i].paper_point,
           candidate: res[i].candidate,
           check: res[i].check === 1 ? '是' : '否 ',
           time: res[i].time,
-          remainingTime: res[i].remaining_time,
+          remaining_time: res[i].remaining_time,
         }
         arr.push(obj)
       }
@@ -59,17 +59,14 @@ export default class Edit extends React.Component {
     let req: number[] = [];
     if (arr.length !== 0) {
       for (let num of arr) {
-        this.state.data.map(x => {
-          if (x['key'] === num) {
-            req.push(x['paper']);
-            return;
-          }
-        })
+        req.push(this.state.data[num]);
       }
-      console.log('之前的', this.state.data)
-      const res = await deletePaper(req)
-      this.setState({data: res.data});
-      console.log('之后的', this.state.data)
+      const res = await deletePaper(req);
+      console.log(res)
+      // res.map((ch: { check: string | number; }) => {
+      //   ch.check = ch.check === 1 ? '是' : '否';
+      // })
+      this.setState({ data: res.data });
       message.success(res.msg);
     }
   };
@@ -84,7 +81,6 @@ export default class Edit extends React.Component {
   };
 
   render() {
-
     const { data, selectedRowKeys, onrow, } = this.state;
     const rowSelection = {
       onChange: this.onSelectChange,
@@ -126,7 +122,7 @@ export default class Edit extends React.Component {
             
             <Table 
               rowSelection={ rowSelection } 
-              dataSource={ data } 
+              dataSource={ [...data] } 
               bordered
               scroll={{ x: 1500, y: 350 }}
               onRow={
@@ -148,22 +144,22 @@ export default class Edit extends React.Component {
 
               <Table.Column
                 title="试卷描述"
-                dataIndex="paperDescription"
+                dataIndex="paper_description"
                 key="paperDescription"
               />
 
               <Table.Column 
                 title='试题数量'
-                dataIndex='paperNum'
-                key='paperNum'
-                sorter={ (a: { paperNum: number; }, b: { paperNum: number; }) => a.paperNum - b.paperNum }
+                dataIndex='tests_num'
+                key='tests_num'
+                sorter={ (a: { tests_num: number; }, b: { tests_num: number; }) => a.tests_num - b.tests_num }
                 />
 
               <Table.Column
                 title="试卷总分"
-                dataIndex="paperPoint"
-                key="paperPoint"
-                sorter={ (a: { paperPoint: number; }, b: { paperPoint: number; }) => a.paperPoint - b.paperPoint }
+                dataIndex="paper_point"
+                key="paper_point"
+                sorter={ (a: { paper_point: number; }, b: { paper_point: number; }) => a.paper_point - b.paper_point }
               />
 
               <Table.ColumnGroup title="候选人">
@@ -187,8 +183,8 @@ export default class Edit extends React.Component {
 
               <Table.Column 
                 title='剩余时间'
-                dataIndex='remainingTime'
-                key='remainingTime'
+                dataIndex='remaining_time'
+                key='remaining_time'
               />
 
               <Table.Column 

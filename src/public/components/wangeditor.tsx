@@ -62,6 +62,12 @@ export default class Wangeditor extends Component<Props,state> {
 		editor.create()
 		editor.txt.html('<h1>你好呀，我是syandeg</h1>')
 	};
+
+	componentWillUnmount() {
+		// 销毁编辑器
+		editor.destroy()
+		editor = null
+	}
 	
 	render() {
 		return (

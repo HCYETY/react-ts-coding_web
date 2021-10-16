@@ -118,11 +118,14 @@ export function getUrlParam(key: string) {
 21. 同步获取 promise.then() 中的值？
 解决方法：Promise封装结合async/await
 ```js
+// 方法一：
 async componentDidMount() {
-  await showPaper().then(res => {
-    this.setState({xxx: res.xxx});
-  })
+  const res = await showPaper();
+  this.setState({ xxx: res.xxx });
 }
+
+// 方法二：
+showPaper().then((res) => { xxx: res.xxx });
 ```
 > [React中setState如何同步更新](https://www.cnblogs.com/younghxp/p/14803548.html)
 
@@ -163,6 +166,10 @@ export default class Modify extends React.Component{
 ```
 
 26. 在一个组件中调用另一个组件中的方法（组件间的通信）？
-27. Table 组件中表格数据只能渲染第一次，后面的不渲染？
+由于是 react 项目，加上我的组件是非嵌套组件（不是兄弟组件等等，两个组件间没有毛线关系那种），所以采用发布消息与订阅机制。首先 `npm install pubsub-js` ，安装下插件，然后查看它的使用方法，分别在组件中发布与订阅消息，就可以实现两个非嵌套组件的值传递了。
+
+27. Table 组件中表格的内容展示与内容数据不符，用 state 监听后数据渲染依然不同步？
+解决思路：在使用表格内容的地方打印数据，看数据在业务逻辑的实现下是否正确；若正确，则说明是使用方法不对。我这里的问题是对数组的处理姿势不对。在 Table 组件的 dataSource 属性中解构数据，如果是对象，则解构后加个“[]”。
+
 28. 使用 typeorm 保存一对多/多对一关系，并联表增删查改？
 

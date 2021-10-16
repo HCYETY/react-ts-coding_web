@@ -14,6 +14,7 @@ import {
   Tag,
   Table,
   Popconfirm,
+  Modal,
 } from 'antd';
 import { 
   PlusOutlined, 
@@ -38,10 +39,13 @@ export default class Add extends React.Component{
     value: 0,
     visible: false,
     visible2: false,
+    visible3: false,
     button: true,
+    id: 1,              // 存储试题的题号
     tableArr: [] = [],  // 存储试题信息
     testInform: '',     // 存储富文本内容
     paperKey: '',       // 存储试卷名
+    selectedRowKeys: [] = [],   // 获取选中哪一个试题
   }
 
   // 订阅消息，获取 wangeditor 组件中富文本的内容
@@ -75,7 +79,9 @@ export default class Add extends React.Component{
   submitTest = async () => {
     console.log('添加试题信息')
     const req: string[] = this.state.tableArr.length > 0 ? this.state.tableArr : [];
-    req.unshift(this.state.paperKey);
+    if (req[0] !== this.state.paperKey) {
+      req.unshift(this.state.paperKey);
+    }
     const res = await addTest(req);
     if (res.status) {
       message.success(res.msg);
@@ -86,10 +92,10 @@ export default class Add extends React.Component{
   }
   // 将添加的试题加载到 testArr 数组中，在调用接口的时候作为参数传递
   saveTest = async (values: any) => {
-    console.log(this.state.tableArr)
-    const arr: { num: any; testName: any; description: string; answer: any; level: any; tags: any; point: any; }[] = this.state.tableArr.length > 0 ? this.state.tableArr : [];
+    const arr: any[] = this.state.tableArr.length > 0 ? this.state.tableArr : [];
     const obj = {
-      num: values.num,
+      key: this.state.id,
+      // num: this.state.id,
       testName: values.testName,
       description: this.state.testInform,
       answer: values.answer,
@@ -97,16 +103,34 @@ export default class Add extends React.Component{
       tags: values.tags,
       point: values.point,
     }
-    console.log('之前的 arr', arr)
     arr.push(obj);
-    console.log('新增后的 arr', arr)
-    console.log('更新前的tableArr', this.state.tableArr)
-    this.setState({ tableArr: arr, visible: false });
-    console.log('更新后的tableArr', this.state.tableArr)
+    this.setState({ tableArr: arr, visible: false, id: this.state.id + 1 });
   }
   // 从 testArr 数组中删除试题
-  deleteTest = (values: any) => {
-    console.log('可以删除的元素', values)
+  deleteTest = () => {
+    const arr = this.state.selectedRowKeys;
+    const ret = this.state.tableArr;
+    if (arr.length !== 0) {
+      for (let number of arr) {
+        ret.splice(number-1, number);
+      }
+      this.setState({ tableArr: ret });
+    }
+  }
+  // 表格复选框的选择情况
+  onSelectChange = (selectedRowKeys: any) => {
+    this.setState({ selectedRowKeys });
+  };
+  // 修改试题
+  modifyTest = () => {
+    this.setState({ visible3: true });
+  }
+  handleOk = () => {
+
+    this.setState({ visible3: false });
+  }
+  handleCancel = () => {
+    this.setState({ visible3: false });
   }
  
   
@@ -127,18 +151,23 @@ export default class Add extends React.Component{
   };
 
   render() {
-    const { button, value, visible, visible2, tableArr } = this.state;
+    const { button, value, visible, visible2, visible3, tableArr, selectedRowKeys, } = this.state;
+    const rowSelection = {
+      onChange: this.onSelectChange,
+      selectedRowKeys,
+    };
+
 
     const columns = [
-      { title: '题号', dataIndex: 'num', key: 'num' },
-      { title: '题目', dataIndex: 'testName', key: 'testName' },
+      // { title: '题号', dataIndex: 'num', key: 'num' },
+      { title: '试题名', dataIndex: 'testName', key: 'testName' },
       {
         title: '标签', 
         dataIndex: 'tags', 
         key: 'tags',
         render: (tags: [string]) => (
           <span>
-            {tags.map(tag => {
+            {tags && tags.map(tag => {
               let color = tag.length > 2 ? 'geekblue' : 'green';
               if (tag === 'loser') {
                 color = 'volcano';
@@ -161,9 +190,10 @@ export default class Add extends React.Component{
           <Space size="middle">
             <Button 
               className="site-layout-content-button" 
-              icon={<DeleteOutlined/>}
-              onClick={this.deleteTest}
+              icon={<EditOutlined/>}
+              onClick={this.modifyTest}
             >
+              修改试题
             </Button>
           </Space>
         ),
@@ -183,8 +213,17 @@ export default class Add extends React.Component{
               type="primary" 
               onClick={ this.showDrawer } 
               icon={ <PlusOutlined /> }
-            >
+              >
               添加试题
+            </Button>
+
+            <Button 
+              className="form-button-left2" 
+              type="primary" 
+              onClick={ this.deleteTest } 
+              icon={ <DeleteOutlined /> }
+            >
+              删除试题
             </Button>
 
             <Button 
@@ -208,6 +247,8 @@ export default class Add extends React.Component{
             </Button>
 
 
+
+
             <Drawer
               title="编程题"
               height={620}
@@ -227,8 +268,18 @@ export default class Add extends React.Component{
               //   </Space>
               // }
             >
-              <Form onFinish={ this.saveTest }>
-                <Form.Item 
+              <Form 
+                onFinish={ this.saveTest }
+                initialValues={{ 
+                  testName: inform.paper,
+                  test: inform.paperdescription,
+                  answer: inform,
+                  level: inform.candidate,
+                  tags: inform.check,
+                  point: 
+                }}
+              >
+                {/* <Form.Item 
                   name="num" 
                   key="num"
                   label="题号" 
@@ -237,7 +288,7 @@ export default class Add extends React.Component{
                   ]}
                 >
                   <InputNumber min={1}/>
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item 
                   name="testName" 
@@ -324,7 +375,7 @@ export default class Add extends React.Component{
 
                 <Form.Item>
                   <Button type="primary" htmlType="submit">
-                    保存试卷信息
+                    添加试卷信息
                   </Button>
                 </Form.Item>
               </Form>
@@ -339,7 +390,6 @@ export default class Add extends React.Component{
               bodyStyle={{ paddingBottom: 80 }}
             >
               <Form 
-                // {...layout} 
                 name="nest-messages" 
                 onFinish={ this.submitPaper } 
               >
@@ -396,16 +446,9 @@ export default class Add extends React.Component{
                 </Form.Item>
 
                 <Form.Item wrapperCol={{ offset: 8 }}>
-                  {/* <Popconfirm 
-                    title="请确定试卷信息是否准确，提交之后无法再修改" 
-                    okText="确定" 
-                    cancelText="取消" 
-                    onConfirm={this.onFinish}
-                  > */}
-                    <Button type="primary" htmlType="submit">
-                      保存试卷信息
-                    </Button>
-                  {/* </Popconfirm > */}
+                  <Button type="primary" htmlType="submit">
+                    保存试卷信息
+                  </Button>
                 </Form.Item>
               </Form>
             </Drawer>
@@ -415,11 +458,13 @@ export default class Add extends React.Component{
 
             <Table 
               columns={ columns } 
-              dataSource={ tableArr } 
+              dataSource={ [...tableArr] } 
               expandable={{
                 expandedRowRender: record => <p>{ record['description'] }</p>,
-                rowExpandable: record => record['test'],
+                rowExpandable: () => true,
               }}
+              rowSelection={ rowSelection } 
+              bordered
             />
           </div>
 
