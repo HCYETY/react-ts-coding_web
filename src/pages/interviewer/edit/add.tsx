@@ -24,9 +24,11 @@ import {
   DeleteOutlined, 
   EditOutlined,
 } from '@ant-design/icons';
+import { FormInstance } from 'antd/es/form';
 import PubSub from 'pubsub-js';
 
 import 'style/add.less';
+import 'style/wangeditor.css';
 import { addPaper, addTest } from 'src/api/modules/interface';
 import { TAGS } from 'public/const';
 import Navbar from 'public/components/navbar';
@@ -35,22 +37,29 @@ import Foot from 'public/components/footer';
 import Wangeditor from 'public/components/wangeditor';
 
 export default class Add extends React.Component{
+//   setDefaultVals = () =>{
+//     this.formRef.current.setFieldsValue({...initProduct});  
+// }
+  formRef = React.createRef<FormInstance>();
+
   state={
     value: 0,
     visible: false,
     visible2: false,
     visible3: false,
     button: true,
-    id: 1,              // 存储试题的题号
-    tableArr: [] = [],  // 存储试题信息
-    testInform: '',     // 存储富文本内容
-    paperKey: '',       // 存储试卷名
+    tableArr: [] = [],          // 存储试题信息
+    testInform: '',             // 存储富文本内容
+    paperKey: '',               // 存储试卷名
     selectedRowKeys: [] = [],   // 获取选中哪一个试题
+    onrow: '',                  // 存储修改试题时选中行的试卷名
   }
 
   // 订阅消息，获取 wangeditor 组件中富文本的内容
   token: string | PubSubJS.SubscriptionListener<any> = null;
   componentDidMount() {
+    // this.formRef.current.resetFields()
+    
     this.token = PubSub.subscribe('testInform', (_, data) => {
       this.setState({ testInform: data.test });
     })
@@ -69,7 +78,7 @@ export default class Add extends React.Component{
     console.log(values)
     this.setState({ button: false, visible2: false, paperKey: values.paper });
     const res = await addPaper(values);
-    if (res.status) {
+    if (res.data.status) {
       message.success(res.msg);
     } else {
       message.error(res.msg);
@@ -83,7 +92,7 @@ export default class Add extends React.Component{
       req.unshift(this.state.paperKey);
     }
     const res = await addTest(req);
-    if (res.status) {
+    if (res.data.status) {
       message.success(res.msg);
       // window.location.href = '/edit';
     } else {
@@ -92,9 +101,12 @@ export default class Add extends React.Component{
   }
   // 将添加的试题加载到 testArr 数组中，在调用接口的时候作为参数传递
   saveTest = async (values: any) => {
+    // 表单重置
+    this.formRef.current.resetFields();
+
     const arr: any[] = this.state.tableArr.length > 0 ? this.state.tableArr : [];
     const obj = {
-      key: this.state.id,
+      key: values.testName,
       // num: this.state.id,
       testName: values.testName,
       description: this.state.testInform,
@@ -104,7 +116,7 @@ export default class Add extends React.Component{
       point: values.point,
     }
     arr.push(obj);
-    this.setState({ tableArr: arr, visible: false, id: this.state.id + 1 });
+    this.setState({ tableArr: arr, visible: false, });
   }
   // 从 testArr 数组中删除试题
   deleteTest = () => {
@@ -112,7 +124,11 @@ export default class Add extends React.Component{
     const ret = this.state.tableArr;
     if (arr.length !== 0) {
       for (let number of arr) {
-        ret.splice(number-1, number);
+        ret.forEach((item, index, arr) => {
+          if (item['key'] === number) {
+            ret.splice(index, 1);
+          }
+        })
       }
       this.setState({ tableArr: ret });
     }
@@ -123,14 +139,17 @@ export default class Add extends React.Component{
   };
   // 修改试题
   modifyTest = () => {
-    this.setState({ visible3: true });
-  }
-  handleOk = () => {
-
-    this.setState({ visible3: false });
-  }
-  handleCancel = () => {
-    this.setState({ visible3: false });
+    this.setState({ visible: true });
+    const form = this.formRef.current;
+    const curForm = form.validateFields();
+    curForm.then((val: any) => {
+      const { tableArr } = this.state;
+      console.log('val', val)
+      console.log('usrForm', curForm)
+      console.log('tableArr', tableArr)
+    }).catch((error: any) => {
+      console.log('error', error);
+    })
   }
  
   
@@ -150,14 +169,13 @@ export default class Add extends React.Component{
     this.setState({ visible2: false });
   };
 
+
   render() {
     const { button, value, visible, visible2, visible3, tableArr, selectedRowKeys, } = this.state;
     const rowSelection = {
       onChange: this.onSelectChange,
       selectedRowKeys,
     };
-
-
     const columns = [
       // { title: '题号', dataIndex: 'num', key: 'num' },
       { title: '试题名', dataIndex: 'testName', key: 'testName' },
@@ -190,8 +208,8 @@ export default class Add extends React.Component{
           <Space size="middle">
             <Button 
               className="site-layout-content-button" 
-              icon={<EditOutlined/>}
-              onClick={this.modifyTest}
+              icon={ <EditOutlined/> }
+              onClick={ this.modifyTest }
             >
               修改试题
             </Button>
@@ -270,13 +288,14 @@ export default class Add extends React.Component{
             >
               <Form 
                 onFinish={ this.saveTest }
+                ref={this.formRef}
                 initialValues={{ 
-                  testName: inform.paper,
-                  test: inform.paperdescription,
-                  answer: inform,
-                  level: inform.candidate,
-                  tags: inform.check,
-                  point: 
+                  // testName: inform.paper,
+                  // test: inform.paperdescription,
+                  // answer: inform,
+                  // level: inform.candidate,
+                  // tags: inform.check,
+                  // point: 
                 }}
               >
                 {/* <Form.Item 
@@ -374,7 +393,11 @@ export default class Add extends React.Component{
                 </Form.Item>
 
                 <Form.Item>
-                  <Button type="primary" htmlType="submit">
+                  <Button 
+                    type="primary" 
+                    htmlType="submit"
+                    // onClick={ this.handleReset }
+                  >
                     添加试卷信息
                   </Button>
                 </Form.Item>
@@ -465,6 +488,15 @@ export default class Add extends React.Component{
               }}
               rowSelection={ rowSelection } 
               bordered
+              onRow={
+                record => {
+                  return {
+                    onClick: () => {
+                      this.setState({ onrow: record['testName'] })
+                    }
+                  }
+                }
+              }
             />
           </div>
 

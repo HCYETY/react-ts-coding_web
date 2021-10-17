@@ -173,3 +173,5 @@ export default class Modify extends React.Component{
 
 28. 使用 typeorm 保存一对多/多对一关系，并联表增删查改？
 
+清空表单、支持多个富文本、表格显示富文本内容、修改试题时在抽屉中显示数据
+删除试卷

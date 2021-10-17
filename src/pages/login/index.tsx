@@ -49,17 +49,17 @@ export default class Login extends PureComponent<any> {
       const res = await testLogin(data);
       console.log(res);
       // 登录成功
-      if (res.isLogin === true) {
-        message.success(res.message);
+      if (res.data.isLogin === true) {
+        message.success(res.msg);
         // token存储完毕，在当前页跳转至项目首页
-        if (res.identity === true) {
+        if (res.data.interviewer === true) {
           window.location.href = '/interviewer';
         } else {
           window.location.href = '/candidate';
         }
       } else {
         // 登录失败
-        message.error(res.message);
+        message.error(res.msg);
       }
     } catch(err) { message.error(err); }
   };
@@ -70,12 +70,12 @@ export default class Login extends PureComponent<any> {
       const data = { email, cypher, captcha, identity };
       const res = await testRegister(data);
       // 注册成功
-      if (res.status === true) {
+      if (res.data.status === true) {
         message.success('恭喜您，注册成功！请前往登录');
         // 在当前页跳转至登录界面
         this.setState({noTitleKey: 'login'});
       } else {
-        message.error(res.message);
+        message.error(res.msg);
       }
     } catch(err) { message.error(err); }
   };
@@ -86,7 +86,7 @@ export default class Login extends PureComponent<any> {
     noTitleKey: 'login',
     value: 0, // 身份标识，0 为候选人，1 为面试官
     liked: true,
-    email: 'coconut', // 获取邮箱账号时动态赋值
+    email: '', // 获取邮箱账号时动态赋值
     count: 60, // “获取验证码” 与 “60秒后重发”的更新标记
   };
   tabListNoTitle = [
@@ -94,7 +94,6 @@ export default class Login extends PureComponent<any> {
     { key: 'register', tab: '注册' }
   ];
   onTabChange = (key: string, type: string) => {
-    console.log(key, type);
     this.setState({ [type]: key });
   };
   onChange = (e: any) => {

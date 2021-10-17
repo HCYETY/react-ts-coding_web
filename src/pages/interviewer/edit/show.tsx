@@ -33,6 +33,7 @@ export default class Edit extends React.Component {
   // 在页面一渲染就立马从数据库中拿取所有试卷的数据
   componentDidMount() {
     showPaper().then((result: any) => {
+      console.log(result)
       const arr: any[] = [];
       const res = result.data;
       for (let i = 0; i < res.length; i++) {
