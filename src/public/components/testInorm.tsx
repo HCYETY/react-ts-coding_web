@@ -1,15 +1,76 @@
 import React from 'react';
-import { Form, Input, Select, InputNumber, } from 'antd';
+import { Form, Input, Select, InputNumber, Modal, } from 'antd';
+import { FormInstance } from 'antd/es/form';
 import Wangeditor from './wangeditor';
 import { TAGS } from '../const';
+import PubSub from 'pubsub-js';
 
-export default class testInform extends React.Component{
+let tableArr: any = null;
+export default class TestInform extends React.Component{
+  componentDidMount() {
+    PubSub.subscribe('modifyTest', (_, data) => {
+      tableArr = data.inform
+    })
+  }
+  state = {
+    visible: false,
+  }
+  formRef = React.createRef<FormInstance>();
+
+  // 修改试题
+  handleModal = (record: any) => {
+    // 设置弹出层
+    this.setState({ visible3: true });
+    console.log('dddddd', record)
+
+    // 获取 Form 的 ref
+    const form = this.formRef.current;
+    // tableArr 是全部数据，onrow 是单个试题的数据
+    // 要渲染的数据
+    let ch = null;  
+    tableArr.forEach((item: { [x: string]: any; }) => {
+      if (item && item['testName'] === record) {
+        ch = item;
+        console.log('kkkkkkkkk', item['testName'])
+        return ch;
+      }
+    })
+    form.setFieldsValue(ch)
+    
+    // form.initialValues(this.state.tableArr)
+    // const curForm = form.validateFields();
+    // curForm.then((val: any) => {
+    //   const { tableArr } = this.state;
+    //   console.log('val', val)
+    //   console.log('usrForm', curForm)
+    // }).catch((error: any) => {
+    //   console.log('error', error);
+    // })
+  };
+  hideModal = () => {
+    this.setState({ visible3: false });
+  };
+  modifyTest = () => {
+    this.setState({ visible3: false });
+
+  }
+  
   render() {
-    return(
-      <Form
+    const { visible } = this.state;
 
+    return(
+      <Modal
+        title="修改试卷信息"
+        visible={ visible }
+        onOk={ this.modifyTest }
+        onCancel={ this.hideModal }
+        okText="确认修改"
+        cancelText="取消"
       >
-        <Form.Item 
+        <Form
+          ref={this.formRef}
+        >
+          <Form.Item 
             name="testName" 
             key="testName"
             label="试题名" 
@@ -28,7 +89,7 @@ export default class testInform extends React.Component{
             //   { required: true }
             // ]}
           >
-            <Wangeditor/>
+            {/* <Wangeditor/> */}
           </Form.Item>
 
           <Form.Item 
@@ -92,6 +153,7 @@ export default class testInform extends React.Component{
             <InputNumber min={0}/>
           </Form.Item>
         </Form>
+      </Modal>
     )
   }
 }

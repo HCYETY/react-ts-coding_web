@@ -35,31 +35,27 @@ import Navbar from 'public/components/navbar';
 import Head from 'public/components/header';
 import Foot from 'public/components/footer';
 import Wangeditor from 'public/components/wangeditor';
+import TestInform from 'public/components/testInorm';
 
 export default class Add extends React.Component{
-//   setDefaultVals = () =>{
-//     this.formRef.current.setFieldsValue({...initProduct});  
-// }
   formRef = React.createRef<FormInstance>();
+  modalRef = React.createRef<FormInstance>();
 
   state={
-    value: 0,
-    visible: false,
-    visible2: false,
-    visible3: false,
-    button: true,
+    value: 0,                   // 更新单选框的值
+    visible: false,             // 控制底下抽屉
+    visible2: false,            // 控制侧边抽屉
+    visible3: false,            // 控制弹出层
+    button: true,               // 控制按钮样式
     tableArr: [] = [],          // 存储试题信息
     testInform: '',             // 存储富文本内容
     paperKey: '',               // 存储试卷名
     selectedRowKeys: [] = [],   // 获取选中哪一个试题
-    onrow: '',                  // 存储修改试题时选中行的试卷名
   }
 
   // 订阅消息，获取 wangeditor 组件中富文本的内容
   token: string | PubSubJS.SubscriptionListener<any> = null;
   componentDidMount() {
-    // this.formRef.current.resetFields()
-    
     this.token = PubSub.subscribe('testInform', (_, data) => {
       this.setState({ testInform: data.test });
     })
@@ -101,9 +97,6 @@ export default class Add extends React.Component{
   }
   // 将添加的试题加载到 testArr 数组中，在调用接口的时候作为参数传递
   saveTest = async (values: any) => {
-    // 表单重置
-    this.formRef.current.resetFields();
-
     const arr: any[] = this.state.tableArr.length > 0 ? this.state.tableArr : [];
     const obj = {
       key: values.testName,
@@ -138,18 +131,29 @@ export default class Add extends React.Component{
     this.setState({ selectedRowKeys });
   };
   // 修改试题
-  modifyTest = () => {
+  handleModal = (record: any) => {
+    // 设置弹出层
     this.setState({ visible: true });
+    // 表单重置
+    this.formRef.current.resetFields();
+    // 获取 Form 的 ref
     const form = this.formRef.current;
-    const curForm = form.validateFields();
-    curForm.then((val: any) => {
-      const { tableArr } = this.state;
-      console.log('val', val)
-      console.log('usrForm', curForm)
-      console.log('tableArr', tableArr)
-    }).catch((error: any) => {
-      console.log('error', error);
+    // 要渲染的数据
+    let singleData = null;  
+    this.state.tableArr.forEach(item => {
+      if (item && item['testName'] === record) {
+        singleData = item;
+        return singleData;
+      }
     })
+    form.setFieldsValue(singleData);
+  };
+  hideModal = () => {
+    this.setState({ visible: false });
+  };
+  modifyTest = () => {
+    this.setState({ visible: false });
+
   }
  
   
@@ -157,6 +161,10 @@ export default class Add extends React.Component{
   // “添加试卷”的抽屉
   showDrawer = () => {
     this.setState({ visible: true });
+    // 添加新试卷时要将表单数据清空
+    setTimeout(() => {
+      this.formRef.current.resetFields();
+    }, 0);
   };
   onClose = () => {
     this.setState({ visible: false });
@@ -204,17 +212,19 @@ export default class Add extends React.Component{
       {
         title: '操作',
         key: 'action',
-        render: () => (
-          <Space size="middle">
-            <Button 
-              className="site-layout-content-button" 
-              icon={ <EditOutlined/> }
-              onClick={ this.modifyTest }
-            >
-              修改试题
-            </Button>
-          </Space>
-        ),
+        render: (_: any, record: { key: React.Key }) => {
+          return(
+            <Space size="middle">
+              <Button 
+                className="site-layout-content-button" 
+                icon={ <EditOutlined/> }
+                onClick={ () => { this.handleModal(record.key) }}
+              >
+                修改试题
+              </Button>
+            </Space>
+          )
+        },
       },
     ];
   
@@ -266,6 +276,103 @@ export default class Add extends React.Component{
 
 
 
+            <Modal
+              title="修改试卷信息"
+              visible={ visible3 }
+              onOk={ this.modifyTest }
+              onCancel={ this.hideModal }
+              okText="确认修改"
+              cancelText="取消"
+            >
+              <Form
+                ref={this.modalRef}
+              >
+                <Form.Item 
+                  name="testName" 
+                  key="testName"
+                  label="试题名" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <Input/>
+                </Form.Item>
+
+                <Form.Item 
+                  name="test" 
+                  key="test"
+                  label="题目" 
+                  // rules={[
+                  //   { required: true }
+                  // ]}
+                >
+                  {/* <Wangeditor/> */}
+                </Form.Item>
+
+                <Form.Item 
+                  name="answer" 
+                  key="answer"
+                  label="答案" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <Input.TextArea />
+                </Form.Item>
+              
+                <Form.Item 
+                  name="level" 
+                  key="level"
+                  label="难易度" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <Select  style={{ width: 120 }}>
+                    <Select.Option value="简单" key="easy">简单</Select.Option>
+                    <Select.Option value="中等" key="middle">中等</Select.Option>
+                    <Select.Option value="困难" key="hard">困难</Select.Option>
+                  </Select>
+                </Form.Item>
+
+                <Form.Item 
+                  name="tags" 
+                  key="tags"
+                  label="标签" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <Select
+                    mode="multiple"
+                    allowClear
+                    style={{ width: '100%' }}
+                    placeholder="Please select"
+                  >
+                    {
+                      TAGS.map((arr: any) => {
+                        return(
+                          <Select.Option key={ arr.key } value={ arr.value }>{ arr.value }</Select.Option>
+                        )
+                      })
+                    }
+                  </Select>
+                </Form.Item>
+              
+                <Form.Item 
+                  name="point" 
+                  key="point"
+                  label="分数" 
+                  rules={[
+                    { required: true }
+                  ]}
+                >
+                  <InputNumber min={0}/>
+                </Form.Item>
+              </Form>
+            </Modal>
+
+
 
             <Drawer
               title="编程题"
@@ -288,15 +395,7 @@ export default class Add extends React.Component{
             >
               <Form 
                 onFinish={ this.saveTest }
-                ref={this.formRef}
-                initialValues={{ 
-                  // testName: inform.paper,
-                  // test: inform.paperdescription,
-                  // answer: inform,
-                  // level: inform.candidate,
-                  // tags: inform.check,
-                  // point: 
-                }}
+                ref={ this.formRef }
               >
                 {/* <Form.Item 
                   name="num" 
@@ -488,15 +587,6 @@ export default class Add extends React.Component{
               }}
               rowSelection={ rowSelection } 
               bordered
-              onRow={
-                record => {
-                  return {
-                    onClick: () => {
-                      this.setState({ onrow: record['testName'] })
-                    }
-                  }
-                }
-              }
             />
           </div>
 
