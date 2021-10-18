@@ -46,7 +46,8 @@ export default class Add extends React.Component{
     visible: false,             // 控制底下抽屉
     visible2: false,            // 控制侧边抽屉
     visible3: false,            // 控制弹出层
-    button: true,               // 控制按钮样式
+    button: true,               // 控制【右上角“下一步”】按钮样式
+    button2: true,              // 控制【底下抽屉“提交试题信息”】按钮样式
     tableArr: [] = [],          // 存储试题信息
     testInform: '',             // 存储富文本内容
     paperKey: '',               // 存储试卷名
@@ -133,7 +134,7 @@ export default class Add extends React.Component{
   // 修改试题
   handleModal = (record: any) => {
     // 设置弹出层
-    this.setState({ visible: true });
+    this.setState({ visible: true, button2: false });
     // 表单重置
     this.formRef.current.resetFields();
     // 获取 Form 的 ref
@@ -148,12 +149,32 @@ export default class Add extends React.Component{
     })
     form.setFieldsValue(singleData);
   };
-  hideModal = () => {
-    this.setState({ visible: false });
-  };
-  modifyTest = () => {
-    this.setState({ visible: false });
-
+  // hideModal = () => {
+  //   this.setState({ visible: false });
+  // };
+  modifyTest = async (values: any) => {
+    const { tableArr } = this.state;
+    let newTableArr = tableArr.map((item) => {
+      if (item['testName'] === values.testName) {
+        console.log('item', item)
+        return [
+          ...item,
+          {
+            key: values.testName,
+            testName: values.testName,
+            description: this.state.testInform,
+            answer: values.answer,
+            level: values.level,
+            tags: values.tags,
+            point: values.point,
+          }
+        ]
+      }
+    })
+    this.setState({
+      tableArr: newTableArr,
+      visible: false,
+    })
   }
  
   
@@ -179,7 +200,7 @@ export default class Add extends React.Component{
 
 
   render() {
-    const { button, value, visible, visible2, visible3, tableArr, selectedRowKeys, } = this.state;
+    const { button, button2, value, visible, visible2, visible3, tableArr, selectedRowKeys, } = this.state;
     const rowSelection = {
       onChange: this.onSelectChange,
       selectedRowKeys,
@@ -280,7 +301,7 @@ export default class Add extends React.Component{
               title="修改试卷信息"
               visible={ visible3 }
               onOk={ this.modifyTest }
-              onCancel={ this.hideModal }
+              // onCancel={ this.hideModal }
               okText="确认修改"
               cancelText="取消"
             >
@@ -394,7 +415,7 @@ export default class Add extends React.Component{
               // }
             >
               <Form 
-                onFinish={ this.saveTest }
+                onFinish={ button2 === true ? this.saveTest : this.modifyTest }
                 ref={ this.formRef }
               >
                 {/* <Form.Item 
@@ -497,7 +518,7 @@ export default class Add extends React.Component{
                     htmlType="submit"
                     // onClick={ this.handleReset }
                   >
-                    添加试卷信息
+                    { button2 === true ? '添加试题' : '修改试题' }
                   </Button>
                 </Form.Item>
               </Form>
@@ -587,6 +608,7 @@ export default class Add extends React.Component{
               }}
               rowSelection={ rowSelection } 
               bordered
+              // rowKey={record => record['key']}
             />
           </div>
 

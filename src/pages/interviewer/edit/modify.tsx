@@ -29,28 +29,46 @@ export default class Modify extends React.Component{
   state = {
     loading: true,
     value: 0,
-    tableArr: {},
+    tableArr: [] = [],
     inform: { 
       paper: '', 
-      paperdescription: '',
-      remaining_time: '', 
+      paper_description: '',
       time: '', 
       candidate: [''],
       check: '', 
+      paper_point: 0,
     },
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const url = getUrlParam('paper');
     const req = { paper: url };
-    const paperRes = await showPaper(req);
-    const testRes = await showTest(req);
-    this.setState({
-      inform: paperRes.show,
-      loading: false,
+    // showPaper(req).then((paperRes) => {
+    //   this.setState({
+    //     inform: paperRes.data,
+    //   });
+    // });
+    showTest(req).then((testRes) => {
+      console.log(testRes.data)
+      const arr = [];
+      for (let ch of testRes.data) {
+        const obj = {
+          key: ch.test_name,
+          testName: ch.test_name,
+          description: ch.test,
+          tags: ch.tags,
+          level: ch.level,
+          point: ch.point,
+        }
+        arr.push(obj)
+      }
+      this.setState({
+        tableArr: arr,
+        loading: false,
+        inform: testRes.data[0].paper
+      });
+      console.log('表格数据', this.state.tableArr)
     });
-    this.setState({ tableArr: testRes.data })
-    console.log(this.state.tableArr)
   }
 
   onChange = (e: any) => {
@@ -73,7 +91,7 @@ export default class Modify extends React.Component{
   render() {
     const { inform, loading, tableArr } = this.state;
     const columns = [
-      { title: '题号', dataIndex: 'num', key: 'num' },
+      // { title: '题号', dataIndex: 'num', key: 'num' },
       { title: '题目', dataIndex: 'testName', key: 'testName' },
       {
         title: '标签', 
@@ -128,8 +146,8 @@ export default class Modify extends React.Component{
                   onFinish={this.onFinish} 
                   initialValues={{ 
                     paper: inform.paper,
-                    paperDescription: inform.paperdescription,
-                    // time: inform
+                    paperDescription: inform.paper_description,
+                    moment: inform.time,
                     candidate: inform.candidate,
                     check: inform.check,
                   }}
@@ -176,10 +194,10 @@ export default class Modify extends React.Component{
                   <h3 className="site-card-divide">试题信息</h3> 
                   <Table 
                     columns={ columns } 
-                    // dataSource={ [tableArr] } 
+                    dataSource={ [...tableArr] } 
                     expandable={{
                       expandedRowRender: record => <p>{ record['description'] }</p>,
-                      rowExpandable: record => record['test'],
+                      rowExpandable: () => true,
                     }}
                   />
                   

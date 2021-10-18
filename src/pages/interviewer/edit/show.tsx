@@ -33,20 +33,22 @@ export default class Edit extends React.Component {
   // 在页面一渲染就立马从数据库中拿取所有试卷的数据
   componentDidMount() {
     showPaper().then((result: any) => {
-      console.log(result)
+      // console.log(result)
       const arr: any[] = [];
       const res = result.data;
-      for (let i = 0; i < res.length; i++) {
+      // console.log('hhhhhdata', result.data)
+      for (let ch of res) {
+        console.log(ch)
         const obj = {
-          key: i,
-          paper: res[i].paper,
-          paper_description: res[i].paper_description,
-          tests_num: res[i].tests_num,
-          paper_point: res[i].paper_point,
-          candidate: res[i].candidate,
-          check: res[i].check === 1 ? '是' : '否 ',
-          time: res[i].time,
-          remaining_time: res[i].remaining_time,
+          key: ch.paper,
+          paper: ch.paper,
+          paper_description: ch.paper_description,
+          tests_num: ch.tests_num,
+          paper_point: ch.paper_point,
+          candidate: ch.candidate,
+          check: ch.check === 1 ? '是' : '否 ',
+          time: ch.time,
+          remaining_time: ch.remaining_time,
         }
         arr.push(obj)
       }
@@ -57,16 +59,12 @@ export default class Edit extends React.Component {
   // 删除试卷的按钮事件
   delete = async () => {
     const arr = this.state.selectedRowKeys;
-    let req: number[] = [];
     if (arr.length !== 0) {
-      for (let num of arr) {
-        req.push(this.state.data[num]);
-      }
-      const res = await deletePaper(req);
-      console.log(res)
-      // res.map((ch: { check: string | number; }) => {
-      //   ch.check = ch.check === 1 ? '是' : '否';
-      // })
+      const res = await deletePaper(arr);
+      res.data.map((ch: { check: string | number; key: string; paper: string; }) => {
+        ch.check = ch.check === 1 ? '是' : '否';
+        ch.key = ch.paper;
+      })
       this.setState({ data: res.data });
       message.success(res.msg);
     }
@@ -78,7 +76,9 @@ export default class Edit extends React.Component {
 
   // 表格复选框的选择情况
   onSelectChange = (selectedRowKeys: any) => {
-    this.setState({ selectedRowKeys });
+    setTimeout(() => {
+      this.setState({ selectedRowKeys });
+    }, 0);
   };
 
   render() {
@@ -194,11 +194,13 @@ export default class Edit extends React.Component {
                 key='action'
                 fixed='right'
                 render={
-                  (text: any, record: any) => (
-                    <Space size="middle">
-                      <a href={`/modify?paper=${ onrow }`}>修改试卷</a>
-                    </Space>
-                  )
+                  (text: any, record: any) => {
+                    return(
+                      <Space size="middle">
+                        <a href={`/modify?paper=${ onrow }`}>修改试卷</a>
+                      </Space>
+                    )
+                  }
                 }
               />
             </Table>

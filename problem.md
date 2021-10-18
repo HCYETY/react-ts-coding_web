@@ -170,8 +170,30 @@ export default class Modify extends React.Component{
 
 27. Table 组件中表格的内容展示与内容数据不符，用 state 监听后数据渲染依然不同步？
 解决思路：在使用表格内容的地方打印数据，看数据在业务逻辑的实现下是否正确；若正确，则说明是使用方法不对。我这里的问题是对数组的处理姿势不对。在 Table 组件的 dataSource 属性中解构数据，如果是对象，则解构后加个“[]”。
-
+this.setState 的数据更新若不同步，可通过 setTimeout(() => {}) 解决
 28. 使用 typeorm 保存一对多/多对一关系，并联表增删查改？
+增：
+```js
 
-清空表单、支持多个富文本、表格显示富文本内容、修改试题时在抽屉中显示数据
-删除试卷
+```
+删：先删除从表，再删除主表
+```js
+import { getRepository } from "typeorm";
+
+const paperRepository = getRepository(TestPaper);
+const testReporitory = getRepository(Test);
+
+// 先删除带外键的副表的数据
+const deleteTest = await getRepository(Test)
+.createQueryBuilder('xxx')
+.leftJoinAndSelect('xxx.paper', 'paper.tests')
+.where('xxx.paper = :paperKey', { paperKey: paperKey })
+.getMany();
+await testReporitory.remove(deleteTest);
+
+// 然后再删除主表的数据
+await paperRepository.delete({ paper: ctx.request.paper });
+```
+29.  Drawer 组件中 Form 组件的数据重置和回显？
+
+支持多个富文本、表格显示富文本内容
