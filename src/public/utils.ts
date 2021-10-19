@@ -8,3 +8,14 @@ export function getUrlParam(key: string) {
   //返回参数值
   return result ? decodeURIComponent(result[2]) : null;
 }
+
+export function getTestNum() {
+  let str = '';
+  for (let i = 0; i < 2; i++) {
+    const num = Math.floor(Math.random() * 10);
+    const az = String.fromCharCode(Math.random() * 26 + 65);
+    const AZ = String.fromCharCode(Math.random() * 26 + 97);
+    str += num + az + AZ;
+  }
+  return str;
+}

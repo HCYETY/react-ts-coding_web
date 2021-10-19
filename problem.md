@@ -195,5 +195,10 @@ await testReporitory.remove(deleteTest);
 await paperRepository.delete({ paper: ctx.request.paper });
 ```
 29.  Drawer 组件中 Form 组件的数据重置和回显？
-
-支持多个富文本、表格显示富文本内容
+30.  React 使用 Table 组件渲染富文本内容，并在同一个页面使用多个实例（支持多个富文本）？
+在要渲染富文本的标签中添加属性，如下：
+```js
+<div dangerouslySetInnerHTML = {{ __html: xxx}} />
+```
+31. 组件间的通信？
+32. 

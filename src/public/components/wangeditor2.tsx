@@ -15,7 +15,7 @@ interface state{
 
 let editor: E = null;
 
-export default class Wangeditor extends Component<Props,state> {
+export default class Wangeditors extends Component<Props,state> {
 	constructor(props:Props) {
 		super(props);
 		this.state = {
@@ -24,21 +24,24 @@ export default class Wangeditor extends Component<Props,state> {
 	}
 
 	componentDidMount() {
-		editor = new E('#div1');
+		editor = new E('#div2');
 		editor.config.placeholder = '请输入面试题的相关信息'
 		editor.config.menus = [
-			'head',  // 标题
-			'bold',  // 粗体
-			'fontSize',  // 字号
-			'fontName',  // 字体
-			'italic',  // 斜体
-			'list',  // 序列
-			'justify',  // 对齐方式
-			'link',  // 插入链接
-			'image',  // 插入图片
-			'table',  // 表格
-			'quote',  // 引用
-			'code',  // 插入代码
+			'head',  					// 标题
+			'bold',  					// 粗体
+			'fontSize',  			// 字号
+			'fontName',  			// 字体
+			'italic', 				// 斜体
+			'underline',  		// 下划线
+			'strikeThrough',  // 删除线
+			'list',  					// 序列
+			'justify',			  // 对齐方式
+			'image',  				// 插入图片
+			'table',  				// 表格
+			'video',  				// 插入视频
+			'link',  					// 插入链接
+			'quote',  				// 引用
+			'code',  					// 插入代码
 		]
 		editor.config.uploadImgShowBase64 = true;
 		editor.config.uploadImgMaxLength = 5;
@@ -49,7 +52,7 @@ export default class Wangeditor extends Component<Props,state> {
 			// thumbWidth: 120
 		}
 		editor.config.onchange = () => {
-			PubSub.publish('testInform', { test: editor.txt.html() })
+			PubSub.publish('testAnswer', { test: editor.txt.html() })
 		}
 		editor.create()
 		editor.txt.html('<h1>你好呀，我是syandeg</h1>')
@@ -63,7 +66,7 @@ export default class Wangeditor extends Component<Props,state> {
 	
 	render() {
 		return (
-			<div id="div1"></div>
+			<div id="div2"></div>
 		);
 	}
 }

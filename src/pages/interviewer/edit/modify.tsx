@@ -10,26 +10,28 @@ import {
   Select,
   Radio,
   Tag,
-  Table,
   Space,
 } from 'antd';
 import {
   DeleteOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import { modifyPaper } from 'src/api/modules/interface';
-import { showPaper, showTest } from 'src/api/modules/interface';
+import { showTest } from 'src/api/modules/interface';
 import { TAGS } from 'public/const';
 import Navbar from 'public/components/navbar';
 import Head from 'public/components/header';
 import Foot from 'public/components/footer';
+import Tabler from 'public/components/tabler';
 import { getUrlParam } from 'public/utils';
 import 'style/modify.less';
 
-export default class Modify extends React.Component{
+export default class Modify extends React.Component<any, any> {
   state = {
     loading: true,
     value: 0,
     tableArr: [] = [],
+    visible: false,
     inform: { 
       paper: '', 
       paper_description: '',
@@ -43,17 +45,12 @@ export default class Modify extends React.Component{
   componentDidMount() {
     const url = getUrlParam('paper');
     const req = { paper: url };
-    // showPaper(req).then((paperRes) => {
-    //   this.setState({
-    //     inform: paperRes.data,
-    //   });
-    // });
     showTest(req).then((testRes) => {
-      console.log(testRes.data)
       const arr = [];
       for (let ch of testRes.data) {
         const obj = {
           key: ch.test_name,
+          num: ch.num,
           testName: ch.test_name,
           description: ch.test,
           tags: ch.tags,
@@ -67,12 +64,15 @@ export default class Modify extends React.Component{
         loading: false,
         inform: testRes.data[0].paper
       });
-      console.log('表格数据', this.state.tableArr)
     });
   }
 
   onChange = (e: any) => {
     this.setState({value: e.target.value})
+  }
+
+  // 添加试题
+  addTest = () => {
   }
 
   // 提交修改信息
@@ -90,46 +90,6 @@ export default class Modify extends React.Component{
 
   render() {
     const { inform, loading, tableArr } = this.state;
-    const columns = [
-      // { title: '题号', dataIndex: 'num', key: 'num' },
-      { title: '题目', dataIndex: 'testName', key: 'testName' },
-      {
-        title: '标签', 
-        dataIndex: 'tags', 
-        key: 'tags',
-        render: (tags: [string]) => (
-          <span>
-            {tags.map(tag => {
-              let color = tag.length > 2 ? 'geekblue' : 'green';
-              if (tag === 'loser') {
-                color = 'volcano';
-              }
-              return (
-                <Tag color={color} key={tag}>
-                  {tag}
-                </Tag>
-              );
-            })}
-          </span>
-        )
-      },
-      { title: '难易度', key: 'level', dataIndex: 'level' },
-      { title: '分数', dataIndex: 'point', key: 'point' },
-      {
-        title: '操作',
-        key: 'action',
-        render: () => (
-          <Space size="middle">
-            <Button 
-              className="site-layout-content-button" 
-              icon={<DeleteOutlined/>}
-              // onClick={this.deleteTest}
-            >
-            </Button>
-          </Space>
-        ),
-      },
-    ];
 
     return(
       <Layout>
@@ -152,7 +112,7 @@ export default class Modify extends React.Component{
                     check: inform.check,
                   }}
                 >
-                  <h3 className="site-card-divide">试卷信息</h3> 
+                  <h2 className="site-card-divide">试卷信息</h2> 
                   <Form.Item
                     name="paper" 
                     label="试卷名称" 
@@ -191,15 +151,9 @@ export default class Modify extends React.Component{
                     </Radio.Group>
                   </Form.Item>
 
-                  <h3 className="site-card-divide">试题信息</h3> 
-                  <Table 
-                    columns={ columns } 
-                    dataSource={ [...tableArr] } 
-                    expandable={{
-                      expandedRowRender: record => <p>{ record['description'] }</p>,
-                      rowExpandable: () => true,
-                    }}
-                  />
+
+                  <h2 className="site-card-divide">试题信息</h2> 
+                  <Tabler getTests={ tableArr }/>
                   
                   <Form.Item wrapperCol={{ offset: 8 }}>
                     <Button type="primary" htmlType="submit">

@@ -27,16 +27,13 @@ export default class Edit extends React.Component {
   state = {
     selectedRowKeys: [] = [],
     data: [] = [],
-    onrow: '',
   };
 
   // 在页面一渲染就立马从数据库中拿取所有试卷的数据
   componentDidMount() {
     showPaper().then((result: any) => {
-      // console.log(result)
       const arr: any[] = [];
       const res = result.data;
-      // console.log('hhhhhdata', result.data)
       for (let ch of res) {
         console.log(ch)
         const obj = {
@@ -82,7 +79,7 @@ export default class Edit extends React.Component {
   };
 
   render() {
-    const { data, selectedRowKeys, onrow, } = this.state;
+    const { data, selectedRowKeys } = this.state;
     const rowSelection = {
       onChange: this.onSelectChange,
       selectedRowKeys,
@@ -126,15 +123,6 @@ export default class Edit extends React.Component {
               dataSource={ [...data] } 
               bordered
               scroll={{ x: 1500, y: 350 }}
-              onRow={
-                record => {
-                  return {
-                    onClick: () => {
-                      this.setState({ onrow: record['paper'] })
-                    }
-                  }
-                }
-              }
             >
               <Table.Column 
                 title='试卷'
@@ -195,9 +183,10 @@ export default class Edit extends React.Component {
                 fixed='right'
                 render={
                   (text: any, record: any) => {
+                    console.log(record)
                     return(
                       <Space size="middle">
-                        <a href={`/modify?paper=${ onrow }`}>修改试卷</a>
+                        <a href={`/modify?paper=${ record.paper }`}>修改试卷</a>
                       </Space>
                     )
                   }
@@ -212,64 +201,3 @@ export default class Edit extends React.Component {
     )
   }
 }
-
-
-
-
-  // // 表格内容
-  // const columns: any = [
-  //   { 
-  //     title: '试卷', 
-  //     dataIndex: 'paper', 
-  //     key: 'paper', 
-  //     width: 160, 
-  //     fixed: 'left' 
-  //   },
-  //   {
-  //     title: '标签',
-  //     dataIndex: 'tags',
-  //     key: 'tags',
-  //     render: (tags: [string]) => (
-  //       <span>
-  //         {tags.map(tag => {
-  //           let color = tag.length > 2 ? 'geekblue' : 'green';
-  //           if (tag === 'loser') {
-  //             color = 'volcano';
-  //           }
-  //           return (
-  //             <Tag color={color} key={tag}>
-  //               {tag}
-  //             </Tag>
-  //           );
-  //         })}
-  //       </span>
-  //     ),
-  //   },
-  //   { title: '试卷过期候选人能否查看', dataIndex: 'check' },
-  //   { title: '受邀的候选人的邮箱', dataIndex: 'candidate' },
-  //   {
-  //     title: '试题数量',
-  //     dataIndex: 'paperNum',
-  //     width: 120,
-  //     sorter: (a: { paperNum: number; }, b: { paperNum: number; }) => a.paperNum - b.paperNum,
-  //   },
-  //   { title: '截止时间', dataIndex: 'time' },
-  //   { title: '剩余时间', dataIndex: 'remainingTime' },
-  //   {
-  //     title: '通过率',
-  //     dataIndex: 'pass',
-  //     width: 120,
-  //     sorter: (a: { pass: number; }, b: { pass: number; }) => a.pass - b.pass,
-  //   },
-  //   {
-  //     title: '操作',
-  //     dataIndex: 'operation',
-  //     width: 120,
-  //     fixed: 'right',
-  //     render: (text: any, record: any) => (
-  //       <Space size="middle">
-  //         <a href={`/modify?paper=${onrow}`}>修改试卷</a>
-  //       </Space>
-  //     ),
-  //   },
-  // ];
