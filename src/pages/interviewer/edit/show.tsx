@@ -18,7 +18,7 @@ import Navbar from 'public/components/navbar';
 import Head from 'public/components/header';
 import Foot from 'public/components/footer';
 import { FILTERS_LEVEL, FILTERS_STATUS } from 'public/const';
-import { showPaper } from 'src/api/modules/interface';
+import { showPaper, showTest } from 'src/api/modules/interface';
 import { deletePaper } from 'src/api/modules/interface';
 
 const { Content } = Layout;
@@ -32,6 +32,7 @@ export default class Edit extends React.Component {
   // 在页面一渲染就立马从数据库中拿取所有试卷的数据
   componentDidMount() {
     showPaper().then((result: any) => {
+      console.log(result)
       const arr: any[] = [];
       const res = result.data;
       for (let ch of res) {
@@ -44,7 +45,9 @@ export default class Edit extends React.Component {
           paper_point: ch.paper_point,
           candidate: ch.candidate,
           check: ch.check === 1 ? '是' : '否 ',
-          time: ch.time,
+          time_begin: ch.time_begin,
+          time_end: ch.time_end,
+          answer_time: ch.answer_time,
           remaining_time: ch.remaining_time,
         }
         arr.push(obj)
@@ -165,15 +168,27 @@ export default class Edit extends React.Component {
               </Table.ColumnGroup>
 
               <Table.Column 
+                title='开始时间'
+                dataIndex='time_begin'
+                key='time_begin'
+              />
+
+              <Table.Column 
                 title='截止时间'
-                dataIndex='time'
-                key='time'
+                dataIndex='time_end'
+                key='time_end'
               />
 
               <Table.Column 
                 title='剩余时间'
                 dataIndex='remaining_time'
                 key='remaining_time'
+              />
+
+              <Table.Column 
+                title='作答时长'
+                dataIndex='answer_time'
+                key='answer_time'
               />
 
               <Table.Column 

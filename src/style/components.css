@@ -1,3 +1,12 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+html, body{
+  height: 100%;
+}
+
 .anchor{
   min-height: 100vh;
   /* overflow: auto;
@@ -26,10 +35,15 @@
 }
 
 .site-layout-footer{
+  width: 100%;
   height: 48px;
   line-height: 48px;
   text-align: center;
   background-color: green;
+  position: fixed;
+  bottom: 0px;
+  /* margin-top: -48px;
+  z-index: 9999; */
 }
 
 .innerCard{

@@ -35,6 +35,6 @@ export async function addTest(data: any) {
   return post('/add_test', data);
 }
 // 获取试题接口
-export async function showTest(data: any) {
+export async function showTest(data?: any) {
   return post('/show_test', data);
 }

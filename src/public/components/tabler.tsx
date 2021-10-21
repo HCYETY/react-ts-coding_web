@@ -121,16 +121,18 @@ export default class Tabler extends React.Component<any, any> {
   // 修改试题
   handleModal = (record: any) => {
     this.setState({ visible: true, button: false });
-    // 表单重置
-    this.formRef.current.resetFields();
-    // 获取 Form 的 ref
-    const form = this.formRef.current;
-    // 要渲染的数据
-    this.state.tableArr.forEach(item => {
-      if (item && item['testName'] === record) {
-        form.setFieldsValue(item);
-        return;
-      }
+    setTimeout(() => {
+      // 表单重置
+      this.formRef.current.resetFields();
+      // 获取 Form 的 ref
+      const form = this.formRef.current;
+      // 要渲染的数据
+      this.state.tableArr.forEach(item => {
+        if (item && item['testName'] === record) {
+          form.setFieldsValue(item);
+          return;
+        }
+      })
     })
   };
   modifyTest = async (values: any) => {
@@ -215,6 +217,7 @@ export default class Tabler extends React.Component<any, any> {
           type="primary" 
           onClick={ this.showDrawer } 
           icon={ <PlusOutlined /> }
+          style={{ margin: '0px 0px 10px 10px' }}
           >
           添加试题
         </Button>
@@ -224,6 +227,7 @@ export default class Tabler extends React.Component<any, any> {
           type="primary" 
           onClick={ this.deleteTest } 
           icon={ <DeleteOutlined /> }
+          style={{ margin: '0px 0px 10px 10px' }}
         >
           删除试题
         </Button>

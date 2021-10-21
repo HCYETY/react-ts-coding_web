@@ -73,7 +73,7 @@ export default class Login extends PureComponent<any> {
       if (res.data.status === true) {
         message.success('恭喜您，注册成功！请前往登录');
         // 在当前页跳转至登录界面
-        this.setState({noTitleKey: 'login'});
+        this.setState({ noTitleKey: 'login' });
       } else {
         message.error(res.msg);
       }
