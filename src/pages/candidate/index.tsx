@@ -1,10 +1,8 @@
 import React from 'react';
 import { 
   Table,
-  Card,
   Tabs ,
   Space,
-  message,
 } from 'antd';
 import {
 } from '@ant-design/icons';
@@ -12,9 +10,8 @@ import {
 import 'style/candidate.css';
 import Head from 'public/components/header';
 import Foot from 'public/components/footer';
-import ExamShow from 'public/components/examShow';
 import { showPaper } from 'api/modules/interface';
-import { getCookie, nowTime, } from 'src/public/utils';
+import { getCookie, } from 'src/public/utils';
 
 const { TabPane } = Tabs;
 
@@ -27,14 +24,6 @@ export default class Candidate extends React.Component<any, any> {
 
   };
 
-  find = (event: any) => {
-    console.log(event)
-    // const nowtime = nowTime();
-    // if (value.time_begin !== nowtime || value.time_end < nowtime) {
-    //   message.error('不在答题时间范围之内无法进行答题');
-    //   return;
-    // }
-  }
 
   componentDidMount() {
     const cookie = getCookie();
@@ -70,7 +59,7 @@ export default class Candidate extends React.Component<any, any> {
         key: 'action',
         render: (text: any, record: { paper: string; }) => (
           <Space size="middle">
-            <a href={ `/candidate?paper=${ record.paper }` }>查看试卷</a>
+            <a href={ `/show-test?paper=${ record.paper }` }>查看试卷</a>
           </Space>
         ),
       }
@@ -90,16 +79,6 @@ export default class Candidate extends React.Component<any, any> {
                 dataSource={ allExam }
                 scroll={{ y: '100%' }}
               />
-              {/* <ExamShow
-                title='你好'
-                description='okokok'
-                tags={['双指针']}
-                testsNum='2'
-                time='2021-05-03~2021-09-10'
-                status='未完成'
-              >
-
-              </ExamShow>*/}
             </TabPane>
             <TabPane tab="未开始" key="nodo">
               <Table
