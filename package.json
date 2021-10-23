@@ -57,6 +57,7 @@
   "dependencies": {
     "antd": "^4.6.2",
     "axios": "^0.20.0",
+    "monaco-editor": "^0.29.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router": "^5.2.0",

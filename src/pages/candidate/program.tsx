@@ -93,7 +93,7 @@ export default class Program extends React.Component {
                 }
                 key='solution'
               >
-
+                <span dangerouslySetInnerHTML = {{ __html: testInform['answer']}}></span>
               </Tabs.TabPane>
 
               <Tabs.TabPane 
@@ -120,7 +120,7 @@ export default class Program extends React.Component {
           </div>
           <div className="right">
             niho
-            <CodeEditor />
+            {/* <CodeEditor /> */}
           </div>
         </div>
 

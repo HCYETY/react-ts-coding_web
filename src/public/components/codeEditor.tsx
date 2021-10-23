@@ -1,5 +1,6 @@
 import React from 'react';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
+import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution';
 
 const monacoInstance=monaco.editor.create(document.getElementById("monaco"),{
   value:`console.log("hello,world")`,
