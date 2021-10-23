@@ -234,7 +234,7 @@ export default class Tabler extends React.Component<any, any> {
 
         <Drawer
           title="编程题"
-          width={720}
+          width={ '100%' }
           placement="left"
           closable={true}
           onClose={ this.onClose }

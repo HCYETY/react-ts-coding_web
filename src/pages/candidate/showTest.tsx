@@ -25,7 +25,8 @@ export default class ShowTest extends React.Component {
       <div >
         <Head />
 
-        <div style={{ borderColor: 'rgba(0,10,32,.05)' }}>
+        <div style={{ borderRadius: '10px', boxShadow: '0 0 6px #000', width: '60%', 
+  margin: '30px', border: '1px solid black' }}>
           {
             tableArr.map(item => {
               return(
@@ -36,8 +37,10 @@ export default class ShowTest extends React.Component {
                   tags={ item['tags'] }
                   // testsNum={ item['paper']['tests_num'] }
                   timeBegin={ item['paper']['time_begin'] }
+                  timeEnd={ item['paper']['time_end'] }
                   level={ item['level'] }
                   point={ item['point'] }
+                  status={ item['check'] }
                 >
 
                 </Test>

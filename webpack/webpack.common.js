@@ -5,6 +5,10 @@ const {
 } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackDeepScopeAnalysisPlugin = require('webpack-deep-scope-plugin').default;
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
+
+const APP_DIR = path.resolve(__dirname, '../src');
+const MONACO_DIR = path.resolve(__dirname, '../node_modules/monaco-editor');
 
 const postCssLoaderConfig = {
   loader: 'postcss-loader',
@@ -39,7 +43,11 @@ const commonConfig = {
     new MiniCssExtractPlugin({
       filename: "static/css/[name].[hash].css",
     }),
-    new WebpackDeepScopeAnalysisPlugin()
+    new WebpackDeepScopeAnalysisPlugin(),
+    new MonacoWebpackPlugin({
+      // available options are documented at https://github.com/Microsoft/monaco-editor-webpack-plugin#options
+      languages: ['json']
+    })
   ],
   module: {
     rules: [{
@@ -61,9 +69,23 @@ const commonConfig = {
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', postCssLoaderConfig]
-      }, {
-        test: /\.less$/,
+        include: APP_DIR,
+        use: [{
+          loader: 'style-loader',
+        }, {
+          loader: 'css-loader',
+          options: {
+            modules: true,
+            namedExport: true,
+          },
+        }],
+      }, 
+      {
+        test: /\.css$/,
+        include: MONACO_DIR,
+        use: ['style-loader', 'css-loader'],
+      },
+      {  test: /\.less$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', postCssLoaderConfig, 'less-loader']
       }, {
         test: /.*\.(gif|png|svg|jpe?g)$/i,

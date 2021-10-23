@@ -38,7 +38,7 @@ export default class Add extends React.Component<any, any> {
   // 抽屉提交试卷信息至数据库
   submitPaper = async (values: any) => {
     console.log(values)
-    this.setState({ button: false, visible2: false, paperKey: values.paper });
+    this.setState({ button: false, visible: false, paperKey: values.paper });
     const res = await addPaper(values);
     if (res.data.status) {
       message.success(res.msg);

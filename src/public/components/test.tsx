@@ -2,23 +2,29 @@ import React from 'react';
 import {
   Tag
 } from 'antd';
-import 'style/test.less';
+import {
+  DoubleRightOutlined,
+} from '@ant-design/icons';
 
+import 'style/test.less';
+import { handleRemainingTime, judge } from 'public/utils';
 import { nowTime } from 'public/utils';
 
 export default class Test extends React.Component<any, any> {
 
 
   render() {
-    const { title, num, level, tags, point, timeBegin } = this.props;
+    const { title, num, level, tags, point, timeBegin, timeEnd, check } = this.props;
     const nowtime = nowTime();
-    console.log(nowtime < timeBegin)
+    console.log('nowtime', nowtime)
+    console.log('timeBegin', timeBegin)
+    console.log('timeEnd', timeEnd)
 
     return(
         <div className="exam-box">
           <div className="left">
             <div className="leftTop">
-              <h3>{ num } 、 { title }</h3>
+              <h3>{ num }. { title }</h3>
             </div>
             <div className="leftBottom">
               {
@@ -61,9 +67,12 @@ export default class Test extends React.Component<any, any> {
           </div>
 
           <div className="right">
-            <a className='exam-status' href={ nowtime < timeBegin === true ? `javascription:#;` : `/test?test=${ title }` }>
-              { nowtime < timeBegin === true ? '未开始' : '去做题' }
-            </a>
+            {
+              (nowtime < timeBegin) ? '未开始' : (timeBegin < nowtime &&  nowtime < timeEnd) ? <a className='exam-status' href={ `/test?test=${ title }` }>
+              去做题
+              <DoubleRightOutlined />
+            </a> : (timeEnd < nowtime && check === true) ? '查看试题信息' : '无法查看'
+            }
           </div>
 
         </div>

@@ -20,6 +20,7 @@ import Foot from 'public/components/footer';
 import { FILTERS_LEVEL, FILTERS_STATUS } from 'public/const';
 import { showPaper, showTest } from 'src/api/modules/interface';
 import { deletePaper } from 'src/api/modules/interface';
+import { handleRemainingTime } from 'src/public/utils';
 
 const { Content } = Layout;
 
@@ -32,26 +33,9 @@ export default class Edit extends React.Component {
   // 在页面一渲染就立马从数据库中拿取所有试卷的数据
   componentDidMount() {
     showPaper().then((result: any) => {
-      console.log(result)
-      const arr: any[] = [];
       const res = result.data;
-      for (let ch of res) {
-        console.log(ch)
-        const obj = {
-          key: ch.paper,
-          paper: ch.paper,
-          paper_description: ch.paper_description,
-          tests_num: ch.tests_num,
-          paper_point: ch.paper_point,
-          candidate: ch.candidate,
-          check: ch.check === 1 ? '是' : '否 ',
-          time_begin: ch.time_begin,
-          time_end: ch.time_end,
-          answer_time: ch.answer_time,
-          remaining_time: ch.remaining_time,
-        }
-        arr.push(obj)
-      }
+      console.log(res)
+      const arr = handleRemainingTime(res, 2);
       this.setState({ data: arr });
     })
   }
@@ -59,6 +43,7 @@ export default class Edit extends React.Component {
   // 删除试卷的按钮事件
   delete = async () => {
     const arr = this.state.selectedRowKeys;
+    console.log(arr)
     if (arr.length !== 0) {
       const res = await deletePaper(arr);
       res.data.map((ch: { check: string | number; key: string; paper: string; }) => {

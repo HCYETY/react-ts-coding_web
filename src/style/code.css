@@ -1,0 +1,17 @@
+.breakpoints {
+  background: red;
+  width: 10px !important;
+  height: 10px !important;
+  left: 0px !important;
+  top: 3px;
+  border-radius: 5px;
+}
+
+.breakpoints-fake {
+  background: red;
+  width: 10px !important;
+  height: 10px !important;
+  left: 0px !important;
+  top: 3px;
+  border-radius: 5px;
+}

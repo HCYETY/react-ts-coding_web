@@ -11,7 +11,7 @@ import 'style/candidate.css';
 import Head from 'public/components/header';
 import Foot from 'public/components/footer';
 import { showPaper } from 'api/modules/interface';
-import { getCookie, } from 'src/public/utils';
+import { getCookie, handleRemainingTime, } from 'src/public/utils';
 
 const { TabPane } = Tabs;
 
@@ -28,7 +28,17 @@ export default class Candidate extends React.Component<any, any> {
   componentDidMount() {
     const cookie = getCookie();
     showPaper({ cookie: cookie}).then(res => {
-      this.setState({ allExam: res.data });
+      console.log('res', res)
+      const doingArr = handleRemainingTime(res.data, 1);
+      const allArr = handleRemainingTime(res.data, 2);
+      const nodoArr = handleRemainingTime(res.data, 0);
+      const doneArr = handleRemainingTime(res.data, -1);
+      this.setState({ 
+        allExam: allArr, 
+        nodoExam: nodoArr, 
+        doingExam: doingArr, 
+        doneExam: doneArr 
+      });
     });
   }
 
@@ -65,7 +75,6 @@ export default class Candidate extends React.Component<any, any> {
       }
     ]
     const { allExam, nodoExam, doingExam, doneExam, } = this.state;
-    console.log('====', allExam)
 
     return(
       <div>
@@ -86,9 +95,6 @@ export default class Candidate extends React.Component<any, any> {
                 dataSource={ nodoExam }
                 scroll={{ y: '100%' }}
               />
-              <p>Content of Tab Pane 1</p>
-              <p>Content of Tab Pane 1</p>
-              <p>Content of Tab Pane 1</p>
             </TabPane>
             <TabPane tab="进行中" key="doing">
               <Table
@@ -96,9 +102,6 @@ export default class Candidate extends React.Component<any, any> {
                 dataSource={ doingExam }
                 scroll={{ y: '100%' }}
               />
-              <p>Content of Tab Pane 2</p>
-              <p>Content of Tab Pane 2</p>
-              <p>Content of Tab Pane 2</p>
             </TabPane>
             <TabPane tab="已结束" key="done">
               <Table
@@ -106,9 +109,6 @@ export default class Candidate extends React.Component<any, any> {
                 dataSource={ doneExam }
                 scroll={{ y: '100%' }}
               />
-              <p>Content of Tab Pane 3</p>
-              <p>Content of Tab Pane 3</p>
-              <p>Content of Tab Pane 3</p>
             </TabPane>
           </Tabs>
         </div>
