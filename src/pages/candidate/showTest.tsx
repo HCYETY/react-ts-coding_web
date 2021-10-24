@@ -1,14 +1,15 @@
 import React from 'react';
+import { Modal, Button } from 'antd';
 
-import { getUrlParam } from 'public/utils';
-import Test from 'public/components/test';
-import Head from 'public/components/header';
-import Foot from 'public/components/footer';
-import { showTest } from 'src/api/modules/interface';
+import 'style/showTest.less';
+import { getUrlParam, handleRemainingTime, nowTime } from 'common/utils';
+import TestAlone from 'common/components/testAlone';
+import { showTest } from 'api/modules/interface';
 
 export default class ShowTest extends React.Component {
   state = {
     tableArr: [] = [],
+    visible: false,
   }
 
   async componentDidMount() {
@@ -18,39 +19,50 @@ export default class ShowTest extends React.Component {
     console.log(this.state.tableArr);
   }
 
+  showModal = () => {
+    this.setState({ visible: true });
+  };
+
+  hideModal = () => {
+    this.setState({ visible: false });
+  };
+
+
   render() {
-    const { tableArr } = this.state;
+    const { tableArr, visible } = this.state;
+    const nowtime = nowTime();
+    const time = handleRemainingTime(tableArr, 1);
+    console.log(time)
 
     return(
-      <div >
-        <Head />
+      <>
+        <div className="test-box">
+          <Button type="primary" onClick={ this.showModal } className="submit-button">提交试卷</Button>
+          <Modal
+            title="提交试卷"
+            visible={ visible }
+            onOk={ this.hideModal }
+            onCancel={ this.hideModal }
+            okText="确认"
+            cancelText="取消"
+          >
+            {
+              '距离试卷截止时间还剩' + (nowtime)
+            }
+            <p>Bla bla ...</p>
+          </Modal>
 
-        <div style={{ borderRadius: '10px', boxShadow: '0 0 6px #000', width: '60%', 
-  margin: '30px', border: '1px solid black' }}>
           {
             tableArr.map(item => {
               return(
-                <Test
-                  num={ item['num'] }
-                  title={ item['test_name'] }
-                  key={ item['test_name'] }
-                  tags={ item['tags'] }
-                  // testsNum={ item['paper']['tests_num'] }
-                  timeBegin={ item['paper']['time_begin'] }
-                  timeEnd={ item['paper']['time_end'] }
-                  level={ item['level'] }
-                  point={ item['point'] }
-                  status={ item['check'] }
-                >
-
-                </Test>
+                <TestAlone values={ item } />
               )
             })
           }
         </div>
-
-        <Foot />
-      </div>
+        <div className="inform-box">
+        </div>
+      </>
     )
   }
 }

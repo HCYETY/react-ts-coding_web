@@ -5,6 +5,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import 'style/login.less';
 import logoImg from 'img/logo.png';
 import { sendEmail, testLogin, testRegister } from 'api/modules/interface';
+import { INTERVIEWER, CANDIDATE } from 'common/const';
 
 export default class Login extends PureComponent<any> {
   getEmail = (event: any) => {
@@ -14,7 +15,7 @@ export default class Login extends PureComponent<any> {
   countDown() {
     console.log(this.state.count)
     console.log(this.state.liked)
-    const { count } = this.state
+    const { count } = this.state;
     if (count === 0) {//当为0的时候，liked设置为true，button按钮显示内容为 获取验证码
       this.setState({
         count: 60,
@@ -29,9 +30,9 @@ export default class Login extends PureComponent<any> {
     }
   }
   // 获取验证码
-  sendCaptcha = async (value: any) => {
+  sendCaptcha = (value: any) => {
     const parameter = { email: this.state.email}
-    await sendEmail(parameter).then((ans) => {
+    sendEmail(parameter).then((ans) => {
       if (ans.status === false) {
         message.success(ans.data);
         this.setState({ noTitleKey: 'login' });
@@ -53,9 +54,9 @@ export default class Login extends PureComponent<any> {
         message.success(res.msg);
         // token存储完毕，在当前页跳转至项目首页
         if (res.data.interviewer === true) {
-          window.location.href = '/interviewer';
+          window.location.href = INTERVIEWER;
         } else {
-          window.location.href = '/candidate';
+          window.location.href = CANDIDATE;
         }
       } else {
         // 登录失败
@@ -105,7 +106,7 @@ export default class Login extends PureComponent<any> {
         name="normal_login" 
         className="login-form" 
         initialValues={{ remember: true }} 
-        onFinish={this.submitLogin} 
+        onFinish={ this.submitLogin } 
       >
         <Form.Item
           name="email"
@@ -114,23 +115,20 @@ export default class Login extends PureComponent<any> {
               required: true, 
               whitespace: true, 
               message: '请输入邮箱账号!'
-            },
-            {
+            }, {
               min: 15, 
               message: '邮箱账号最少为 15 位数!'
-            },
-            {
+            }, {
               max: 17, 
               message: '邮箱账号最多为 17 位数!'
-            },
-            {
+            }, {
               pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
               message: '邮箱账号不符合规范'
             }
           ]}
         >
           <Input 
-            prefix={<UserOutlined className="site-form-item-icon" />} 
+            prefix={ <UserOutlined className="site-form-item-icon" /> } 
             placeholder="邮箱账号" 
           />
         </Form.Item>
@@ -170,19 +168,17 @@ export default class Login extends PureComponent<any> {
               required: true, 
               whitespace:true,
                message: '请输入密码!'
-            },
-            {
+            }, {
               min:6, 
               message:'密码至少6位!'
-            },
-            {
+            }, {
               pattern:/^[a-zA-Z0-9_]+$/, 
               message:'密码只能由英文、数字或下划线组成！'
             }
           ]}
         >
           <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
+            prefix={ <LockOutlined className="site-form-item-icon" /> }
             type="password"
             placeholder="输入密码"
           />
@@ -214,7 +210,7 @@ export default class Login extends PureComponent<any> {
         name="register"
         className="register-form box"
         id="front"
-        onFinish={this.submitRegister}
+        onFinish={ this.submitRegister }
         scrollToFirstError   // 提交失败自动滚动到第一个错误字段
       >
         <Form.Item
@@ -225,16 +221,13 @@ export default class Login extends PureComponent<any> {
               required: true, 
               whitespace: true, 
               message: '请输入您的电子邮箱!'
-            },
-            {
+            }, {
               min: 15,
               message: '邮箱最少为15位数！'
-            },
-            {
+            }, {
               max: 17,
               message: '邮箱最多为17位数！'
-            },
-            {
+            }, {
               pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
               message: '邮箱账号不符合规范'
             }
@@ -272,12 +265,10 @@ export default class Login extends PureComponent<any> {
               required: true, 
               whitespace: true, 
               message: '请输入密码!'
-            },
-            {
+            }, {
               min:6, 
               message:'密码至少6位!'
-            },
-            {
+            }, {
               pattern:/^[a-zA-Z0-9_]+$/, 
               message:'密码只能由英文、数字或下划线组成！'
             }
@@ -346,9 +337,9 @@ export default class Login extends PureComponent<any> {
         </Form.Item> */}
 
         <Form.Item  name="identity"  label="面试官">
-          <Radio.Group onChange={this.onChange} value={this.state.value}>
-            <Radio value={1}>是</Radio>
-            <Radio value={0}>否</Radio>
+          <Radio.Group onChange={ this.onChange } value={ this.state.value }>
+            <Radio value={ 1 }>是</Radio>
+            <Radio value={ 0 }>否</Radio>
           </Radio.Group>
         </Form.Item>
         
@@ -372,13 +363,13 @@ export default class Login extends PureComponent<any> {
         <div className="app-content">
           <Card
             style={{ width: '100%' }}
-            tabList={this.tabListNoTitle} // 页签标题列表
-            activeTabKey={this.state.noTitleKey} // 当前激活页签的 key
-            onTabChange={key => { // 页签切换的回调
+            tabList={ this.tabListNoTitle }           // 页签标题列表
+            activeTabKey={ this.state.noTitleKey }    // 当前激活页签的 key
+            onTabChange={ key => {                    // 页签切换的回调
               this.onTabChange(key, 'noTitleKey');
-            }}
+            } }
           >
-            {this.contentListNoTitle[this.state.noTitleKey]}
+            { this.contentListNoTitle[this.state.noTitleKey] }
           </Card>
         </div>
       </div>

@@ -14,13 +14,11 @@ import {
 } from '@ant-design/icons';
 
 import 'style/show.less';
-import Navbar from 'public/components/navbar';
-import Head from 'public/components/header';
-import Foot from 'public/components/footer';
-import { FILTERS_LEVEL, FILTERS_STATUS } from 'public/const';
-import { showPaper, showTest } from 'src/api/modules/interface';
-import { deletePaper } from 'src/api/modules/interface';
-import { handleRemainingTime } from 'src/public/utils';
+import Navbar from 'common/components/navbar';
+import { ADD, FILTERS_LEVEL, FILTERS_STATUS, MODIFY } from 'common/const';
+import { showPaper, showTest } from 'api/modules/interface';
+import { deletePaper } from 'api/modules/interface';
+import { handleRemainingTime } from 'common/utils';
 
 const { Content } = Layout;
 
@@ -56,7 +54,7 @@ export default class Edit extends React.Component {
   };
   // 新建试卷的按钮事件
   add = () => {
-    window.location.href = '/add';
+    window.location.href = ADD;
   };
 
   // 表格复选框的选择情况
@@ -79,8 +77,6 @@ export default class Edit extends React.Component {
         <Navbar/>
 
         <Layout>
-          <Head/>
-         
           <Content className="site-layout-content">
             <Popconfirm 
               title="您确定要 删除试卷 吗？" 
@@ -186,7 +182,7 @@ export default class Edit extends React.Component {
                     console.log(record)
                     return(
                       <Space size="middle">
-                        <a href={`/modify?paper=${ record.paper }`}>修改试卷</a>
+                        <a href={`${ MODIFY }?paper=${ record.paper }`}>修改试卷</a>
                       </Space>
                     )
                   }
@@ -194,8 +190,6 @@ export default class Edit extends React.Component {
               />
             </Table>
           </Content>
-
-          <Foot />
         </Layout>
       </Layout>
     )

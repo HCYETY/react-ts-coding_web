@@ -18,12 +18,11 @@ import {
 } from '@ant-design/icons';
 import { FormInstance } from 'antd/es/form';
 
-import { addPaper, addTest } from 'src/api/modules/interface';
-import Navbar from 'public/components/navbar';
-import Head from 'public/components/header';
-import Foot from 'public/components/footer';
-import Tabler from 'public/components/tabler';
-import Paper from 'public/components/paper';
+import { addPaper, addTest } from 'api/modules/interface';
+import Navbar from 'common/components/navbar';
+import Tabler from 'common/components/tabler';
+import Paper from 'common/components/paper';
+import { EDIT } from 'common/const';
 
 export default class Add extends React.Component<any, any> {
   modalRef = React.createRef<FormInstance>();
@@ -48,14 +47,15 @@ export default class Add extends React.Component<any, any> {
   };
   // 表格提交试题信息至数据库
   submitTest = async () => {
-    const req: string[] = this.state.tableArr.length > 0 ? this.state.tableArr : [];
-    if (req[0] !== this.state.paperKey) {
-      req.unshift(this.state.paperKey);
+    const { tableArr, paperKey } = this.state;
+    const req: string[] = tableArr.length > 0 ? tableArr : [];
+    if (req[0] !== paperKey) {
+      req.unshift(paperKey);
     }
     const res = await addTest(req);
     if (res.data.status) {
       message.success(res.msg);
-      window.location.href = '/edit';
+      window.location.href = EDIT;
     } else {
       message.error(res.msg);
     }
@@ -82,8 +82,6 @@ export default class Add extends React.Component<any, any> {
         <Navbar/>
 
         <Layout>
-          <Head/>
-
           <div 
             className="form"
             style={{ padding: '20px', borderColor: '#ececec' }}
@@ -135,8 +133,6 @@ export default class Add extends React.Component<any, any> {
 
             <Tabler getTest={ this.getTest.bind(this) }/>
           </div>
-
-          <Foot/>
         </Layout>
       </Layout>
     )

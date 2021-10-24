@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { BrowserRouter  as Router, Route, Switch, Redirect } from "react-router-dom";
 
+import Head from 'common/components/header';
+import Foot from 'common/components/footer';
 import Login from 'pages/login';
 import Candidate from 'pages/candidate';
 import Interviewer from 'pages/interviewer';
@@ -23,19 +25,25 @@ class App extends PureComponent {
       )
     } else {
       return (
-        <Router>
-          <Switch>
-            <Route path="/login" component={ Login }></Route>
-            <Route path="/interviewer" component={ Interviewer }></Route>
-            <Route path="/edit" component={ Edit }></Route>
-            <Route path="/add" component={ Add }></Route>
-            <Route path="/modify" component={ Modify }></Route>
-            <Route path="/candidate" component={ Candidate }></Route>
-            <Route path="/show-test" component={ ShowTest }></Route>
-            <Route path="/test" component={ Program }></Route>
-            <Redirect to='/login'></Redirect>
-          </Switch>
-        </Router>
+        <>
+          <Head />
+
+          <Router>
+            <Switch>
+              <Route path="/login" component={ Login }></Route>
+              <Route path="/interviewer" component={ Interviewer }></Route>
+              <Route path="/edit" component={ Edit }></Route>
+              <Route path="/add" component={ Add }></Route>
+              <Route path="/modify" component={ Modify }></Route>
+              <Route path="/candidate" component={ Candidate }></Route>
+              <Route path="/show-test" component={ ShowTest }></Route>
+              <Route path="/test" component={ Program }></Route>
+              <Redirect to='/login'></Redirect>
+            </Switch>
+          </Router>
+          
+          <Foot />
+        </>
       )
     }
   }

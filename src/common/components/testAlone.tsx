@@ -1,24 +1,38 @@
 import React from 'react';
 import {
-  Tag
+  message,
+  Tag,
 } from 'antd';
 import {
   DoubleRightOutlined,
 } from '@ant-design/icons';
 
-import 'style/test.less';
-import { handleRemainingTime, judge } from 'public/utils';
-import { nowTime } from 'public/utils';
+import 'style/testAlone.less';
+import { handleRemainingTime, judge } from 'common/utils';
+import { nowTime } from 'common/utils';
+import { TEST } from 'common/const';
 
-export default class Test extends React.Component<any, any> {
-
-
+export default class TestAlone extends React.Component<any, any> {
   render() {
-    const { title, num, level, tags, point, timeBegin, timeEnd, check } = this.props;
+    const item = this.props.values;
+    const num = item.num, 
+      title = item.test_name, 
+      level = item.level, 
+      point = item.point, 
+      tags = item.tags, 
+      check = item.check, 
+      timeBegin = item.paper.time_begin, 
+      timeEnd = item.paper.time_end;
     const nowtime = nowTime();
-    console.log('nowtime', nowtime)
-    console.log('timeBegin', timeBegin)
-    console.log('timeEnd', timeEnd)
+
+    function ifJump(): string {
+      if (nowtime < timeBegin || timeEnd < nowtime) {
+        message.error('不在答题时间范围之内无法进行答题');
+        return `javascript: #;`;
+      } else if (timeBegin < nowtime &&  nowtime < timeEnd) {
+        return `${ TEST }?test=${ title }`;
+      }
+    }
 
     return(
         <div className="exam-box">
@@ -67,12 +81,11 @@ export default class Test extends React.Component<any, any> {
           </div>
 
           <div className="right">
-            {
-              (nowtime < timeBegin) ? '未开始' : (timeBegin < nowtime &&  nowtime < timeEnd) ? <a className='exam-status' href={ `/test?test=${ title }` }>
+            <a className='exam-status' href={ ifJump() }>
+            {/* <a className='exam-status' href={ `${ TEST }?test=${ title }` }> */}
               去做题
               <DoubleRightOutlined />
-            </a> : (timeEnd < nowtime && check === true) ? '查看试题信息' : '无法查看'
-            }
+            </a>
           </div>
 
         </div>

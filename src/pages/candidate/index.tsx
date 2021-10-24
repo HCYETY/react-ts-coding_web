@@ -8,10 +8,9 @@ import {
 } from '@ant-design/icons';
 
 import 'style/candidate.css';
-import Head from 'public/components/header';
-import Foot from 'public/components/footer';
 import { showPaper } from 'api/modules/interface';
-import { getCookie, handleRemainingTime, } from 'src/public/utils';
+import { getCookie, handleRemainingTime, } from 'common/utils';
+import { SHOW_TEST } from 'common/const';
 
 const { TabPane } = Tabs;
 
@@ -69,7 +68,7 @@ export default class Candidate extends React.Component<any, any> {
         key: 'action',
         render: (text: any, record: { paper: string; }) => (
           <Space size="middle">
-            <a href={ `/show-test?paper=${ record.paper }` }>查看试卷</a>
+            <a href={ `${ SHOW_TEST }?paper=${ record.paper }` }>查看试卷</a>
           </Space>
         ),
       }
@@ -77,43 +76,37 @@ export default class Candidate extends React.Component<any, any> {
     const { allExam, nodoExam, doingExam, doneExam, } = this.state;
 
     return(
-      <div>
-        <Head />
-
-        <div className="card-container">
-          <Tabs type="card">
-            <TabPane tab="全部" key="all">
-              <Table
-                columns={ columns }
-                dataSource={ allExam }
-                scroll={{ y: '100%' }}
-              />
-            </TabPane>
-            <TabPane tab="未开始" key="nodo">
-              <Table
-                columns={ columns }
-                dataSource={ nodoExam }
-                scroll={{ y: '100%' }}
-              />
-            </TabPane>
-            <TabPane tab="进行中" key="doing">
-              <Table
-                columns={ columns }
-                dataSource={ doingExam }
-                scroll={{ y: '100%' }}
-              />
-            </TabPane>
-            <TabPane tab="已结束" key="done">
-              <Table
-                columns={ columns }
-                dataSource={ doneExam }
-                scroll={{ y: '100%' }}
-              />
-            </TabPane>
-          </Tabs>
-        </div>
-
-        <Foot />
+      <div className="card-container">
+        <Tabs type="card">
+          <TabPane tab="全部" key="all">
+            <Table
+              columns={ columns }
+              dataSource={ allExam }
+              scroll={{ y: '100%' }}
+            />
+          </TabPane>
+          <TabPane tab="未开始" key="nodo">
+            <Table
+              columns={ columns }
+              dataSource={ nodoExam }
+              scroll={{ y: '100%' }}
+            />
+          </TabPane>
+          <TabPane tab="进行中" key="doing">
+            <Table
+              columns={ columns }
+              dataSource={ doingExam }
+              scroll={{ y: '100%' }}
+            />
+          </TabPane>
+          <TabPane tab="已结束" key="done">
+            <Table
+              columns={ columns }
+              dataSource={ doneExam }
+              scroll={{ y: '100%' }}
+            />
+          </TabPane>
+        </Tabs>
       </div>
     )
   }

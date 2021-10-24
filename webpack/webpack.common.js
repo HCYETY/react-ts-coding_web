@@ -7,8 +7,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackDeepScopeAnalysisPlugin = require('webpack-deep-scope-plugin').default;
 
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-const APP_DIR = path.resolve(__dirname, '../src');
-const MONACO_DIR = path.resolve(__dirname, '../node_modules/monaco-editor');
+// const APP_DIR = path.resolve(__dirname, '../src');
+// const MONACO_DIR = path.resolve(__dirname, '../node_modules/monaco-editor');
 
 const postCssLoaderConfig = {
   loader: 'postcss-loader',
@@ -45,7 +45,7 @@ const commonConfig = {
     }),
     new WebpackDeepScopeAnalysisPlugin(),
     new MonacoWebpackPlugin({
-      languages: ['json']
+      // languages: ['json']
     })
   ],
   module: {
@@ -112,8 +112,8 @@ const commonConfig = {
       'img': path.resolve(__dirname, '../img'),
       'src': path.resolve(__dirname, '../src'),
       'api': path.resolve(__dirname, '../src/api'),
+      'common': path.resolve(__dirname, '../src/common'),
       'pages': path.resolve(__dirname, '../src/pages'),
-      'public': path.resolve(__dirname, '../src/public'),
       'style': path.resolve(__dirname, '../src/style')
     },
   },

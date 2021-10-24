@@ -10,15 +10,13 @@ import {
   Select,
   Radio,
 } from 'antd';
-import { modifyPaper } from 'src/api/modules/interface';
-import { showTest } from 'src/api/modules/interface';
-import { TAGS } from 'public/const';
-import Navbar from 'public/components/navbar';
-import Head from 'public/components/header';
-import Foot from 'public/components/footer';
-import Tabler from 'public/components/tabler';
-import Paper from 'public/components/paper';
-import { getUrlParam } from 'public/utils';
+import { modifyPaper } from 'api/modules/interface';
+import { showTest } from 'api/modules/interface';
+import { EDIT, TAGS } from 'common/const';
+import { getUrlParam } from 'common/utils';
+import Navbar from 'common/components/navbar';
+import Tabler from 'common/components/tabler';
+import Paper from 'common/components/paper';
 import 'style/modify.less';
 
 export default class Modify extends React.Component<any, any> {
@@ -77,7 +75,7 @@ export default class Modify extends React.Component<any, any> {
     const res = await modifyPaper(values);
     if (res.data.status) {
       message.success(res.msg);
-      // window.location.href = '/edit';
+      window.location.href = EDIT;
     } else {
       message.error(res.msg);
     }
@@ -95,8 +93,6 @@ export default class Modify extends React.Component<any, any> {
         <Navbar/>
 
         <Layout>
-          <Head/>
-
           <div className="site-card-border-less-wrapper">
             <Card  bordered={false}>
               {!loading && (
@@ -129,8 +125,6 @@ export default class Modify extends React.Component<any, any> {
 
             </Card>
           </div>
-
-          <Foot/>
         </Layout>
       </Layout>
     )

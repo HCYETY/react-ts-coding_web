@@ -1,4 +1,12 @@
 const REQUESTIP: string = "http://localhost:8080/api";
+const LOGIN: string = '/login';
+const INTERVIEWER: string = '/interviewer';
+const EDIT: string = '/edit';
+const ADD: string = '/add';
+const MODIFY: string = '/modify';
+const CANDIDATE: string = '/candidate';
+const SHOW_TEST: string = '/show-test';
+const TEST: string = '/test';
 const FILTERS_LEVEL = [
   { text: '简单', value: '简单' },
   { text: '中等', value: '中等' },
@@ -41,7 +49,16 @@ const TAGS = [
 
 export {
   REQUESTIP,
+  LOGIN,
+  INTERVIEWER,
+  EDIT,
+  ADD,
+  MODIFY,
+  CANDIDATE,
+  SHOW_TEST,
+  TEST,
   FILTERS_LEVEL,
   FILTERS_STATUS,
+  ARR,
   TAGS,
 }

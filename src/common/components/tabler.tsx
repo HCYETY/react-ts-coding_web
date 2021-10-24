@@ -8,10 +8,10 @@ import {
 import { FormInstance } from 'antd/es/form';
 import PubSub from 'pubsub-js';
 
-import { TAGS } from 'public/const';
-import { getTestNum } from 'public/utils';
-import Wangeditor from 'public/components/wangeditor';
-import Wangeditors from 'public/components/wangeditor2';
+import { TAGS } from 'common/const';
+import { getTestNum } from 'common/utils';
+import Wangeditor from 'common/components/wangeditor';
+import Wangeditors from 'common/components/wangeditor2';
 
 export default class Tabler extends React.Component<any, any> {
   formRef = React.createRef<FormInstance>();

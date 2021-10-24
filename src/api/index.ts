@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { REQUESTIP } from 'public/const';
+import { REQUESTIP } from 'common/const';
 
 axios.defaults.withCredentials = true;
 
