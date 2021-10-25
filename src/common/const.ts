@@ -5,7 +5,8 @@ const EDIT: string = '/edit';
 const ADD: string = '/add';
 const MODIFY: string = '/modify';
 const CANDIDATE: string = '/candidate';
-const SHOW_TEST: string = '/show-test';
+const SHOW_TESTS: string = '/show-tests';
+const WATCH_TEST: string = '/watch-test';
 const TEST: string = '/test';
 const FILTERS_LEVEL = [
   { text: '简单', value: '简单' },
@@ -55,7 +56,8 @@ export {
   ADD,
   MODIFY,
   CANDIDATE,
-  SHOW_TEST,
+  SHOW_TESTS,
+  WATCH_TEST,
   TEST,
   FILTERS_LEVEL,
   FILTERS_STATUS,

@@ -10,7 +10,7 @@ import {
 import 'style/candidate.css';
 import { showPaper } from 'api/modules/interface';
 import { getCookie, handleRemainingTime, } from 'common/utils';
-import { SHOW_TEST } from 'common/const';
+import { SHOW_TESTS } from 'common/const';
 
 const { TabPane } = Tabs;
 
@@ -68,7 +68,7 @@ export default class Candidate extends React.Component<any, any> {
         key: 'action',
         render: (text: any, record: { paper: string; }) => (
           <Space size="middle">
-            <a href={ `${ SHOW_TEST }?paper=${ record.paper }` }>查看试卷</a>
+            <a href={ `${ SHOW_TESTS }?paper=${ record.paper }` }>查看试卷</a>
           </Space>
         ),
       }

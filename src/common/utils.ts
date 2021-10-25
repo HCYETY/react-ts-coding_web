@@ -58,25 +58,25 @@ export function nowTime() {
 export function handleRemainingTime(arr: any, status: any) {
   let nodoArr: any[] = [], doingArr: any[] = [], doneArr: any[] = [], allArr: any[] = [];
   arr.map((item: any) => {
-    allArr.push(item);
-    const timeBegin = item.time_begin.slice(0, 10);
-    const timeEnd = item.time_end.slice(0, 10);
+    const timeBegin = item.time_begin || item.paper.time_begin;
+    const timeEnd = item.time_end || item.paper.time_end;
     // 获取当前时间，yyyy-mm-dd 格式
     const nowtime = nowTime();
-    item.check = item.check === 1 ? '是' : '否';
-    item.key = item.paper;
+    item.check = item.check === true ? '是' : '否';
+    item.key = item.paper.key || item.paper;
+    allArr.push(item);
 
-    if (item.remaining_time === true) {
-      doingArr.push(item);
+    if (item.remaining_time === true || item.paper.remaining_time === true) {
       // 求出日期之间的天数
       const remaining_time = getDays(timeBegin, timeEnd) - getDays(timeBegin, nowtime) + 1;
       item.remaining_time = '还剩' + remaining_time + '天';
+      doingArr.push(item);
     } else if (nowtime < timeBegin) {
-      nodoArr.push(item);
       item.remaining_time = '试卷未开放';
+      nodoArr.push(item);
     } else if (timeEnd < nowtime) {
-      doneArr.push(item);
       item.remaining_time = '试卷已过期';
+      doneArr.push(item);
     }
   })
   if (status === 1) {

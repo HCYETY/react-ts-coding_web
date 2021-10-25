@@ -29,6 +29,10 @@ export async function deletePaper(data: number[]) {
 export async function modifyPaper(data: any) {
   return post('/modify_paper', data);
 }
+// 候选人信息接口
+export async function candidateInform(data?: any) {
+  return post('/candidate_inform', data);
+}
 
 // 添加试题接口
 export async function addTest(data: any) {

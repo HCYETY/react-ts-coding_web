@@ -9,7 +9,8 @@ import Interviewer from 'pages/interviewer';
 import Edit from 'pages/interviewer/edit/show';
 import Add from 'pages/interviewer/edit/add';
 import Modify from 'pages/interviewer/edit/modify';
-import ShowTest from 'pages/candidate/showTest';
+import ShowTests from 'pages/candidate/showTests';
+import WatchTest from 'pages/candidate/WatchTest';
 import Program from 'pages/candidate/program';
 
 const isHasAuth = document.cookie;
@@ -36,7 +37,8 @@ class App extends PureComponent {
               <Route path="/add" component={ Add }></Route>
               <Route path="/modify" component={ Modify }></Route>
               <Route path="/candidate" component={ Candidate }></Route>
-              <Route path="/show-test" component={ ShowTest }></Route>
+              <Route path="/show-tests" component={ ShowTests }></Route>
+              <Route path="/watch-test" component={ WatchTest }></Route>
               <Route path="/test" component={ Program }></Route>
               <Redirect to='/login'></Redirect>
             </Switch>

@@ -96,8 +96,8 @@ export default class Paper extends React.Component {
           label="试卷过期之后候选人/所有人是否可查看"
         >
           <Radio.Group >
-            <Radio value={1} key="yes">是</Radio>
-            <Radio value={0} key="no">否</Radio>
+            <Radio value={ true } key="yes">是</Radio>
+            <Radio value={ false } key="no">否</Radio>
           </Radio.Group>
         </Form.Item>
       </>
