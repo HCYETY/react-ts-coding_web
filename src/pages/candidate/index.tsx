@@ -15,14 +15,13 @@ import { SHOW_TESTS } from 'common/const';
 const { TabPane } = Tabs;
 
 export default class Candidate extends React.Component<any, any> {
+
   state = {
     allExam: [] = [],
     nodoExam: [] = [],
     doingExam: [] = [],
     doneExam: [] = [],
-
   };
-
 
   componentDidMount() {
     const cookie = getCookie();
@@ -76,7 +75,7 @@ export default class Candidate extends React.Component<any, any> {
     const { allExam, nodoExam, doingExam, doneExam, } = this.state;
 
     return(
-      <div className="card-container">
+      <div className="card-container candidate-site-layout">
         <Tabs type="card">
           <TabPane tab="全部" key="all">
             <Table

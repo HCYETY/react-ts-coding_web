@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button, message, Input } from 'antd';
 
-import 'style/showTest.less';
+import 'style/showTests.less';
 import { getUrlParam, handleRemainingTime, nowTime } from 'common/utils';
 import TestAlone from 'common/components/testAlone';
 import { showTest, candidateInform } from 'api/modules/interface';
@@ -10,25 +10,47 @@ import { CANDIDATE } from 'common/const';
 const url = getUrlParam('paper');
 const obj = { paper: url, sign: false };
 
-export default class ShowTest extends React.Component {
+export default class ShowTests extends React.Component {
   state = {
     tableArr: [] = [],
     visible: false,
     isWatch: false,
     isOver: false,
+    nowtime: '',
+    secondTime: 10,
   }
 
   async componentDidMount() {
     const res = await showTest(obj);
     const ans = await candidateInform(obj);
+    console.log(ans)
     const ret = ans.data.candidateInform[0];
-    console.log(ret)
+    const nowtime = nowTime();
     this.setState({ 
       tableArr: res.data,
       isWatch: ret.watch,
       isOver: ret.over,
+      nowtime,
+      secondTime: window.setInterval(() => {this.state.secondTime-1}, 1000)
     });
+
+    // if (this.state.nowtime === ret.time_end) {
+    //   const id = document.getElementById('inform-box-time');
+    //   let intervalID = setInterval(() => {
+    //     id.innerText -= 1;
+    //     //清除定时器
+    //     if( id.innerText === '0') {
+    //       clearInterval(intervalID);
+    //       // 提交试卷
+    //       this.submitPaper();
+    //     }
+    //   }, 1000);
+    // }
   }
+  componentWillUnmount() {
+    window.clearInterval(this.state.secondTime)
+  }
+
 
   showModal = () => {
     this.setState({ visible: true });
@@ -49,15 +71,13 @@ export default class ShowTest extends React.Component {
 
 
   render() {
-    const { tableArr, visible, isWatch, isOver } = this.state;
-    const nowtime = nowTime();
+    const { tableArr, visible, isWatch, isOver, nowtime, secondTime } = this.state;
     const arr = handleRemainingTime(tableArr, 1)[0];
-    console.log('@',arr)
     // const time = arr[0].remaining_time;
     // console.log('#',time)
 
     return(
-      <>
+      <div className="candidate-site-layout">
         <div className="test-box">
           {
             tableArr.map(item => {
@@ -72,6 +92,7 @@ export default class ShowTest extends React.Component {
           }
         </div>
         <div className="inform-box">
+          <div className="inform-box-time">{ secondTime }</div>
           <Button 
             type="primary" 
             className="submit-button"
@@ -93,7 +114,7 @@ export default class ShowTest extends React.Component {
             本人已 <Input placeholder='完成该试卷'/> 现 <Input placeholder='确定提前交卷' />
           </Modal>
         </div>
-      </>
+      </div>
     )
   }
 }

@@ -20,10 +20,12 @@ import { FormInstance } from 'antd/es/form';
 
 import { addPaper, addTest } from 'api/modules/interface';
 import Navbar from 'common/components/navbar';
+import Foot from 'common/components/footer';
 import Tabler from 'common/components/tabler';
 import Paper from 'common/components/paper';
 import { EDIT } from 'common/const';
 import { getCookie } from 'src/common/utils';
+import { Content } from '_antd@4.16.13@antd/lib/layout/layout';
 
 export default class Add extends React.Component<any, any> {
   modalRef = React.createRef<FormInstance>();
@@ -91,63 +93,58 @@ export default class Add extends React.Component<any, any> {
     const { button, visible, tableArr, } = this.state;
   
     return(
-      <Layout>
+      <div className="site-layout">
         <Navbar/>
 
-        <Layout>
-          <div 
-            className="form"
-            style={{ padding: '20px', borderColor: '#ececec' }}
+        <Content className="site-layout-content">
+
+          <Button 
+            className="form-button-right"
+            type="primary" 
+            onClick={ this.showDrawer } 
+            icon={ <RightOutlined /> }
+            disabled={ button === true ? false : true }
+            style={{ margin: '0px 10px 10px 0px', float: 'right' }}
           >
+            下一步
+          </Button>
 
-            <Button 
-              className="form-button-right"
-              type="primary" 
-              onClick={ this.showDrawer } 
-              icon={ <RightOutlined /> }
-              disabled={ button === true ? false : true }
-              style={{ margin: '0px 10px 10px 0px', float: 'right' }}
+          <Button 
+            className="form-button-right"
+            type="primary" 
+            onClick={ this.submitTest } 
+            icon={ <ProfileOutlined /> }
+            disabled={ button === true ? true : false }
+            style={{ margin: '0px 10px 10px 0px', float: 'right' }}
+          >
+            创建试卷
+          </Button> 
+
+          <Drawer
+            title="完善试卷信息"
+            width={ 720 }
+            onClose={ this.onClose } // 点击遮罩层或右上角叉或取消按钮的回调
+            visible={ visible } // Drawer 是否可见
+            bodyStyle={{ paddingBottom: 80 }}
+          >
+            <Form 
+              name="nest-messages" 
+              onFinish={ this.submitPaper } 
             >
-              下一步
-            </Button>
 
-            <Button 
-              className="form-button-right"
-              type="primary" 
-              onClick={ this.submitTest } 
-              icon={ <ProfileOutlined /> }
-              disabled={ button === true ? true : false }
-              style={{ margin: '0px 10px 10px 0px', float: 'right' }}
-            >
-              创建试卷
-            </Button>
+              <Paper />
 
-            <Drawer
-              title="完善试卷信息"
-              width={ 720 }
-              onClose={ this.onClose } // 点击遮罩层或右上角叉或取消按钮的回调
-              visible={ visible } // Drawer 是否可见
-              bodyStyle={{ paddingBottom: 80 }}
-            >
-              <Form 
-                name="nest-messages" 
-                onFinish={ this.submitPaper } 
-              >
+              <Form.Item wrapperCol={{ offset: 8 }}>
+                <Button type="primary" htmlType="submit">
+                  提交试卷信息
+                </Button>
+              </Form.Item>
+            </Form>
+          </Drawer>
 
-                <Paper />
-
-                <Form.Item wrapperCol={{ offset: 8 }}>
-                  <Button type="primary" htmlType="submit">
-                    提交试卷信息
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Drawer>
-
-            <Tabler getTest={ this.getTest.bind(this) }/>
-          </div>
-        </Layout>
-      </Layout>
+          <Tabler getTest={ this.getTest.bind(this) }/>
+        </Content>
+      </div>
     )
   }
 }

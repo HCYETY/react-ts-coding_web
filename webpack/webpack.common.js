@@ -5,10 +5,7 @@ const {
 } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackDeepScopeAnalysisPlugin = require('webpack-deep-scope-plugin').default;
-
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-// const APP_DIR = path.resolve(__dirname, '../src');
-// const MONACO_DIR = path.resolve(__dirname, '../node_modules/monaco-editor');
 
 const postCssLoaderConfig = {
   loader: 'postcss-loader',
@@ -32,7 +29,8 @@ const commonConfig = {
   ],
   output: {
     path: path.resolve(__dirname, '../dist'),
-    filename: 'static/js/[name].js'
+    filename: 'static/js/[name].js',
+    globalObject: 'self'
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -44,9 +42,7 @@ const commonConfig = {
       filename: "static/css/[name].[hash].css",
     }),
     new WebpackDeepScopeAnalysisPlugin(),
-    new MonacoWebpackPlugin({
-      // languages: ['json']
-    })
+    new MonacoWebpackPlugin(['apex', 'azcli', 'bat', 'clojure', 'coffee', 'cpp', 'csharp', 'csp', 'css', 'dockerfile', 'fsharp', 'go', 'handlebars', 'html', 'ini', 'java', 'javascript', 'json', 'less', 'lua', 'markdown', 'msdax', 'mysql', 'objective', 'perl', 'pgsql', 'php', 'postiats', 'powerquery', 'powershell', 'pug', 'python', 'r', 'razor', 'redis', 'redshift', 'ruby', 'rust', 'sb', 'scheme', 'scss', 'shell', 'solidity', 'sql', 'st', 'swift', 'typescript', 'vb', 'xml', 'yaml']),
   ],
   module: {
     rules: [{
@@ -65,17 +61,17 @@ const commonConfig = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/
-      },
-      {
+      }, {
         test: /\.css$/,
-        // include: APP_DIR,
         use: [
           MiniCssExtractPlugin.loader, 
           'css-loader',
           postCssLoaderConfig,
         ]
-      }, 
-      {
+      }, {
+        test: /\.ttf$/,
+        use: ['file-loader']
+      }, {
         test: /\.less$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader', postCssLoaderConfig, 'less-loader']
       }, {

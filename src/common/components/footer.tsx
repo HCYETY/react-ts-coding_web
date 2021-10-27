@@ -1,12 +1,14 @@
 import React from 'react';
-import 'style/components.css';
+import { Layout } from 'antd';
+const { Footer } = Layout;    
+import 'style/basic.less';
 
 export default class Foot extends React.PureComponent{
   render() {
     return(
-      <div className="site-layout-footer">
-        @syandeg 的精心力作
-      </div>
+      <Footer className="all-bottom-font">
+        &copy;syandeg 的精心力作
+      </Footer>
     )
   }
 }

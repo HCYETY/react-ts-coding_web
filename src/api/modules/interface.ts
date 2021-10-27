@@ -42,3 +42,8 @@ export async function addTest(data: any) {
 export async function showTest(data?: any) {
   return post('/show_test', data);
 }
+
+// 提交编程答案接口
+export async function saveCode(data: any) {
+  return post('/save_code', data);
+}

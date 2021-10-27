@@ -15,6 +15,7 @@ import { showTest } from 'api/modules/interface';
 import { EDIT, TAGS } from 'common/const';
 import { getUrlParam } from 'common/utils';
 import Navbar from 'common/components/navbar';
+import Foot from 'common/components/footer';
 import Tabler from 'common/components/tabler';
 import Paper from 'common/components/paper';
 import 'style/modify.less';
@@ -125,6 +126,8 @@ export default class Modify extends React.Component<any, any> {
 
             </Card>
           </div>
+
+          <Foot/>
         </Layout>
       </Layout>
     )

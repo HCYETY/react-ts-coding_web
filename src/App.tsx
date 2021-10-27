@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { BrowserRouter  as Router, Route, Switch, Redirect } from "react-router-dom";
 
 import Head from 'common/components/header';
-import Foot from 'common/components/footer';
 import Login from 'pages/login';
 import Candidate from 'pages/candidate';
 import Interviewer from 'pages/interviewer';
@@ -27,8 +26,7 @@ class App extends PureComponent {
     } else {
       return (
         <>
-          <Head />
-
+          <Head/>
           <Router>
             <Switch>
               <Route path="/login" component={ Login }></Route>
@@ -43,8 +41,6 @@ class App extends PureComponent {
               <Redirect to='/login'></Redirect>
             </Switch>
           </Router>
-          
-          <Foot />
         </>
       )
     }

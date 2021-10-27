@@ -1,84 +1,40 @@
 import React from 'react';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
 import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution';
+import 'monaco-editor/esm/vs/editor/contrib/find/findController.js';
 
-const monacoInstance=monaco.editor.create(document.getElementById("monaco"),{
-  value:`console.log("hello,world")`,
-  language:"javascript"
-})
-monacoInstance.dispose();//使用完成销毁实例
+let monacoInstance: monaco.editor.IStandaloneCodeEditor = null;
 
-export default class CodeEditor extends React.Component {
+export default class CodeEditor extends React.Component<any, any> {
+  // 组件挂载后加载编辑器
+  componentDidMount() {
+    monacoInstance  = monaco.editor.create(document.getElementById("container"), {
+      value: `console.log("hello,world")`,
+      contextmenu: true,
+      language:"typescript",
+      theme: 'vs-dark',
+    });
 
+    // 获取编辑器的内容
+    monacoInstance.onDidChangeModelContent((event) => {
+      const newValue = monacoInstance.getValue();
+      this.props.getProgramCode(newValue);
+    })
+    
+    // 动态修改语言
+    monacoInstance.onDidChangeModelLanguage ((event) => {
+      monaco.editor.setModelLanguage(monacoInstance.getModel(), 'javascript');
+    })
+  }
 
+  // 组件卸载后销毁编辑器
+  componentWillUnmount() {
+    monacoInstance.dispose();
+  }
 
   render() {
-
     return(
-      <div id="monaco">
-      </div>
+      <div id="container" style={{ height: '500px' }}></div>
     )
   }
 }
-
-
-// import React from 'react';
-// import MonacoEditor  from 'react-monaco-editor';
-
-// import logo from 'img/bg.jpg';
-
-// // const defaultCode = 
-// // `export default {
-// //   name: 'name',
-// //   code: 'code'
-// // }`;
-
-// export default class CodeEditor extends React.Component<any, any> {
-//   constructor(props: any) {
-//     super(props);
-//     this.state = {
-//       code: 'ni',
-//     }
-//     this.onChangeHandle = this.onChangeHandle.bind(this);
-//   }
-//   onChangeHandle(value: any, e: any) {
-//       this.setState({
-//         code: value
-//       });
-//   }
-//   editorDidMountHandle(editor: any, monaco: any) {
-//     console.log('editorDidMount', editor);
-//     editor.focus();
-//   }
-//   render() {
-//     const code = this.state.code;
-//     const options = {
-//       selectOnLineNumbers: true,
-//       renderSideBySide: false
-//     };
-//     return (
-//       <div >
-//         <div className="App">
-//           <header className="App-header">
-//             <img src={logo} className="App-logo" alt="logo" />
-//             <h1 className="App-title">Welcome to React</h1>
-//           </header>
-//         </div>
-//         <div className="wrapper">
-//           <div className="editor-container" >
-//           <MonacoEditor
-//             language="javascript"
-//             value={code}
-//             options={options}
-//             onChange={this.onChangeHandle}
-//             editorDidMount={this.editorDidMountHandle}
-//           />
-//           </div>
-//           <div className="view"  contentEditable={true}>
-//           {this.state.code}
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-// }
