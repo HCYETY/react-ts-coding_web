@@ -7,9 +7,11 @@ const { Header } = Layout;
 export default class Head extends React.PureComponent{
   render() {
     return(
-      <Header className="all-header-top">
-        <Avatar className="all-header-top-avatar" size="large" icon={<UserOutlined />} />
-      </Header>
+      <div className="all-header-top-box">
+        <div className="all-header-top">
+          <Avatar className="all-header-top-avatar" size="large" icon={<UserOutlined />} />
+        </div>
+      </div>
     )
   }
 }

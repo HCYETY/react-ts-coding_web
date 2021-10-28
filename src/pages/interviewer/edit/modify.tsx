@@ -90,10 +90,10 @@ export default class Modify extends React.Component<any, any> {
     const { inform, loading, tableArr } = this.state;
 
     return(
-      <Layout>
+      <div className="site-layout">
         <Navbar/>
 
-        <Layout>
+        {/* <Layout> */}
           <div className="site-card-border-less-wrapper">
             <Card  bordered={false}>
               {!loading && (
@@ -128,8 +128,8 @@ export default class Modify extends React.Component<any, any> {
           </div>
 
           <Foot/>
-        </Layout>
-      </Layout>
+        {/* </Layout> */}
+      </div>
     )
   }
 }

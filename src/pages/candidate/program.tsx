@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, Select, Drawer, } from 'antd';
 import {
   EllipsisOutlined,
   CheckSquareOutlined,
@@ -8,6 +8,7 @@ import {
   UnorderedListOutlined,
   CaretRightOutlined,
   DownOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons';
 
 import 'style/programInform.less';
@@ -15,6 +16,7 @@ import CodeEditor from 'common/components/codeEditor';
 import ProgramInform from 'common/components/programInform';
 import { getUrlParam } from 'common/utils';
 import { showTest, saveCode, candidateInform } from 'api/modules/interface';
+import { PROGRAM_LANGUAGE, THEME } from 'src/common/const';
 
 const url = getUrlParam('test');
 const obj = { test: url, code: '' };
@@ -23,6 +25,9 @@ export default class Program extends React.Component {
 
   state = {
     code: '',
+    language: 'C++',
+    theme: 'vs',
+    visible: false,
   }
 
   getProgramCode = (value: any) => {
@@ -36,35 +41,103 @@ export default class Program extends React.Component {
     const res = await candidateInform(obj);
     console.log(res);
   }
+
+  handleChange(value: any) {
+    console.log(value, typeof value);
+    this.setState({ language: value, theme: value });
+  }
+  
+  openModal = () => {
+    this.setState({ visible: true });
+  }
+  onClose =() => {
+    this.setState({ visible: false });
+  }
   
   render() {
-
+    const { language, theme, visible } = this.state;
     return(
       <div className="candidate-site-layout whole">
 
         <div className="left">
-          <ProgramInform />
-          { this.state.code }
-          <div className="left-bottom">
-            <Button className="left-bottom-list left-bottom-button">
-              <UnorderedListOutlined />
-              题目列表
-            </Button>
-            <Button className="left-bottom-next left-bottom-button">
-              下一题
-              <RightOutlined />
-            </Button>
-            <Button className="left-bottom-previous left-bottom-button">
-              <LeftOutlined />
-              上一题
-            </Button>
+          <div className="left-box">
+            <ProgramInform />
           </div>
+
+          <div className="left-bottom-box">
+            <div className="left-bottom">
+              <Drawer
+                width={ 640 }
+                visible={ visible }
+                onClose={ this.onClose }
+                placement="left"
+              >
+                
+              </Drawer>
+
+              <Button className="left-bottom-list left-bottom-button" onClick={ this.openModal }>
+                <UnorderedListOutlined />
+                题目列表
+              </Button>
+
+              <Button className="left-bottom-next left-bottom-button">
+                下一题
+                <RightOutlined />
+              </Button>
+
+              <Button className="left-bottom-previous left-bottom-button">
+                <LeftOutlined />
+                上一题
+              </Button>
+              
+            </div>
+          </div>
+          
         </div>
 
+
+
+
         <div className="right">
-          <CodeEditor getProgramCode={ this.getProgramCode.bind(this) }/>
+
+          <div className="right-top">
+            <Select 
+              defaultValue={ language } 
+              style={{ width: 120 }} 
+              onChange={ this.handleChange }
+              className="right-top-button"
+            >
+              {
+                PROGRAM_LANGUAGE.map(item => {
+                  return(
+                    <Select.Option value={ item }> { item } </Select.Option>
+                  )
+                })
+              }
+            </Select>
+            
+            <Select 
+              defaultValue={ theme } 
+              style={{ width: 120 }} 
+              onChange={ this.handleChange }
+              className="right-top-button"
+            >
+              {
+                THEME.map(item => {
+                  return(
+                    <Select.Option value={ item }> { item } </Select.Option>
+                  )
+                })
+              }
+            </Select>
+          </div>
+
+          <div className="right-content">
+            <CodeEditor getProgramCode={ this.getProgramCode.bind(this) } language={ language }/>
+          </div>
 
           <div className="right-bottom">
+            
             {/* <div> */}
               <Button 
                 className="right-bottom-submit right-bottom-button"
@@ -73,6 +146,7 @@ export default class Program extends React.Component {
               >
                 提交
               </Button>
+
               <Button 
                 className="right-bottom-execute right-bottom-button"
               >
@@ -82,6 +156,7 @@ export default class Program extends React.Component {
               </Button>
             {/* </div> */}
           </div>
+
         </div>
 
       </div>

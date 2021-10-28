@@ -12,7 +12,7 @@ export default class CodeEditor extends React.Component<any, any> {
       value: `console.log("hello,world")`,
       contextmenu: true,
       language:"typescript",
-      theme: 'vs-dark',
+      theme: 'vs',
     });
 
     // 获取编辑器的内容
@@ -22,8 +22,8 @@ export default class CodeEditor extends React.Component<any, any> {
     })
     
     // 动态修改语言
-    monacoInstance.onDidChangeModelLanguage ((event) => {
-      monaco.editor.setModelLanguage(monacoInstance.getModel(), 'javascript');
+    monacoInstance.onDidChangeModelLanguage((event) => {
+      monaco.editor.setModelLanguage(monacoInstance.getModel(), this.props.language);
     })
   }
 
@@ -34,7 +34,7 @@ export default class CodeEditor extends React.Component<any, any> {
 
   render() {
     return(
-      <div id="container" style={{ height: '500px' }}></div>
+      <div id="container" style={{ height: '100vh' }}></div>
     )
   }
 }

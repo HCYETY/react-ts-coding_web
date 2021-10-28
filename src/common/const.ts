@@ -1,26 +1,27 @@
-const REQUESTIP: string = "http://localhost:8080/api";
-const LOGIN: string = '/login';
-const INTERVIEWER: string = '/interviewer';
-const EDIT: string = '/edit';
-const ADD: string = '/add';
-const MODIFY: string = '/modify';
-const CANDIDATE: string = '/candidate';
-const SHOW_TESTS: string = '/show-tests';
-const WATCH_TEST: string = '/watch-test';
-const TEST: string = '/test';
-const FILTERS_LEVEL = [
+export const REQUESTIP: string = "http://localhost:8080/api";
+export const LOGIN: string = '/login';
+export const INTERVIEWER: string = '/interviewer';
+export const EDIT: string = '/edit';
+export const ADD: string = '/add';
+export const MODIFY: string = '/modify';
+export const CANDIDATE: string = '/candidate';
+export const SHOW_TESTS: string = '/show-tests';
+export const WATCH_TEST: string = '/watch-test';
+export const TEST: string = '/test';
+
+export const FILTERS_LEVEL = [
   { text: '简单', value: '简单' },
   { text: '中等', value: '中等' },
   { text: '困难', value: '困难' },
 ];
-const FILTERS_STATUS = [
+export const FILTERS_STATUS = [
   { text: '未开始', value: '未开始' },
   { text: '开放中', value: '开放中' },
   { text: '已过期', value: '已过期' },
 ];
 // 动态生成试卷标签
-const ARR = ['数组', '字符串', '排序', '矩阵', '模拟', '枚举', '字符串匹配', '桶排序', '计数排序', '基数排序', '双指针', '链表', '堆栈', '队列', '图'];
-const TAGS = [
+export const ARR = ['数组', '字符串', '排序', '矩阵', '模拟', '枚举', '字符串匹配', '桶排序', '计数排序', '基数排序', '双指针', '链表', '堆栈', '队列', '图'];
+export const TAGS = [
   // ARR.map(char => {
   //   return (
   //     {
@@ -39,7 +40,6 @@ const TAGS = [
   { key: 7, value: '桶排序'},
   { key: 8, value: '计数排序'},
   { key: 9, value: '基数排序'},
-
   { key: 10, value: '双指针'},
   { key: 11, value: '链表'},
   { key: 12, value: '堆栈'},
@@ -47,20 +47,5 @@ const TAGS = [
   { key: 14, value: ''},
   { key: 15, value: '图'},
 ];
-
-export {
-  REQUESTIP,
-  LOGIN,
-  INTERVIEWER,
-  EDIT,
-  ADD,
-  MODIFY,
-  CANDIDATE,
-  SHOW_TESTS,
-  WATCH_TEST,
-  TEST,
-  FILTERS_LEVEL,
-  FILTERS_STATUS,
-  ARR,
-  TAGS,
-}
+export const PROGRAM_LANGUAGE = ['C++', 'Java', 'Python', 'C', 'C#', 'JavaScript', 'Ruby', 'Swift', 'Go', 'Scala', 'Kotlin', 'Rust', 'PHP', 'TypeScript', 'Racket', 'Erlang', 'Elixir'];
+export const THEME = ['vs', 'vs-dark', 'hc-dark'];

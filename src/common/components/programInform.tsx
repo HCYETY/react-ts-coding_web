@@ -41,6 +41,7 @@ export default class ProgramInform extends React.Component {
               </span>
             }
             key='test'
+            // className="tabs-header"
           >
             <div className="left-top">
               <h3>{ testInform['num'] }. { testInform['test_name'] }</h3>

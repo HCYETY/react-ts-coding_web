@@ -1,25 +1,47 @@
 .whole{
+  margin-top: 64px;
   display: flex;
-  justify-content: center;
-
-  margin: 10px;
-  margin-top: 70px;
-
+  flex-direction: row;
   .left{
+    margin-right: 10px;
     flex: 1;
-    // width: 50%; 
-    height: 100%;
-    border: 1px solid black;
-    // float: left;
-    
+    height: 100vh;
+    /* display: flex;
+    flex-direction: column;
+    z-index: 1; */
     // position: relative;
-
-    .left-top{
-      .left-top-tag{
-        padding-bottom: 10px;
-        border-bottom: 1px solid black;
-      }
+    // left: 0;
+    // bottom: 0;
+    min-width: 480px;
+    overflow: auto;
+    // overflow-y: auto;
+    background-color: white;
+    .left-box{
+      margin-bottom: 55px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      // .tabs-header{
+      //   position: fixed;
+      //   left: 0;
+      //   top: 64px;
+        .left-top{
+          padding: 0px 20px 15px 20px;
+          .left-top-tag{
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgb(229,231,235);
+          }
+        }
+        .left-content{
+          padding: 0px 15px;
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
+      // }
     }
+  }
+  .left-bottom-box{
+    height: 55px;
+    // margin-bottom: 55px;
     .left-bottom{
       position: fixed;
       bottom: 0;
@@ -47,9 +69,20 @@
 
   .right{
     flex: 1;
-    // width: 50%; 
-    height: 100%;
-
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 0;
+    overflow-y: auto;
+    overflow: hidden;
+    margin-left: 10px;
+    position: relative;
+    .right-top{
+      margin: 4px 4px 4px 0px;
+      .right-top-button{
+        margin-right: 10px;
+      }
+    }
     .right-bottom{
       position: fixed;
       bottom: 0;
@@ -57,7 +90,6 @@
       width: 50%;
       height: 55px;
       background-color: #fff;
-      align-items: center;
       .right-bottom-button{
         float: right;
         height: 35px;
