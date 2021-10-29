@@ -34,7 +34,6 @@ export default class Edit extends React.Component {
   componentDidMount() {
     showPaper().then((result: any) => {
       const res = result.data;
-      console.log(res)
       const arr = handleRemainingTime(res, 2);
       this.setState({ data: arr });
     })

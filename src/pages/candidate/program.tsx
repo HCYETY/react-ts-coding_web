@@ -25,13 +25,12 @@ export default class Program extends React.Component {
 
   state = {
     code: '',
-    language: 'C++',
+    language: 'javascript',
     theme: 'vs',
     visible: false,
   }
 
   getProgramCode = (value: any) => {
-    console.log(value)
     this.setState({ code: value })
   }
 
@@ -42,9 +41,8 @@ export default class Program extends React.Component {
     console.log(res);
   }
 
-  handleChange(value: any) {
-    console.log(value, typeof value);
-    this.setState({ language: value, theme: value });
+  handleChange = (value: any) => {
+    this.setState({ language: value });
   }
   
   openModal = () => {
@@ -57,42 +55,40 @@ export default class Program extends React.Component {
   render() {
     const { language, theme, visible } = this.state;
     return(
-      <div className="candidate-site-layout whole">
+      <div className="whole">
 
         <div className="left">
           <div className="left-box">
             <ProgramInform />
           </div>
+            {this.state.code}
 
-          <div className="left-bottom-box">
-            <div className="left-bottom">
-              <Drawer
-                width={ 640 }
-                visible={ visible }
-                onClose={ this.onClose }
-                placement="left"
-              >
-                
-              </Drawer>
-
-              <Button className="left-bottom-list left-bottom-button" onClick={ this.openModal }>
-                <UnorderedListOutlined />
-                题目列表
-              </Button>
-
-              <Button className="left-bottom-next left-bottom-button">
-                下一题
-                <RightOutlined />
-              </Button>
-
-              <Button className="left-bottom-previous left-bottom-button">
-                <LeftOutlined />
-                上一题
-              </Button>
+          <div className="left-bottom">
+            <Drawer
+              width={ 640 }
+              visible={ visible }
+              onClose={ this.onClose }
+              placement="left"
+            >
               
-            </div>
+            </Drawer>
+
+            <Button className="left-bottom-list left-bottom-button" onClick={ this.openModal }>
+              <UnorderedListOutlined />
+              题目列表
+            </Button>
+
+            <Button className="left-bottom-next left-bottom-button">
+              下一题
+              <RightOutlined />
+            </Button>
+
+            <Button className="left-bottom-previous left-bottom-button">
+              <LeftOutlined />
+              上一题
+            </Button>
+            
           </div>
-          
         </div>
 
 
@@ -100,7 +96,7 @@ export default class Program extends React.Component {
 
         <div className="right">
 
-          <div className="right-top">
+          {/* <div className="right-top">
             <Select 
               defaultValue={ language } 
               style={{ width: 120 }} 
@@ -130,7 +126,7 @@ export default class Program extends React.Component {
                 })
               }
             </Select>
-          </div>
+          </div> */}
 
           <div className="right-content">
             <CodeEditor getProgramCode={ this.getProgramCode.bind(this) } language={ language }/>

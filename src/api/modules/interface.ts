@@ -1,7 +1,7 @@
 import { post } from 'api/index';
 
 // 向邮箱发送验证码
-export async function sendEmail(data: any) {
+export async function sendEmail(data?: any) {
   return post('/email', data);
 }
 // 登录接口

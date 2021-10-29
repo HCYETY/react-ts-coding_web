@@ -29,18 +29,50 @@ export function getCookie() {
 }
 
 // 求出日期之间的天数
-export function getDays(start: any, end: any) {
-  const date1Str = start.split("-");//将日期字符串分隔为数组,数组元素分别为年.月.日
-  //根据年 . 月 . 日的值创建Date对象
-  const date1Obj = new Date(date1Str[0],(date1Str[1]-1),date1Str[2]);
-  const date2Str = end.split("-");
-  const date2Obj = new Date(date2Str[0],(date2Str[1]-1),date2Str[2]);
-  const t1 = date1Obj.getTime();
-  const t2 = date2Obj.getTime();
-  const dateTime = 1000 * 60 * 60 * 24; //每一天的毫秒数
-  const minusDays = Math.floor(((t2 - t1) / dateTime));//计算出两个日期的天数差
-  const days = Math.abs(minusDays);//取绝对值
-  return days;
+export function getDays(start: string, end: string, diff?: number) {
+  const left = new Date(start);
+  const right = new Date(end);
+  const ms = right.getTime() - left.getTime();
+  const s = ms / 1000 % 60;
+  const day = Math.floor(ms / 1000 / 60 / 60 / 24);
+  const hour   = Math.floor(ms/ 1000 / 60 / 60 - (24 * day));
+  const minute  = Math.floor(ms / 1000 /60 - (24 * 60 * day) - (60 * hour));
+  
+  if (diff === 4) {
+    return s;
+  } else if (diff === 3) {
+    return minute;
+  } else if (diff === 2) {
+    return hour;
+  } else if (diff === 1) {
+    return day;
+  }
+  const retTime = '剩余 ' + day + ' 天 ' + hour + ' 小时 ' + minute + ' 分钟 ' + s + ' 秒'; 
+  return retTime;
+  // const date1Str = start.split("-");//将日期字符串分隔为数组,数组元素分别为年.月.日
+  // //根据年 . 月 . 日的值创建Date对象
+  // const date1Obj = new Date(date1Str[0],(date1Str[1]-1),date1Str[2]);
+  // const date2Str = end.split("-");
+  // const date2Obj = new Date(date2Str[0],(date2Str[1]-1),date2Str[2]);
+  // const t1 = date1Obj.getTime();
+  // const t2 = date2Obj.getTime();
+  // const dateTime = 1000 * 60 * 60 * 24; //每一天的毫秒数
+  // const minusDays = Math.floor(((t2 - t1) / dateTime));//计算出两个日期的天数差
+  // const days = Math.abs(minusDays);//取绝对值
+  // return days;
+}
+// 求出某一天的倒计时
+export function residueTime(comp: any) {
+  const endHour = comp.slice(12, 13);
+  const endMinutes = comp.slice(15);
+  const endSeconds = endHour * 60 *60 + endMinutes * 60;
+
+  const nowtime = new Date();
+  const nowHour = nowtime.getHours();
+  const nowMinutes = nowtime.getMinutes();
+  const nowSeconds = nowHour * 60 * 60 + nowMinutes * 60;
+  const dataTime = endSeconds - nowSeconds;
+  return dataTime;
 }
 
 // 获取当前时间，yyyy-mm-dd 格式
@@ -50,7 +82,10 @@ export function nowTime() {
   const year = now.getFullYear();
   const month = (now.getMonth() + 1).toString().padStart(2,'0');
   const day = now.getDate().toString().padStart(2,'0');
-  const nowTime = year + '-' + month + '-' + day;
+  const hours = now.getHours().toString().padStart(2,'0');
+  const minutes = now.getMinutes().toString().padStart(2,'0');
+  const seconds = now.getSeconds();
+  const nowTime = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
   return nowTime;
 }
 
@@ -60,7 +95,7 @@ export function handleRemainingTime(arr: any, status: any) {
   arr.map((item: any) => {
     const timeBegin = item.time_begin || item.paper.time_begin;
     const timeEnd = item.time_end || item.paper.time_end;
-    // 获取当前时间，yyyy-mm-dd 格式
+    // 获取当前时间，yyyy-mm-dd hh-mm-ss 格式
     const nowtime = nowTime();
     item.check = item.check === true ? '是' : '否';
     item.key = item.paper.key || item.paper;
@@ -68,8 +103,9 @@ export function handleRemainingTime(arr: any, status: any) {
 
     if (item.remaining_time === true || item.paper.remaining_time === true) {
       // 求出日期之间的天数
-      const remaining_time = getDays(timeBegin, timeEnd) - getDays(timeBegin, nowtime) + 1;
-      item.remaining_time = '还剩' + remaining_time + '天';
+      // const remaining_time = getDays(timeBegin, timeEnd) - getDays(timeBegin, nowtime) + 1;
+      const remaining_time = getDays(nowtime, timeEnd);
+      item.remaining_time = remaining_time;
       doingArr.push(item);
     } else if (nowtime < timeBegin) {
       item.remaining_time = '试卷未开放';
@@ -88,9 +124,4 @@ export function handleRemainingTime(arr: any, status: any) {
   } else if (status === 2) {
     return allArr;
   }
-}
-
-// 根据参数进行条件判断返回 true/false
-export function judge() {
-
 }

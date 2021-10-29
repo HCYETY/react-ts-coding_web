@@ -273,7 +273,7 @@ export default class Tabler extends React.Component<any, any> {
               key="description"
               label="题目" 
             >
-              <Wangeditor/>
+              <Wangeditor id="div1"/>
             </Form.Item>
 
             <Form.Item 
@@ -281,7 +281,7 @@ export default class Tabler extends React.Component<any, any> {
               key="answer"
               label="答案" 
             >
-              <Wangeditors/>
+              <Wangeditor id2="div2"/>
             </Form.Item>
           
             <Form.Item 
@@ -311,7 +311,7 @@ export default class Tabler extends React.Component<any, any> {
                 mode="multiple"
                 allowClear
                 style={{ width: '100%' }}
-                placeholder="Please select"
+                placeholder="选择符合该试题的标签"
               >
                 {
                   TAGS.map((arr: any) => {

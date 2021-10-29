@@ -1,47 +1,41 @@
 .whole{
-  margin-top: 64px;
+  // margin-top: 64px;
+  // transform: translateY(63px);
   display: flex;
   flex-direction: row;
+  flex: 1 1 auto;
   .left{
     margin-right: 10px;
     flex: 1;
-    height: 100vh;
-    /* display: flex;
-    flex-direction: column;
-    z-index: 1; */
-    // position: relative;
-    // left: 0;
-    // bottom: 0;
+    // height: 100%;
+    height: 608px;
     min-width: 480px;
     overflow: auto;
-    // overflow-y: auto;
     background-color: white;
     .left-box{
-      margin-bottom: 55px;
-      overflow-x: hidden;
-      overflow-y: auto;
-      // .tabs-header{
+      display: flex;
+      // .ant-tabs-nav{
       //   position: fixed;
+      //   top: 55px;
       //   left: 0;
-      //   top: 64px;
-        .left-top{
-          padding: 0px 20px 15px 20px;
-          .left-top-tag{
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgb(229,231,235);
-          }
-        }
-        .left-content{
-          padding: 0px 15px;
-          overflow-x: hidden;
-          overflow-y: auto;
-        }
+      //   width: 100%;
+      //   height: 100%;
       // }
+      .left-top{
+        padding: 0px 20px 15px 20px;
+        
+        .left-top-tag{
+          padding-bottom: 10px;
+          border-bottom: 1px solid rgb(229,231,235);
+        }
+      }
+      .left-content{
+        padding: 0px 15px;
+        // overflow: hidden;
+        // overflow-x: hidden;
+        // overflow-y: auto;
+      }
     }
-  }
-  .left-bottom-box{
-    height: 55px;
-    // margin-bottom: 55px;
     .left-bottom{
       position: fixed;
       bottom: 0;
@@ -49,39 +43,39 @@
       width: 50%;
       height: 55px;
       background-color: #fff;
-      .left-bottom-button{
-        // width: 100px;
-        height: 35px;
-      }
       .left-bottom-list{
+        height: 35px;
         margin-left: 30px;
       }
       .left-bottom-previous{
         float: right;
+        height: 35px;
         margin-right: 100px;
       }
       .left-bottom-next{
         float: right;
-        margin-right: 0px;
+        height: 35px;
       }
     }
   }
 
   .right{
     flex: 1;
-    height: 100vh;
     display: flex;
     flex-direction: column;
     z-index: 0;
-    overflow-y: auto;
-    overflow: hidden;
     margin-left: 10px;
     position: relative;
     .right-top{
       margin: 4px 4px 4px 0px;
+      // flex: 0 0 auto;
+      // align-items: center;
       .right-top-button{
         margin-right: 10px;
       }
+    }
+    .right-content{
+      overflow: hidden;
     }
     .right-bottom{
       position: fixed;

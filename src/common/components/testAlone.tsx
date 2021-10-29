@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 
 import 'style/testAlone.less';
-import { handleRemainingTime, judge } from 'common/utils';
+import { handleRemainingTime } from 'common/utils';
 import { nowTime } from 'common/utils';
 import { SHOW_TESTS, TEST, WATCH_TEST } from 'common/const';
 

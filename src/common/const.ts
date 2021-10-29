@@ -47,5 +47,10 @@ export const TAGS = [
   { key: 14, value: ''},
   { key: 15, value: '图'},
 ];
-export const PROGRAM_LANGUAGE = ['C++', 'Java', 'Python', 'C', 'C#', 'JavaScript', 'Ruby', 'Swift', 'Go', 'Scala', 'Kotlin', 'Rust', 'PHP', 'TypeScript', 'Racket', 'Erlang', 'Elixir'];
-export const THEME = ['vs', 'vs-dark', 'hc-dark'];
+export const PROGRAM_LANGUAGE = ['cpp', 'java', 'python', 'javaccript', 'ruby', 'swift', 'go', 'rust', 'php', 'typescript'];
+export const THEME = ['vs', 'vs-dark', 'hc-black'];
+// export enum THEME {
+//   VS = 'vs',
+//   VS_DARK = 'vs-dark',
+//   HC_BLACK = 'hc-black',
+// };

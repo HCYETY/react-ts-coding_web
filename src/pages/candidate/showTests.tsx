@@ -2,8 +2,9 @@ import React from 'react';
 import { Modal, Button, message, Input } from 'antd';
 
 import 'style/showTests.less';
-import { getUrlParam, handleRemainingTime, nowTime } from 'common/utils';
+import { residueTime, getDays, getUrlParam, handleRemainingTime, nowTime } from 'common/utils';
 import TestAlone from 'common/components/testAlone';
+import CountDown from 'common/components/countdown';
 import { showTest, candidateInform } from 'api/modules/interface';
 import { CANDIDATE } from 'common/const';
 
@@ -16,41 +17,38 @@ export default class ShowTests extends React.Component {
     visible: false,
     isWatch: false,
     isOver: false,
-    nowtime: '',
-    secondTime: 10,
+    timeDifference: 0,
+    endTime: '',
   }
 
   async componentDidMount() {
     const res = await showTest(obj);
     const ans = await candidateInform(obj);
-    console.log(ans)
     const ret = ans.data.candidateInform[0];
-    const nowtime = nowTime();
+    console.log('=================',ans)
     this.setState({ 
       tableArr: res.data,
       isWatch: ret.watch,
       isOver: ret.over,
-      nowtime,
-      secondTime: window.setInterval(() => {this.state.secondTime-1}, 1000)
+      endTime: ret.time_end,
     });
-
-    // if (this.state.nowtime === ret.time_end) {
-    //   const id = document.getElementById('inform-box-time');
-    //   let intervalID = setInterval(() => {
-    //     id.innerText -= 1;
-    //     //清除定时器
-    //     if( id.innerText === '0') {
-    //       clearInterval(intervalID);
-    //       // 提交试卷
-    //       this.submitPaper();
-    //     }
-    //   }, 1000);
-    // }
+    if (nowTime() === ret.time_end.slice(0, 10)) {
+      const remainingTime = residueTime(ret.time_end);
+      const { timeDifference } = this.state;
+      let intervalID = setInterval(() => {
+        if (timeDifference === 0) {
+          this.setState({ timeDifference: remainingTime });
+        } else {
+          this.setState({ timeDifference: timeDifference - 1 });
+        }
+        //清除定时器
+        if (timeDifference === 0) {
+          clearInterval(intervalID);
+          this.submitPaper();  // 提交试卷
+        }
+      }, 1000);
+    }
   }
-  componentWillUnmount() {
-    window.clearInterval(this.state.secondTime)
-  }
-
 
   showModal = () => {
     this.setState({ visible: true });
@@ -71,13 +69,13 @@ export default class ShowTests extends React.Component {
 
 
   render() {
-    const { tableArr, visible, isWatch, isOver, nowtime, secondTime } = this.state;
+    const { tableArr, visible, isWatch, isOver, timeDifference, endTime, } = this.state;
     const arr = handleRemainingTime(tableArr, 1)[0];
     // const time = arr[0].remaining_time;
     // console.log('#',time)
 
     return(
-      <div className="candidate-site-layout">
+      <div className="tests-box">
         <div className="test-box">
           {
             tableArr.map(item => {
@@ -92,7 +90,8 @@ export default class ShowTests extends React.Component {
           }
         </div>
         <div className="inform-box">
-          <div className="inform-box-time">{ secondTime }</div>
+          <CountDown endTime={ endTime }/>
+
           <Button 
             type="primary" 
             className="submit-button"
@@ -109,7 +108,7 @@ export default class ShowTests extends React.Component {
             cancelText="取消"
           >
             {
-              '距离试卷截止时间 ' + (nowtime) + ' ，如果你确定要提前交卷，请务必填写如下内容：'
+              '距离试卷截止时间 ' + (timeDifference) + ' ，如果你确定要提前交卷，请务必填写如下内容：'
             }
             本人已 <Input placeholder='完成该试卷'/> 现 <Input placeholder='确定提前交卷' />
           </Modal>
