@@ -1,3 +1,5 @@
+import { PAPER_STATUS } from "common/const";
+
 export function getUrlParam(key: string) {
   // 获取参数
   const url = window.location.search;
@@ -32,7 +34,7 @@ export function getCookie() {
 export function getDays(start: string, end: string, diff?: number) {
   const left = new Date(start);
   const right = new Date(end);
-  const ms = right.getTime() - left.getTime();
+  const ms = Math.abs(right.getTime() - left.getTime());
   const s = ms / 1000 % 60;
   const day = Math.floor(ms / 1000 / 60 / 60 / 24);
   const hour   = Math.floor(ms/ 1000 / 60 / 60 - (24 * day));
@@ -49,17 +51,6 @@ export function getDays(start: string, end: string, diff?: number) {
   }
   const retTime = '剩余 ' + day + ' 天 ' + hour + ' 小时 ' + minute + ' 分钟 ' + s + ' 秒'; 
   return retTime;
-  // const date1Str = start.split("-");//将日期字符串分隔为数组,数组元素分别为年.月.日
-  // //根据年 . 月 . 日的值创建Date对象
-  // const date1Obj = new Date(date1Str[0],(date1Str[1]-1),date1Str[2]);
-  // const date2Str = end.split("-");
-  // const date2Obj = new Date(date2Str[0],(date2Str[1]-1),date2Str[2]);
-  // const t1 = date1Obj.getTime();
-  // const t2 = date2Obj.getTime();
-  // const dateTime = 1000 * 60 * 60 * 24; //每一天的毫秒数
-  // const minusDays = Math.floor(((t2 - t1) / dateTime));//计算出两个日期的天数差
-  // const days = Math.abs(minusDays);//取绝对值
-  // return days;
 }
 // 求出某一天的倒计时
 export function residueTime(comp: any) {
@@ -92,7 +83,7 @@ export function nowTime() {
 // 获取后端返回的试卷数据，对试卷剩余答题时间进行处理
 export function handleRemainingTime(arr: any, status: any) {
   let nodoArr: any[] = [], doingArr: any[] = [], doneArr: any[] = [], allArr: any[] = [];
-  arr.map((item: any) => {
+  arr.map(async (item: any) => {
     const timeBegin = item.time_begin || item.paper.time_begin;
     const timeEnd = item.time_end || item.paper.time_end;
     // 获取当前时间，yyyy-mm-dd hh-mm-ss 格式
@@ -103,18 +94,24 @@ export function handleRemainingTime(arr: any, status: any) {
 
     if (item.remaining_time === true || item.paper.remaining_time === true) {
       // 求出日期之间的天数
-      // const remaining_time = getDays(timeBegin, timeEnd) - getDays(timeBegin, nowtime) + 1;
       const remaining_time = getDays(nowtime, timeEnd);
       item.remaining_time = remaining_time;
       doingArr.push(item);
-    } else if (nowtime < timeBegin) {
-      item.remaining_time = '试卷未开放';
-      nodoArr.push(item);
-    } else if (timeEnd < nowtime) {
-      item.remaining_time = '试卷已过期';
+    } else if (item.remaining_time === false && timeEnd > nowtime) {
+      item.remaining_time = PAPER_STATUS.DONE;
       doneArr.push(item);
+    } else if (timeEnd < nowtime) {
+      item.remaining_time = PAPER_STATUS.OVERDUE;
+      doneArr.push(item);
+    } else if (nowtime < timeBegin) {
+      item.remaining_time = PAPER_STATUS.NODO;
+      nodoArr.push(item);
     }
   })
+  // console.log('doneArr', doneArr)
+  // console.log('doingArr', doingArr)
+  // console.log('nodoArr', nodoArr)
+  // console.log('allArr', allArr)
   if (status === 1) {
     return doingArr;
   } else if (status === 0) {

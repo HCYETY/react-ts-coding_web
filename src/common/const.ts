@@ -1,4 +1,4 @@
-export const REQUESTIP: string = "http://localhost:8080/api";
+export const REQUESTIP: string = "http://120.79.193.126:8080/api";
 export const LOGIN: string = '/login';
 export const INTERVIEWER: string = '/interviewer';
 export const EDIT: string = '/edit';
@@ -54,3 +54,9 @@ export const THEME = ['vs', 'vs-dark', 'hc-black'];
 //   VS_DARK = 'vs-dark',
 //   HC_BLACK = 'hc-black',
 // };
+
+export enum PAPER_STATUS {
+  NODO = '试卷未开放',
+  DONE = '试卷已提交',
+  OVERDUE = '试卷已过期',
+}

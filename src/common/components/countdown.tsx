@@ -5,27 +5,42 @@ import { getDays, nowTime } from 'common/utils';
 export default class CountDown extends React.Component<any, any> {
 
   state = {
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
+    days: 1,
+    hours: 1,
+    minutes: 1,
+    seconds: 1,
   }
 
   componentDidMount = () => {
-    this.countDown();
+    // 获取更新后的 this.props.over ，这里使用 setTimeout ，或许有更好的方法？
+    setTimeout(() => {
+      if (this.props.over === true) {
+        this.setState({
+          days: 0,
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+        })
+      } else {
+        this.countDown();
+      }
+    }, 500);
   };
   
 	countDown = () => {
     this.timer = setInterval(() => {
       const nowtime = nowTime();
       const endtime = this.props.endTime;
+      const { days, hours, minutes, seconds } = this.state;
       this.setState({
         days: getDays(nowtime, endtime, 1),
         hours: getDays(nowtime, endtime, 2),
         minutes: getDays(nowtime, endtime, 3),
         seconds: getDays(nowtime, endtime, 4),
       })
-      console.log('hhhhhhhhhhhhhhhhhhh')
+      if (days===0 && hours===0 && minutes===0 && seconds===0) {
+        this.props.submitPaper();
+      }
     }, 1000);
 	}
   timer: NodeJS.Timeout;

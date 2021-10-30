@@ -10,7 +10,7 @@ import {
 import 'style/candidate.css';
 import { showPaper } from 'api/modules/interface';
 import { getCookie, handleRemainingTime, } from 'common/utils';
-import { SHOW_TESTS } from 'common/const';
+import { SHOW_TESTS,  } from 'common/const';
 
 const { TabPane } = Tabs;
 
@@ -25,12 +25,22 @@ export default class Candidate extends React.Component<any, any> {
 
   componentDidMount() {
     const cookie = getCookie();
-    showPaper({ cookie: cookie}).then(res => {
+    showPaper({ cookie: cookie }).then(res => {
       console.log('res', res)
       const doingArr = handleRemainingTime(res.data, 1);
-      const allArr = handleRemainingTime(res.data, 2);
-      const nodoArr = handleRemainingTime(res.data, 0);
+      // this.setState({ doingExam: doingArr });
       const doneArr = handleRemainingTime(res.data, -1);
+      // this.setState({ doneExam: doneArr });
+      const allArr = handleRemainingTime(res.data, 2);
+      // this.setState({ allExam: allArr });
+      const nodoArr = handleRemainingTime(res.data, 0);
+      // this.setState({ nodoExam: nodoArr });
+
+      // console.log('===========doneArr', doneArr)
+      // console.log('===========doingArr', doingArr)
+      // console.log('===========allArr', allArr)
+      // console.log('===========nodoArr', nodoArr)
+
       this.setState({ 
         allExam: allArr, 
         nodoExam: nodoArr, 

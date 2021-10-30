@@ -55,7 +55,6 @@ export default class Wangeditors extends Component<Props,state> {
 			PubSub.publish('testAnswer', { test: editor.txt.html() })
 		}
 		editor.create()
-		editor.txt.html('<h1>你好呀，我是syandeg</h1>')
 	};
 
 	componentWillUnmount() {

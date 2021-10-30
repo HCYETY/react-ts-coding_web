@@ -73,6 +73,7 @@ export default class Modify extends React.Component<any, any> {
     const { tableArr, inform } = this.state;
     values.modifyTests = tableArr;
     values.oldPaper = inform.paper;
+    console.log(values)
     const res = await modifyPaper(values);
     if (res.data.status) {
       message.success(res.msg);
