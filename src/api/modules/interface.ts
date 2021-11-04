@@ -5,12 +5,16 @@ export async function sendEmail(data?: any) {
   return post('/email', data);
 }
 // 登录接口
-export async function testLogin(data: { email: string; cypher: string; }) {
+export async function testLogin(data: { email?: string; cypher?: string; cookie?: string }) {
   return post('/login', data);
 }
 // 注册接口
 export async function testRegister(data: { email: string; cypher: string; captcha: string; identity: number}) {
   return post('/register', data);
+}
+// 退出登录接口
+export async function loginOut(data: { cookie: string }) {
+  return post('/login_out', data);
 }
 
 // 获取试卷接口

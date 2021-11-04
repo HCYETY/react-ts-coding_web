@@ -62,7 +62,6 @@ export default class Login extends PureComponent<any> {
       // 登录成功
       if (res.data.isLogin === true) {
         message.success(res.msg);
-        // token存储完毕，在当前页跳转至项目首页
         if (res.data.interviewer === true) {
           window.location.href = INTERVIEWER;
         } else {

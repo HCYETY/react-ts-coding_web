@@ -46,13 +46,6 @@
   - 未登录状态下，若访问非登录页，则跳转至登录页
   - 登录状态下，随意访问
 
-12. `npm run build` react项目并部署到服务器上，通过配置nginx反向代理等已经可以访问，但只加载了标题，页面仍是白屏状态？
-原因：
-解决方法：服务器上找到 nginx 安装路径下的 conf 中的 nginx.conf，修改其中 server 的
-
-13. 通过nginx实现跨域？
-
-
 14. 路由跳转后找不到文件路径，报错404?
 当我将本地打包后的前端项目（dist文件夹）上传到服务器的 /usr/local/nginx/html/ 目录下后，在 nginx 正常启动、服务器防火墙以及安全组开放对应端口的前提下，我兴高采烈地打开我的 ip 地址，如我预料的成功打开了前端项目的页面。于是我开始登录注册，但老天爷似乎总喜欢跟人开玩笑，我登录跳转后居然报错：404 Not Found。根据我的另一篇文章 [解决报错的思路]()，这时我应该查看 url 的情况，看它是否符合预期
 > [react部署完以后，刷新页面会报错找不到视图](https://www.jianshu.com/p/ffb7e3445414)
@@ -68,22 +61,9 @@ TypeError: node_ssh is not a constructor
 const node_ssh = require('node-ssh').NodeSSH;
 const ssh = new node_ssh();
 ```
-16. 启动 pm2 报错：Process or Namespace ./src/app not found
-```
-[PM2][ERROR] Process or Namespace ./src/app.ts not found
-[PM2][ERROR] Interpreter /www/server/nvm/versions/node/v14.17.6/lib/node_modules/pm2/node_modules/.bin/ts-node is NOT AVAILABLE in PATH. (type 'which /www/server/nvm/versions/node/v14.17.6/lib/node_modules/pm2/node_modules/.bin/ts-node' to double check.)
-```
-先看第二个报错，这是因为我的服务器安装了宝塔面板，并在面板里安装了 pm2 管理器，导致与服务器的 pm2 冲突。于是我把宝塔面板中的 pm2 管理器卸载，就没有这个报错了。
-那么还有第一个报错，貌似说找不到这个文件？于是我用 xshell 工具连接服务器，在上面启动 pm2 ，但发现居然也不行，
+16. 
 
-17. 将项目中的脚本上传至服务器并执行时报错：npm: command not found？
-```
-deploy.sh: line 2: npm: command not found
-/usr/bin/env: node: No such file or directory
-/usr/bin/env: node: No such file or directory
-```
-根据网上的解决方法，正解本来应该是 用绝对路径设置软链 ，但笔者的情况很特殊，是由于 /usr/bin/env 命令被修改，导致找不到 node ，这也是在我多方尝试无果之后向阿里提交工单，大佬给出的回复。而大佬的解决方法便是从版本相同的主机 copy 一份 /usr/bin/env 命令到我本机上，这才恢复正常。
-注：在服务器上的操作大家一定要慎重，误删文件可能会导致各种很难解决的 bug ，这已经是我第二次遇到特殊情况了。
+17. 
 
 18. 不能加载静态资源？
 ![](img/6.png)
@@ -97,21 +77,6 @@ onRow = {(record) => {
       console.log(record);//这里是点击行的数据，可以把需要的数据存入state，然后在操作栏调用
     }
   }
-}
-```
-
-20. 获取地址栏中 "?xxx=xxx" ，包括中文字段？
-```js
-// 自定义函数获取
-export function getUrlParam(key: string) {
-  // 获取参数
-  const url = window.location.search;
-  // 正则筛选地址栏
-  const reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
-  // 匹配目标参数
-  const result = url.substr(1).match(reg);
-  //返回参数值
-  return result ? decodeURIComponent(result[2]) : null;
 }
 ```
 

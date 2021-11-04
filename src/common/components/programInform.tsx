@@ -7,8 +7,10 @@ import {
   ExperimentOutlined,
 } from '@ant-design/icons';
 
+import 'style/ProgramInform.tsx'
 import { getUrlParam } from 'common/utils';
 import { showTest } from 'api/modules/interface';
+import Wangeditor from './wangeditor';
 
 export default class ProgramInform extends React.Component {
   state = {
@@ -63,7 +65,7 @@ export default class ProgramInform extends React.Component {
             }
             key='comments'
           >
-
+            <Wangeditor />
           </Tabs.TabPane>
 
           <Tabs.TabPane 
