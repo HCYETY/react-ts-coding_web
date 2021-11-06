@@ -7,7 +7,7 @@ import {
   ExperimentOutlined,
 } from '@ant-design/icons';
 
-import 'style/ProgramInform.tsx'
+import 'style/programInform.less'
 import { getUrlParam } from 'common/utils';
 import { showTest } from 'api/modules/interface';
 import Wangeditor from './wangeditor';

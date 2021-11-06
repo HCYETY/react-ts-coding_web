@@ -91,7 +91,9 @@ export default class Tabler extends React.Component<any, any> {
   // 将添加的试题加载到 testArr 数组中，在调用接口的时候作为参数传递
   addTest = async (values: any) => {
     const { tableArr, testInform, testAnswer } = this.state;
+    // let sign: any[] = [];
     let sign = null;
+    console.log('1', this.state.tableArr)
     tableArr.map(item => {
       if (item['testName'] === values.testName) {
         sign = item['testName'];
@@ -99,6 +101,8 @@ export default class Tabler extends React.Component<any, any> {
       }
     })
     if (!sign) {
+    // if (sign.indexOf(values.testName) === -1) {
+    //   sign.push(values.testName)
       const obj = {
         key: values.testName,
         num: getTestNum(),
@@ -113,6 +117,7 @@ export default class Tabler extends React.Component<any, any> {
         tableArr: [...tableArr, obj],
         visible: false, 
       });
+      console.log('2', this.state.tableArr)
       this.props.getTest(this.state.tableArr);
     } else {
       message.error('添加的试题名不能重复');
@@ -129,6 +134,8 @@ export default class Tabler extends React.Component<any, any> {
       // 要渲染的数据
       this.state.tableArr.forEach(item => {
         if (item && item['testName'] === record) {
+          PubSub.publish('modifyTest', { test: item['description'] })
+          PubSub.publish('modifyAnswer', { answer: item['answer'] })
           form.setFieldsValue(item);
           return;
         }
@@ -158,7 +165,6 @@ export default class Tabler extends React.Component<any, any> {
 
   render() {
     const { selectedRowKeys, visible, button, tableArr, } = this.state;
-    console.log('=========', tableArr)
     const rowSelection = {
       onChange: this.onSelectChange,
       selectedRowKeys,
@@ -265,7 +271,7 @@ export default class Tabler extends React.Component<any, any> {
                 { required: true }
               ]}
             >
-              <Input/>
+              <Input placeholder="请填写该试题的名称"/>
             </Form.Item>
 
             <Form.Item 
@@ -292,7 +298,7 @@ export default class Tabler extends React.Component<any, any> {
                 { required: true }
               ]}
             >
-              <Select  style={{ width: 120 }}>
+              <Select style={{ width: 120 }} placeholder="请选择该试题的难度">
                 <Select.Option value="简单" key="easy">简单</Select.Option>
                 <Select.Option value="中等" key="middle">中等</Select.Option>
                 <Select.Option value="困难" key="hard">困难</Select.Option>
@@ -311,7 +317,7 @@ export default class Tabler extends React.Component<any, any> {
                 mode="multiple"
                 allowClear
                 style={{ width: '100%' }}
-                placeholder="Please select"
+                placeholder="请选择该试题的标签"
               >
                 {
                   TAGS.map((arr: any) => {
@@ -331,7 +337,7 @@ export default class Tabler extends React.Component<any, any> {
                 { required: true }
               ]}
             >
-              <InputNumber min={0}/>
+              <InputNumber min={0} placeholder="请输入该试题的分数"/>
             </Form.Item>
 
             <Form.Item>

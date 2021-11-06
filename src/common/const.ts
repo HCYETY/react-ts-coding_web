@@ -1,4 +1,4 @@
-export const REQUESTIP: string = "http://120.79.193.126:8080/api";
+export const REQUESTIP: string = "http://localhost:8080/api";
 export const LOGIN: string = '/login';
 export const INTERVIEWER: string = '/interviewer';
 export const EDIT: string = '/edit';

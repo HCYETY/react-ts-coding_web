@@ -10,7 +10,7 @@ interface Props{
 
 }
 interface state{
-	editorContent:string
+	editorContent: string,
 }
 
 let editor: E = null;
@@ -19,10 +19,10 @@ export default class Wangeditor extends Component<Props,state> {
 	constructor(props:Props) {
 		super(props);
 		this.state = {
-			editorContent:''
+			editorContent:'',
 		};
 	}
-
+	
 	componentDidMount() {
 		editor = new E('#div1');
 		editor.config.placeholder = '请输入面试题的相关信息'
@@ -51,6 +51,9 @@ export default class Wangeditor extends Component<Props,state> {
 		editor.config.onchange = () => {
 			PubSub.publish('testInform', { test: editor.txt.html() })
 		}
+		PubSub.subscribe('modifyTest', (_, data) => {
+			editor.txt.html(data.test);
+    });
 		editor.create()
 	};
 

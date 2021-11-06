@@ -25,15 +25,15 @@ export default class Candidate extends React.Component<any, any> {
 
   componentDidMount() {
     const cookie = getCookie();
-    showPaper({ cookie: cookie }).then(res => {
-      console.log('res', res)
-      const doingArr = handleRemainingTime(res.data, 1);
+    showPaper({ cookie: cookie }).then(ret => {
+      const res = ret.data.show;
+      const doingArr = handleRemainingTime(res, 1);
       // this.setState({ doingExam: doingArr });
-      const doneArr = handleRemainingTime(res.data, -1);
+      const doneArr = handleRemainingTime(res, -1);
       // this.setState({ doneExam: doneArr });
-      const allArr = handleRemainingTime(res.data, 2);
+      const allArr = handleRemainingTime(res, 2);
       // this.setState({ allExam: allArr });
-      const nodoArr = handleRemainingTime(res.data, 0);
+      const nodoArr = handleRemainingTime(res, 0);
       // this.setState({ nodoExam: nodoArr });
 
       // console.log('===========doneArr', doneArr)

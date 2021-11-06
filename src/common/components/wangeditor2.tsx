@@ -54,6 +54,9 @@ export default class Wangeditors extends Component<Props,state> {
 		editor.config.onchange = () => {
 			PubSub.publish('testAnswer', { test: editor.txt.html() })
 		}
+		PubSub.subscribe('modifyAnswer', (_, data) => {
+			editor.txt.html(data.answer);
+    });
 		editor.create()
 	};
 

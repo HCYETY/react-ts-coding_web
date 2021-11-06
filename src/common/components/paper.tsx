@@ -6,12 +6,22 @@ import {
   Radio,
   Select,
 } from 'antd';
+import { candidateInform } from 'src/api/modules/interface';
 
 export default class Paper extends React.Component {
 
+  state = {
+    candidateEmail: [] = [],
+  }
 
+  onFocus = () => {
+    candidateInform().then(item => {
+      this.setState({ candidateEmail: item.data.ret });
+    })
+  }
 
   render() {
+    const { candidateEmail } = this.state;
 
     return(
       <>
@@ -24,7 +34,7 @@ export default class Paper extends React.Component {
           ]}
           className="paper"
         >
-          <Input />
+          <Input placeholder="添加本试卷的名称"/>
         </Form.Item>
 
         <Form.Item
@@ -33,18 +43,19 @@ export default class Paper extends React.Component {
           label="试卷描述" 
           className="paperDescription"
         >
-          <Input.TextArea/>
+          <Input.TextArea placeholder="添加本试卷的相关描述"/>
         </Form.Item>
 
         <Form.Item 
           name="timeBegin" 
           key="timeBegin"
-          label="试卷开始时间" 
+          label="试卷开放时间" 
           className="time"
           >
           <DatePicker 
             showTime={{ format: 'HH:mm' }}
             format="YYYY-MM-DD HH:mm" 
+            placeholder="选择开放日期"
           />
         </Form.Item>
 
@@ -57,6 +68,7 @@ export default class Paper extends React.Component {
           <DatePicker 
             showTime={{ format: 'HH:mm' }}
             format="YYYY-MM-DD HH:mm" 
+            placeholder="选择试卷截止日期"
           />
         </Form.Item>
 
@@ -81,12 +93,24 @@ export default class Paper extends React.Component {
           key="candidate"
           label="邀请候选人答卷（选填）"
         >
-          <Select 
-            mode="tags" 
-            style={{ width: '100%' }} 
-            placeholder="输入想邀请的候选人的邮箱账号" 
+          <Select
+            showSearch
+            mode="multiple"
+            placeholder="输入想邀请的候选人的邮箱账号"
+            // optionFilterProp="children"
+            onFocus={ this.onFocus }
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
           >
-            {/* <Select.Option key={i.toString(36) + i}></Select.Option> */}
+            {
+              candidateEmail.map((item: any) => {
+                console.log(item)
+                return(
+                  <Select.Option value={ item } key={ item }>{ item }</Select.Option>
+                )
+              })
+            }
           </Select>
         </Form.Item>
 

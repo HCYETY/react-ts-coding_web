@@ -6,6 +6,7 @@ import {
   Popover,
   Menu,
   Dropdown,
+  Popconfirm,
 } from 'antd';
 import { 
   UserOutlined,
@@ -16,18 +17,19 @@ import {
 } from '@ant-design/icons';
 
 import 'style/basic.less';
-import { loginOut } from 'src/api/modules/interface';
+import { logout } from 'src/api/modules/interface';
 import { getCookie } from 'common/utils';
 import { LOGIN } from 'common/const';
 const { Header } = Layout;      
 
 export default class Head extends React.PureComponent{
 
-  loginout = () => {
+  logOut = () => {
     const cookie = getCookie();
-    loginOut({ cookie: cookie }).then(res => {
-      console.log(res);
-      if (res.data.status) {
+    console.log(cookie)
+    logout({ cookie: cookie }).then(res => {
+      console.log(res)
+      if (res.data.status === true) {
         window.location.href = LOGIN;
       }
     })
@@ -43,14 +45,28 @@ export default class Head extends React.PureComponent{
         <Menu.Item key="1">
           <a href="https://www.aliyun.com"><ContainerOutlined />我的题解</a>
         </Menu.Item>
-        <Menu.Item key="1">
+        <Menu.Item key="2">
           <a href="https://www.aliyun.com"><StarOutlined />收藏夹</a>
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key="layout">
-          <a onClick={ this.loginout }>
+          <Popconfirm 
+            title="您确定要 退出登录 吗？" 
+            okText="确定" 
+            cancelText="取消" 
+            onConfirm={ this.logOut }
+          >
+            {/* <Button 
+              className="site-layout-content-button" 
+              icon={ <DeleteOutlined/> }
+              type="primary" 
+            >
+              删除试卷
+            </Button> */}
+          <a >
             <LogoutOutlined />退出登录
           </a>
+          </Popconfirm>
         </Menu.Item>
       </Menu>
     );

@@ -17,9 +17,8 @@ import 'style/show.less';
 import Navbar from 'common/components/navbar';
 import Foot from 'common/components/footer';
 import { ADD, FILTERS_LEVEL, FILTERS_STATUS, MODIFY } from 'common/const';
-import { showPaper, showTest } from 'api/modules/interface';
-import { deletePaper } from 'api/modules/interface';
-import { handleRemainingTime } from 'common/utils';
+import { showPaper, showTest, deletePaper } from 'api/modules/interface';
+import { getCookie, handleRemainingTime } from 'common/utils';
 import Head from 'src/common/components/header';
 
 const { Content } = Layout;
@@ -32,8 +31,9 @@ export default class Edit extends React.Component {
 
   // 在页面一渲染就立马从数据库中拿取所有试卷的数据
   componentDidMount() {
-    showPaper().then((result: any) => {
-      const res = result.data;
+    const cookie = getCookie();
+    showPaper({ cookie: cookie, interviewer: true }).then((result: any) => {
+      const res = result.data.show;
       const arr = handleRemainingTime(res, 2);
       this.setState({ data: arr });
     })

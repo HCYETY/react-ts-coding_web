@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Form, Input, Button, Checkbox, Card, Radio, message, Cascader, Row, Col } from 'antd';
+import { Form, Input, Button, Checkbox, Card, Radio, message, Row, Col, FormInstance } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import 'style/login.less';
 import logoImg from 'img/logo.png';
 import { sendEmail, testLogin, testRegister } from 'api/modules/interface';
 import { INTERVIEWER, CANDIDATE } from 'common/const';
+import { transTime } from 'src/common/utils';
 
 export default class Login extends PureComponent<any> {
   // 页签切换
@@ -21,34 +22,24 @@ export default class Login extends PureComponent<any> {
   getEmail = (event: any) => {
     this.setState({email: event.target.value});
   }
-  //倒计时
-  countDown() {
-    const { count } = this.state;
-    if (count === 0) {//当为0的时候，liked设置为true，button按钮显示内容为 获取验证码
-      this.setState({
-        count: 60,
-        liked: true,
-      })
-    } else {
-      this.setState({
-        count: count - 1,
-        liked: false,
-      })
-      console.log(this.state.count)
-      setTimeout(() => this.countDown(), 1000)//每一秒调用一次
-    }
-  }
+
+  formRef = React.createRef<FormInstance>();
   // 获取验证码
   sendCaptcha = () => {
-    sendEmail().then((ans) => {
-      console.log(ans)
+    // 得到 Form 实例
+    const form = this.formRef.current
+    // 使用 getFieldsValue 获取多个字段值
+    const email = form.getFieldValue('email')
+
+    sendEmail({ email }).then((ans) => {
       if (ans.data.status === false) {
         message.error(ans.msg);
       } else {
         message.success(ans.msg);
-        setTimeout(() => {
-          this.countDown();
-        }, 0)
+        const captchaTime = ans.data.captchaTime;
+        console.log(captchaTime);
+        const handleCaptchaTime = transTime(captchaTime);
+        console.log(handleCaptchaTime);
       }
     });
   }
@@ -58,7 +49,6 @@ export default class Login extends PureComponent<any> {
       const { email, cypher, remember } = values;
       const data = { email, cypher };
       const res = await testLogin(data);
-      console.log(res);
       // 登录成功
       if (res.data.isLogin === true) {
         message.success(res.msg);
@@ -76,9 +66,9 @@ export default class Login extends PureComponent<any> {
   // 注册
   submitRegister = async (values: any) => {
     try {
-      const { account, password, identity, email, cypher, captcha } = values;
-      const data = { email, cypher, captcha, identity };
-      const res = await testRegister(data);
+      // const { account, password, identity, email, cypher, captcha } = values;
+      // const data = { email, cypher, captcha, identity };
+      const res = await testRegister(values);
       // 注册成功
       if (res.data.status === true) {
         message.success(res.msg);
@@ -120,9 +110,6 @@ export default class Login extends PureComponent<any> {
             }, {
               min: 15, 
               message: '邮箱账号最少为 15 位数!'
-            }, {
-              max: 17, 
-              message: '邮箱账号最多为 17 位数!'
             }, {
               pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
               message: '邮箱账号不符合规范'
@@ -214,6 +201,7 @@ export default class Login extends PureComponent<any> {
         id="front"
         onFinish={ this.submitRegister }
         scrollToFirstError   // 提交失败自动滚动到第一个错误字段
+        ref={ this.formRef }
       >
         <Form.Item
           name="email"
@@ -227,15 +215,12 @@ export default class Login extends PureComponent<any> {
               min: 15,
               message: '邮箱最少为15位数！'
             }, {
-              max: 17,
-              message: '邮箱最多为17位数！'
-            }, {
               pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
               message: '邮箱账号不符合规范'
             }
           ]}
         >
-          <Input onChange={this.getEmail}/>
+          <Input onChange={ this.getEmail } ref="myEmail"/>
         </Form.Item>
         {/* <Form.Item
           name="account"

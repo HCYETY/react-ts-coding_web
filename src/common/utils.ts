@@ -84,12 +84,14 @@ export function nowTime() {
 export function handleRemainingTime(arr: any, status: any) {
   let nodoArr: any[] = [], doingArr: any[] = [], doneArr: any[] = [], allArr: any[] = [];
   arr.map(async (item: any) => {
-    const timeBegin = item.time_begin || item.paper.time_begin;
-    const timeEnd = item.time_end || item.paper.time_end;
+    const timeBegin = transTime(item.time_begin) || item.paper.time_begin;
+    const timeEnd = transTime(item.time_end) || item.paper.time_end;
     // 获取当前时间，yyyy-mm-dd hh-mm-ss 格式
     const nowtime = nowTime();
     item.check = item.check === true ? '是' : '否';
     item.key = item.paper.key || item.paper;
+    item.time_begin = timeBegin;
+    item.time_end = timeEnd;
     allArr.push(item);
 
     if (item.remaining_time === true || item.paper.remaining_time === true) {
@@ -121,4 +123,11 @@ export function handleRemainingTime(arr: any, status: any) {
   } else if (status === 2) {
     return allArr;
   }
+}
+
+// 转化日期控件时间值
+export function transTime(time: string) {
+  const timeDate = new Date(time).toJSON();
+  const getTime = new Date(+new Date(timeDate)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
+  return getTime;
 }

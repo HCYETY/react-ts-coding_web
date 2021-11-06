@@ -1,14 +1,9 @@
 import React from 'react';
 import { 
-  Layout, 
   Card, 
   Form, 
   Button, 
   message, 
-  Input, 
-  DatePicker, 
-  Select,
-  Radio,
 } from 'antd';
 import { modifyPaper } from 'api/modules/interface';
 import { showTest } from 'api/modules/interface';
@@ -46,12 +41,13 @@ export default class Modify extends React.Component<any, any> {
       for (let ch of testRes.data) {
         const obj = {
           key: ch.test_name,
-          num: ch.num,
+          // num: ch.num,
           testName: ch.test_name,
           description: ch.test,
-          tags: ch.tags,
-          level: ch.level,
-          point: ch.point,
+          ...ch
+          // tags: ch.tags,
+          // level: ch.level,
+          // point: ch.point,
         }
         arr.push(obj)
       }
@@ -73,7 +69,6 @@ export default class Modify extends React.Component<any, any> {
     const { tableArr, inform } = this.state;
     values.modifyTests = tableArr;
     values.oldPaper = inform.paper;
-    console.log(values)
     const res = await modifyPaper(values);
     if (res.data.status) {
       message.success(res.msg);
@@ -94,42 +89,40 @@ export default class Modify extends React.Component<any, any> {
       <div className="site-layout">
         <Navbar/>
 
-        {/* <Layout> */}
-          <div className="site-card-border-less-wrapper">
-            <Card  bordered={false}>
-              {!loading && (
-                <Form 
-                  name="nest-messages" 
-                  onFinish={this.onFinish} 
-                  initialValues={{ 
-                    paper: inform.paper,
-                    paperDescription: inform.paper_description,
-                    // timeBegin: inform.time_begin,
-                    // timeEnd: inform.time_end,
-                    answerTime: inform.answer_time,
-                    candidate: inform.candidate,
-                    check: inform.check,
-                  }}
-                >
-                  <h2 className="site-card-divide">试卷信息</h2> 
-                  <Paper />
+        <div className="site-card-border-less-wrapper">
+          <Card  bordered={false}>
+            {!loading && (
+              <Form 
+                name="nest-messages" 
+                onFinish={this.onFinish} 
+                initialValues={{ 
+                  paper: inform.paper,
+                  paperDescription: inform.paper_description,
+                  // timeBegin: inform.time_begin,
+                  // timeEnd: inform.time_end,
+                  answerTime: inform.answer_time,
+                  candidate: inform.candidate,
+                  check: inform.check,
+                }}
+              >
+                <h2 className="site-card-divide">试卷信息</h2> 
+                <Paper />
 
-                  <h2 className="site-card-divide">试题信息</h2> 
-                  <Tabler getTests={ tableArr } getTest={ this.getTest.bind(this) }/>
-                  
-                  <Form.Item wrapperCol={{ offset: 8 }}>
-                    <Button type="primary" htmlType="submit">
-                      保存修改
-                    </Button>
-                  </Form.Item>
-                </Form>
-              )}
+                <h2 className="site-card-divide">试题信息</h2> 
+                <Tabler getTests={ tableArr } getTest={ this.getTest.bind(this) }/>
+                
+                <Form.Item wrapperCol={{ offset: 8 }}>
+                  <Button type="primary" htmlType="submit">
+                    保存修改
+                  </Button>
+                </Form.Item>
+              </Form>
+            )}
 
-            </Card>
-          </div>
+          </Card>
+        </div>
 
-          <Foot/>
-        {/* </Layout> */}
+        <Foot/>
       </div>
     )
   }
