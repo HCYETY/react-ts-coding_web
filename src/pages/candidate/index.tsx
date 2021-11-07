@@ -9,7 +9,7 @@ import {
 
 import 'style/candidate.css';
 import { showPaper } from 'api/modules/interface';
-import { getCookie, handleRemainingTime, } from 'common/utils';
+import { getCookie, handleTime, } from 'common/utils';
 import { SHOW_TESTS,  } from 'common/const';
 
 const { TabPane } = Tabs;
@@ -27,13 +27,13 @@ export default class Candidate extends React.Component<any, any> {
     const cookie = getCookie();
     showPaper({ cookie: cookie }).then(ret => {
       const res = ret.data.show;
-      const doingArr = handleRemainingTime(res, 1);
+      const doingArr = handleTime(res, 1);
       // this.setState({ doingExam: doingArr });
-      const doneArr = handleRemainingTime(res, -1);
+      const doneArr = handleTime(res, -1);
       // this.setState({ doneExam: doneArr });
-      const allArr = handleRemainingTime(res, 2);
+      const allArr = handleTime(res, 2);
       // this.setState({ allExam: allArr });
-      const nodoArr = handleRemainingTime(res, 0);
+      const nodoArr = handleTime(res, 0);
       // this.setState({ nodoExam: nodoArr });
 
       // console.log('===========doneArr', doneArr)

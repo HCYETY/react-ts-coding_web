@@ -18,7 +18,7 @@ import Navbar from 'common/components/navbar';
 import Foot from 'common/components/footer';
 import { ADD, FILTERS_LEVEL, FILTERS_STATUS, MODIFY } from 'common/const';
 import { showPaper, showTest, deletePaper } from 'api/modules/interface';
-import { getCookie, handleRemainingTime } from 'common/utils';
+import { getCookie, handleTime } from 'common/utils';
 import Head from 'src/common/components/header';
 
 const { Content } = Layout;
@@ -34,7 +34,7 @@ export default class Edit extends React.Component {
     const cookie = getCookie();
     showPaper({ cookie: cookie, interviewer: true }).then((result: any) => {
       const res = result.data.show;
-      const arr = handleRemainingTime(res, 2);
+      const arr = handleTime(res, 2);
       this.setState({ data: arr });
     })
   }
@@ -42,14 +42,14 @@ export default class Edit extends React.Component {
   // 删除试卷的按钮事件
   delete = async () => {
     const arr = this.state.selectedRowKeys;
-    console.log(arr)
     if (arr.length !== 0) {
       const res = await deletePaper(arr);
-      res.data.map((ch: { check: string | number; key: string; paper: string; }) => {
-        ch.check = ch.check === 1 ? '是' : '否';
-        ch.key = ch.paper;
-      })
-      this.setState({ data: res.data });
+      const ret = handleTime(res, 2);
+      // res.data.map((ch: { check: string | number; key: string; paper: string; }) => {
+      //   ch.check = ch.check === 1 ? '是' : '否';
+      //   ch.key = ch.paper;
+      // })
+      this.setState({ data: ret });
       message.success(res.msg);
     }
   };
@@ -137,7 +137,7 @@ export default class Edit extends React.Component {
 
             <Table.ColumnGroup title="候选人">
               <Table.Column 
-                title="邮箱" 
+                title="邮箱账号" 
                 dataIndex="candidate" 
                 key="candidate" 
               />

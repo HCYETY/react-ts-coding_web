@@ -31,102 +31,73 @@ export function getCookie() {
 }
 
 // 求出日期之间的天数
-export function getDays(start: string, end: string, diff?: number) {
-  const left = new Date(start);
-  const right = new Date(end);
-  const ms = Math.abs(right.getTime() - left.getTime());
-  const s = ms / 1000 % 60;
+export function getDays(start: number, end: number, diff?: number) {
+  // const left = new Date(start);
+  // const right = new Date(end);
+  // const ms = Math.abs(right.getTime() - left.getTime());
+  const ms = Math.abs(end - start);
+  const s = Math.floor(ms / 1000 % 60);
   const day = Math.floor(ms / 1000 / 60 / 60 / 24);
   const hour   = Math.floor(ms/ 1000 / 60 / 60 - (24 * day));
   const minute  = Math.floor(ms / 1000 /60 - (24 * 60 * day) - (60 * hour));
-  
-  if (diff === 4) {
-    return s;
-  } else if (diff === 3) {
-    return minute;
-  } else if (diff === 2) {
-    return hour;
-  } else if (diff === 1) {
-    return day;
-  }
   const retTime = '剩余 ' + day + ' 天 ' + hour + ' 小时 ' + minute + ' 分钟 ' + s + ' 秒'; 
-  return retTime;
+  return diff === 4 ? s : diff === 3 ? minute : diff === 2 ? hour : diff === 1 ? day : retTime;
 }
+
 // 求出某一天的倒计时
-export function residueTime(comp: any) {
-  const endHour = comp.slice(12, 13);
-  const endMinutes = comp.slice(15);
-  const endSeconds = endHour * 60 *60 + endMinutes * 60;
+// export function residueTime(comp: any) {
+//   const time = transTime(comp);
+//   const endHour = time.slice(12, 13);
+//   const endMinutes = time.slice(15);
+//   const endSeconds = endHour * 60 *60 + endMinutes * 60;
 
-  const nowtime = new Date();
-  const nowHour = nowtime.getHours();
-  const nowMinutes = nowtime.getMinutes();
-  const nowSeconds = nowHour * 60 * 60 + nowMinutes * 60;
-  const dataTime = endSeconds - nowSeconds;
-  return dataTime;
-}
+//   const nowtime = new Date();
+//   const nowHour = nowtime.getHours();
+//   const nowMinutes = nowtime.getMinutes();
+//   const nowSeconds = nowHour * 60 * 60 + nowMinutes * 60;
+//   const dataTime = endSeconds - nowSeconds;
+//   return dataTime;
+// }
 
-// 获取当前时间，yyyy-mm-dd 格式
-// 如果某个数字只有一位数，则在前面补 0
-export function nowTime() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = (now.getMonth() + 1).toString().padStart(2,'0');
-  const day = now.getDate().toString().padStart(2,'0');
-  const hours = now.getHours().toString().padStart(2,'0');
-  const minutes = now.getMinutes().toString().padStart(2,'0');
-  const seconds = now.getSeconds();
-  const nowTime = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-  return nowTime;
-}
-
-// 获取后端返回的试卷数据，对试卷剩余答题时间进行处理
-export function handleRemainingTime(arr: any, status: any) {
+// 获取后端返回的试卷数据，对试卷时间数据进行处理
+export function handleTime(arr: any, status: any) {
   let nodoArr: any[] = [], doingArr: any[] = [], doneArr: any[] = [], allArr: any[] = [];
-  arr.map(async (item: any) => {
-    const timeBegin = transTime(item.time_begin) || item.paper.time_begin;
-    const timeEnd = transTime(item.time_end) || item.paper.time_end;
-    // 获取当前时间，yyyy-mm-dd hh-mm-ss 格式
-    const nowtime = nowTime();
-    item.check = item.check === true ? '是' : '否';
-    item.key = item.paper.key || item.paper;
+  arr.map((item: any) => {
+    console.log(item)
+    // 毫秒数
+    const timebegin = item.time_begin || item.paper.time_begin;
+    const timend = item.time_end || item.paper.time_end;
+    // yyyy-mm-dd hh:mm:ss 格式
+    const timeBegin = transTime(Number(timebegin));
+    const timeEnd = transTime(Number(timend));
+    const nowtime = new Date().getTime();
     item.time_begin = timeBegin;
     item.time_end = timeEnd;
+    item.check = item.check === true ? '是' : '否';
+    item.key = item.paper.key || item.paper;
     allArr.push(item);
 
     if (item.remaining_time === true || item.paper.remaining_time === true) {
       // 求出日期之间的天数
-      const remaining_time = getDays(nowtime, timeEnd);
+      const remaining_time = getDays(nowtime, timend);
       item.remaining_time = remaining_time;
       doingArr.push(item);
-    } else if (item.remaining_time === false && timeEnd > nowtime) {
+    } else if (item.remaining_time === false && timend > nowtime) {
       item.remaining_time = PAPER_STATUS.DONE;
       doneArr.push(item);
-    } else if (timeEnd < nowtime) {
+    } else if (timend < nowtime) {
       item.remaining_time = PAPER_STATUS.OVERDUE;
       doneArr.push(item);
-    } else if (nowtime < timeBegin) {
+    } else if (nowtime < timebegin) {
       item.remaining_time = PAPER_STATUS.NODO;
       nodoArr.push(item);
     }
   })
-  // console.log('doneArr', doneArr)
-  // console.log('doingArr', doingArr)
-  // console.log('nodoArr', nodoArr)
-  // console.log('allArr', allArr)
-  if (status === 1) {
-    return doingArr;
-  } else if (status === 0) {
-    return nodoArr;
-  } else if (status === -1) {
-    return doneArr;
-  } else if (status === 2) {
-    return allArr;
-  }
+  return status === 1 ? doingArr : status === 0 ? nodoArr : status === -1 ? doneArr : allArr;
 }
 
 // 转化日期控件时间值
-export function transTime(time: string) {
+export function transTime(time: number) {
   const timeDate = new Date(time).toJSON();
   const getTime = new Date(+new Date(timeDate)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
   return getTime;

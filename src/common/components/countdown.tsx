@@ -1,6 +1,6 @@
 import React from 'react';
 import 'style/countDown.less';
-import { getDays, nowTime } from 'common/utils';
+import { getDays } from 'common/utils';
 
 export default class CountDown extends React.Component<any, any> {
 
@@ -29,7 +29,7 @@ export default class CountDown extends React.Component<any, any> {
   
 	countDown = () => {
     this.timer = setInterval(() => {
-      const nowtime = nowTime();
+      const nowtime = new Date().getTime();
       const endtime = this.props.endTime;
       const { days, hours, minutes, seconds } = this.state;
       this.setState({

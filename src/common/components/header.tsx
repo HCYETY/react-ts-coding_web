@@ -30,6 +30,8 @@ export default class Head extends React.PureComponent{
     logout({ cookie: cookie }).then(res => {
       console.log(res)
       if (res.data.status === true) {
+        const cookie = getCookie();
+        document.cookie = `session=${ cookie }; max-age=-1`    // 删除cookie
         window.location.href = LOGIN;
       }
     })

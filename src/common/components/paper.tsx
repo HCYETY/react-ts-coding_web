@@ -22,7 +22,10 @@ export default class Paper extends React.Component {
 
   render() {
     const { candidateEmail } = this.state;
-
+    // const disabledDate = (current: number) => {
+    //   return current < moment().startOf('day');
+    // }
+  
     return(
       <>
         <Form.Item 
@@ -55,7 +58,8 @@ export default class Paper extends React.Component {
           <DatePicker 
             showTime={{ format: 'HH:mm' }}
             format="YYYY-MM-DD HH:mm" 
-            placeholder="选择开放日期"
+            placeholder="选择试卷开放日期"
+            // disabledDate={ disabledDate }
           />
         </Form.Item>
 
@@ -86,6 +90,7 @@ export default class Paper extends React.Component {
             <Radio.Button value="2小时">2小时</Radio.Button>
             <Radio.Button value="2小时30分钟">2小时30分钟</Radio.Button>
           </Radio.Group>
+          {/* <a >&nbsp;手动设置</a> */}
         </Form.Item>
 
         <Form.Item 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button, message, Input } from 'antd';
 
 import 'style/showTests.less';
-import { residueTime, getDays, getUrlParam, handleRemainingTime, nowTime, getCookie } from 'common/utils';
+import { getDays, getUrlParam, handleTime, getCookie } from 'common/utils';
 import TestAlone from 'common/components/testAlone';
 import CountDown from 'common/components/countdown';
 import { showTest, candidateInform } from 'api/modules/interface';
@@ -52,7 +52,7 @@ export default class ShowTests extends React.Component {
 
   render() {
     const { tableArr, visible, isWatch, isOver, endTime, } = this.state;
-    const arr = handleRemainingTime(tableArr, 1)[0];
+    const arr = handleTime(tableArr, 1)[0];
     // const time = arr[0].remaining_time;
     // console.log('#',time)
 

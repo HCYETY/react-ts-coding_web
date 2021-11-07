@@ -215,6 +215,7 @@ export default class Tabler extends React.Component<any, any> {
         ),
       },
     ];
+    // console.log(tableArr)
 
     return(
       <div>

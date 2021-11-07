@@ -8,8 +8,7 @@ import {
 } from '@ant-design/icons';
 
 import 'style/testAlone.less';
-import { handleRemainingTime } from 'common/utils';
-import { nowTime } from 'common/utils';
+// import { nowTime } from 'common/utils';
 import { SHOW_TESTS, TEST, WATCH_TEST } from 'common/const';
 
 export default class TestAlone extends React.Component<any, any> {
@@ -25,7 +24,7 @@ export default class TestAlone extends React.Component<any, any> {
       check = item.check, 
       timeBegin = item.paper.time_begin, 
       timeEnd = item.paper.time_end;
-    const nowtime = nowTime();
+    const nowtime = new Date().getTime();
 
     function doJump() {
       if (nowtime < timeBegin || timeEnd < nowtime) {

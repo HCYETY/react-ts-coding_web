@@ -38,23 +38,23 @@ export default class Modify extends React.Component<any, any> {
     const req = { paper: url };
     showTest(req).then((testRes) => {
       const arr = [];
-      for (let ch of testRes.data) {
+      for (let ch of testRes.data.show) {
         const obj = {
           key: ch.test_name,
-          // num: ch.num,
+          num: ch.num,
           testName: ch.test_name,
           description: ch.test,
-          ...ch
-          // tags: ch.tags,
-          // level: ch.level,
-          // point: ch.point,
+          // ...ch
+          tags: ch.tags,
+          level: ch.level,
+          point: ch.point,
         }
         arr.push(obj)
       }
       this.setState({
         tableArr: arr,
         loading: false,
-        inform: testRes.data[0].paper
+        inform: testRes.data.show[0].paper
       });
     });
   }
@@ -98,8 +98,8 @@ export default class Modify extends React.Component<any, any> {
                 initialValues={{ 
                   paper: inform.paper,
                   paperDescription: inform.paper_description,
-                  // timeBegin: inform.time_begin,
-                  // timeEnd: inform.time_end,
+                  // timeBegin: moment(inform.time_begin, 'YYYY-MM-DD'),
+                  // timeEnd: moment(inform.time_end, 'YYYY-MM-DD'),
                   answerTime: inform.answer_time,
                   candidate: inform.candidate,
                   check: inform.check,
