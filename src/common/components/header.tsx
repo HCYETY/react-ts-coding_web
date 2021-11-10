@@ -42,13 +42,13 @@ export default class Head extends React.PureComponent{
     const menu = (
       <Menu>
         <Menu.Item key="0">
-          <a href="https://www.antgroup.com"><FileOutlined />个人信息</a>
+          <a href="https://www.antgroup.com"><FileOutlined/>&nbsp;个人信息</a>
         </Menu.Item>
         <Menu.Item key="1">
-          <a href="https://www.aliyun.com"><ContainerOutlined />我的题解</a>
+          <a href="https://www.aliyun.com"><ContainerOutlined/>&nbsp;我的题解</a>
         </Menu.Item>
         <Menu.Item key="2">
-          <a href="https://www.aliyun.com"><StarOutlined />收藏夹</a>
+          <a href="https://www.aliyun.com"><StarOutlined/>&nbsp;收藏夹</a>
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key="layout">
@@ -66,7 +66,7 @@ export default class Head extends React.PureComponent{
               删除试卷
             </Button> */}
           <a >
-            <LogoutOutlined />退出登录
+            <LogoutOutlined/>&nbsp;退出登录
           </a>
           </Popconfirm>
         </Menu.Item>
@@ -78,11 +78,11 @@ export default class Head extends React.PureComponent{
         <div className="all-header-div"></div>
         <div className="all-header">
           
-          <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
-            <div className="all-header-avatar-box">
+          <div className="all-header-avatar-box">
+            <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
               <Avatar className="all-header-avatar" size="large" icon={<UserOutlined />} />
-            </div>
-          </Dropdown>
+            </Dropdown>
+          </div>
 
         </div>
       </>

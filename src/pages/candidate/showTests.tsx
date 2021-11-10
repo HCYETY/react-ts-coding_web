@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button, message, Input } from 'antd';
+import { Modal, Button, message, Input, Statistic } from 'antd';
 
 import 'style/showTests.less';
 import { getDays, getUrlParam, handleTime, getCookie } from 'common/utils';
@@ -18,7 +18,8 @@ export default class ShowTests extends React.Component {
     visible: false,
     isWatch: false,
     isOver: false,
-    endTime: '',
+    endTime: 0,
+    time: '',
   }
 
   async componentDidMount() {
@@ -26,19 +27,36 @@ export default class ShowTests extends React.Component {
     const ans = await candidateInform(obj);
     const ret = ans.data.candidateInform[0];
     this.setState({ 
-      tableArr: res.data,
+      tableArr: res.data.show,
       isWatch: ret.watch,
       isOver: ret.over,
-      endTime: ret.time_end,
+      endTime: Number(ret.time_end),
     });
   }
 
+  // 显示“提交试卷”抽屉，并执行倒计时函数
   showModal = () => {
     this.setState({ visible: true });
+    this.countdown(this.state.endTime);
   };
   hideModal = () => {
     this.setState({ visible: false });
+    clearInterval(this.timer);
   }
+
+  // “提交试卷”抽屉中剩余时间倒计时
+  timer: NodeJS.Timer = null;
+  countdown = (endTime: number) => {
+    const arr = handleTime(this.state.tableArr, 1);
+    console.log(arr)
+    const time = arr && arr[0] ? arr[0].remaining_time : null;
+    console.log('#',time)
+    this.timer = setInterval(() => {
+      this.countdown(this.state.endTime)
+    }, 1000);
+  }
+
+  // 提交试卷事件
   submitPaper = () => {
     obj.sign = true;
     candidateInform(obj).then(res => {
@@ -51,16 +69,13 @@ export default class ShowTests extends React.Component {
 
 
   render() {
-    const { tableArr, visible, isWatch, isOver, endTime, } = this.state;
-    const arr = handleTime(tableArr, 1)[0];
-    // const time = arr[0].remaining_time;
-    // console.log('#',time)
+    const { tableArr, visible, isWatch, isOver, endTime, time, } = this.state;
 
     return(
       <div className="tests-box">
         <div className="test-box">
           {
-            tableArr.map(item => {
+            tableArr && tableArr.map(item => {
               return(
                 <TestAlone 
                   values={ item } 
@@ -72,11 +87,18 @@ export default class ShowTests extends React.Component {
           }
         </div>
         <div className="inform-box">
-          <CountDown 
+          {/* <CountDown 
             over={ isOver }
             endTime={ endTime } 
             submitPaper={ this.submitPaper.bind(this) }
-          />
+          /> */}
+          <div className="inform-box-countdown">
+            <Statistic.Countdown 
+              title="试卷剩余时间" 
+              value={ endTime } 
+              format="D 天 H 时 m 分 s 秒" 
+            />
+          </div>
 
           <Button 
             type="primary" 
@@ -95,7 +117,7 @@ export default class ShowTests extends React.Component {
             cancelText="取消"
           >
             {
-              '距离试卷截止时间 ' + (endTime) + ' ，如果你确定要提前交卷，请务必填写如下内容：'
+              '距离试卷截止时间 ' + (time) + ' ，如果你确定要提前交卷，请务必填写如下内容：'
             }
             本人已 <Input placeholder='完成该试卷'/> 现 <Input placeholder='确定提前交卷' />
           </Modal>

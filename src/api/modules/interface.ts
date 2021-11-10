@@ -34,7 +34,7 @@ export function modifyPaper(data: any) {
   return post('/modify_paper', data);
 }
 // 候选人信息接口
-export function candidateInform(data?: { paper?: string; sign?: boolean; cookie?: string; test?: string; code?: string; }) {
+export function candidateInform(data?: { paper?: string; cookie?: string; test?: string; filter?: string}) {
   return post('/candidate_inform', data);
 }
 
@@ -43,7 +43,7 @@ export function addTest(data: any) {
   return post('/add_test', data);
 }
 // 获取试题接口
-export function showTest(data?: { paper?: string; sign?: boolean; cookie?: string; test?: string; }) {
+export function showTest(data: { paper?: string; test?: string; }) {
   return post('/show_test', data);
 }
 

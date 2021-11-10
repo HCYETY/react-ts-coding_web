@@ -1,6 +1,6 @@
 import React from 'react';
 import { Select, } from 'antd';
-import { PROGRAM_LANGUAGE, THEME } from 'src/common/const';
+import { PROGRAM_LANGUAGE, PROGRAM_THEME } from 'src/common/const';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
 import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution';
 import 'monaco-editor/esm/vs/editor/contrib/find/findController.js';
@@ -10,7 +10,7 @@ let monacoInstance: monaco.editor.IStandaloneCodeEditor = null;
 export default class CodeEditor extends React.Component<any, any> {
   state = {
     language: 'javascript',
-    theme: 'vs',
+    theme: PROGRAM_THEME.VS,
   }
 
   // 组件挂载后加载编辑器
@@ -19,7 +19,7 @@ export default class CodeEditor extends React.Component<any, any> {
       value: `console.log("hello,world")`,
       contextmenu: true,
       language:"javascript",
-      theme: 'vs',
+      theme: PROGRAM_THEME.VS,
     });
 
     // 获取编辑器的内容
@@ -72,7 +72,7 @@ export default class CodeEditor extends React.Component<any, any> {
             {
               PROGRAM_LANGUAGE.map(item => {
                 return(
-                  <Select.Option value={ item }> { item } </Select.Option>
+                  <Select.Option value={ item } key={ item }> { item } </Select.Option>
                 )
               })
             }

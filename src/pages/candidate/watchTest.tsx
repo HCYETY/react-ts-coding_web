@@ -1,6 +1,6 @@
 import React from 'react';
 
-import 'style/programInform.less';
+// import 'style/programInform.less';
 import ProgramInform from 'common/components/programInform';
 
 export default class App extends React.Component {

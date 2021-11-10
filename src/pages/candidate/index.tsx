@@ -7,7 +7,7 @@ import {
 import {
 } from '@ant-design/icons';
 
-import 'style/candidate.css';
+import 'style/candidateExam.css';
 import { showPaper } from 'api/modules/interface';
 import { getCookie, handleTime, } from 'common/utils';
 import { SHOW_TESTS,  } from 'common/const';
@@ -27,19 +27,15 @@ export default class Candidate extends React.Component<any, any> {
     const cookie = getCookie();
     showPaper({ cookie: cookie }).then(ret => {
       const res = ret.data.show;
-      const doingArr = handleTime(res, 1);
-      // this.setState({ doingExam: doingArr });
-      const doneArr = handleTime(res, -1);
-      // this.setState({ doneExam: doneArr });
       const allArr = handleTime(res, 2);
-      // this.setState({ allExam: allArr });
+      const doingArr = handleTime(res, 1);
+      const doneArr = handleTime(res, -1);
       const nodoArr = handleTime(res, 0);
-      // this.setState({ nodoExam: nodoArr });
 
-      // console.log('===========doneArr', doneArr)
-      // console.log('===========doingArr', doingArr)
-      // console.log('===========allArr', allArr)
-      // console.log('===========nodoArr', nodoArr)
+      console.log('===========doneArr', doneArr)
+      console.log('===========doingArr', doingArr)
+      console.log('===========allArr', allArr)
+      console.log('===========nodoArr', nodoArr)
 
       this.setState({ 
         allExam: allArr, 
@@ -67,7 +63,7 @@ export default class Candidate extends React.Component<any, any> {
       },
       { 
         title: '试卷总分数', 
-        dadaIndex: 'paper_point', 
+        dataIndex: 'paper_point',
         key: 'paper_point',
         sorter: (a: any, b: any) => a.paper_point - b.paper_point,
       },

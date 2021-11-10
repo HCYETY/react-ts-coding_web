@@ -176,7 +176,6 @@ await paperRepository.delete({ paper: ctx.request.paper });
 
 
 待改进：
-1. “获取验证码”按钮更改字样？111
 2. 面试题模块导航栏高亮更新？
 3. 候选人邮箱展示美观？
 4. 头部导航栏的设置？
@@ -188,5 +187,3 @@ await paperRepository.delete({ paper: ctx.request.paper });
 10. 代码中间高度不写死？
 11. “题目列表”补充？111
 12. 表格剩余时间动态渲染？111
-13. 倒计时动画效果？
-14. 服务器的部署？111

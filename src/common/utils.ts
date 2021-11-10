@@ -1,4 +1,4 @@
-import { PAPER_STATUS } from "common/const";
+import { TEST_LEVEL, PAPER_STATUS } from "common/const";
 
 export function getUrlParam(key: string) {
   // 获取参数
@@ -44,26 +44,10 @@ export function getDays(start: number, end: number, diff?: number) {
   return diff === 4 ? s : diff === 3 ? minute : diff === 2 ? hour : diff === 1 ? day : retTime;
 }
 
-// 求出某一天的倒计时
-// export function residueTime(comp: any) {
-//   const time = transTime(comp);
-//   const endHour = time.slice(12, 13);
-//   const endMinutes = time.slice(15);
-//   const endSeconds = endHour * 60 *60 + endMinutes * 60;
-
-//   const nowtime = new Date();
-//   const nowHour = nowtime.getHours();
-//   const nowMinutes = nowtime.getMinutes();
-//   const nowSeconds = nowHour * 60 * 60 + nowMinutes * 60;
-//   const dataTime = endSeconds - nowSeconds;
-//   return dataTime;
-// }
-
 // 获取后端返回的试卷数据，对试卷时间数据进行处理
-export function handleTime(arr: any, status: any) {
+export function handleTime(arr: any, status: number) {
   let nodoArr: any[] = [], doingArr: any[] = [], doneArr: any[] = [], allArr: any[] = [];
   arr.map((item: any) => {
-    console.log(item)
     // 毫秒数
     const timebegin = item.time_begin || item.paper.time_begin;
     const timend = item.time_end || item.paper.time_end;
@@ -77,7 +61,7 @@ export function handleTime(arr: any, status: any) {
     item.key = item.paper.key || item.paper;
     allArr.push(item);
 
-    if (item.remaining_time === true || item.paper.remaining_time === true) {
+    if (item.remaining_time === true || item.paper.remaining_time === true){
       // 求出日期之间的天数
       const remaining_time = getDays(nowtime, timend);
       item.remaining_time = remaining_time;
@@ -85,8 +69,8 @@ export function handleTime(arr: any, status: any) {
     } else if (item.remaining_time === false && timend > nowtime) {
       item.remaining_time = PAPER_STATUS.DONE;
       doneArr.push(item);
-    } else if (timend < nowtime) {
-      item.remaining_time = PAPER_STATUS.OVERDUE;
+    } else if (item.remaining_time === false && timend < nowtime) {
+      item.remaining_time = PAPER_STATUS.OVER;
       doneArr.push(item);
     } else if (nowtime < timebegin) {
       item.remaining_time = PAPER_STATUS.NODO;
@@ -101,4 +85,15 @@ export function transTime(time: number) {
   const timeDate = new Date(time).toJSON();
   const getTime = new Date(+new Date(timeDate)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
   return getTime;
+}
+
+// 获取试卷难度
+export function getExamLevel(difficulty: string) {
+  if (difficulty === TEST_LEVEL.EASY) {
+    return TEST_LEVEL.EASY_KEY;
+  } else if (difficulty === TEST_LEVEL.MIDDLE) {
+    return TEST_LEVEL.MIDDLE_KEY;
+  } else if (difficulty === TEST_LEVEL.HARD) {
+    return TEST_LEVEL.HARD_KEY;
+  } 
 }

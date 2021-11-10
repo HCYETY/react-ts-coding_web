@@ -1,0 +1,118 @@
+.ant-drawer-wrapper-body{
+  background: rgb(23, 33, 51);
+  color: rgba(175,180,189,1);
+}
+.top{
+  border-bottom: 1px solid rgb(107, 119, 136);
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.top-left{
+}
+.top-right{
+  display: flex;
+  align-items: end;
+}
+.top-gap{
+  width: 10px;
+}
+.top-button{
+  width: 32px;
+  height: 32px;
+  flex: 1 1 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-color: rgba(132,139,150,1);
+  background: rgb(23, 33, 51);
+  color: white;
+}
+
+.filter-box{
+  width: 100%;
+  display: flex;
+}
+.filter-button{
+  height: 24px;
+  line-height: 24px;
+  border: 1px solid white;
+  border-radius: 12px;
+  margin: 3px 5px 3px 0px;
+  padding: 5px 10px;
+
+  display: flex;
+  align-items: center;
+  color: rgba(255,255,255,1);
+}
+.filter-button-delete{
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  margin-left: 20px;
+}
+.exist{
+  border-bottom: 1px solid rgb(107, 119, 136);
+  margin-top: 15px;
+  padding-bottom: 10px;
+}
+.exist-content{
+  display: flex;
+  flex-wrap: wrap;
+  padding: 5px 0px;
+}
+.exist-icon{
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+.exist-content-box{
+  display: flex;
+  width: 50%;
+  padding-bottom: 5px;
+}
+.exist-content-span{
+  width: 65px;
+  height: 32px;
+  line-height: 32px;
+}
+
+.content-box{
+  cursor: pointer;
+}
+.content-test-box{
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 0px 10px 0px 0px;
+  height: 40px;
+  line-height: 40px;
+}
+.content-test-left{
+  display: flex;
+}
+.content-test-box:hover{
+  background: rgba(247,248,250, 0.3);
+}
+.easy{
+  color: rgba(0,175,155,1);
+}
+.middle{
+  color: rgba(255,184,0,1);
+}
+.hard{
+  color: rgba(255,45,85,1);
+}
+.content-test-icon{
+  width: 15px;
+  height: 36px;
+  min-width: 10px;
+  line-height: 36px;
+  background: transparent;
+}
+.content-test-font{
+  color: rgba(175,180,189,1);
+}
+.content-test-right{
+  justify-self: end;
+}

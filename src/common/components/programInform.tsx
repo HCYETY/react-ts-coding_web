@@ -7,10 +7,12 @@ import {
   ExperimentOutlined,
 } from '@ant-design/icons';
 
-import 'style/programInform.less'
-import { getUrlParam } from 'common/utils';
+// import 'style/code.css';
+// import 'style/program.less'
+import { getExamLevel, getUrlParam } from 'common/utils';
 import { showTest } from 'api/modules/interface';
 import Wangeditor from './wangeditor';
+import { TEST_LEVEL } from '../const';
 
 export default class ProgramInform extends React.Component {
   state = {
@@ -20,8 +22,7 @@ export default class ProgramInform extends React.Component {
   componentDidMount() {
     const url = getUrlParam('test');
     showTest({ test: url }).then(res => {
-      console.log(res.data)
-      this.setState({ testInform: res.data })
+      this.setState({ testInform: res.data.show })
     })
   }
 
@@ -34,7 +35,7 @@ export default class ProgramInform extends React.Component {
 
     return(
       <>
-        <Tabs onChange={ this.callback } type="card" tabBarGutter={0} size='large'>
+        <Tabs onChange={ this.callback }>
           <Tabs.TabPane  
             tab={
               <span>
@@ -43,15 +44,14 @@ export default class ProgramInform extends React.Component {
               </span>
             }
             key='test'
-            // className="tabs-header"
           >
-            <div className="left-top">
+            <div className="describe-top">
               <h3>{ testInform['num'] }. { testInform['test_name'] }</h3>
-              <div className="left-top-tag">
-                <span>难度：{ testInform['level'] }</span>
+              <div className="describe-top-tag">
+                难度：<span className={ getExamLevel(testInform['level']) }>{ testInform['level'] }</span>
               </div>
             </div>
-            <div className="left-content">
+            <div className="describe-content">
               <span dangerouslySetInnerHTML = {{ __html: testInform['test']}}></span>
             </div>
           </Tabs.TabPane>

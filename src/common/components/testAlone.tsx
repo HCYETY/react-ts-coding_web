@@ -10,6 +10,7 @@ import {
 import 'style/testAlone.less';
 // import { nowTime } from 'common/utils';
 import { SHOW_TESTS, TEST, WATCH_TEST } from 'common/const';
+import { getExamLevel } from '../utils';
 
 export default class TestAlone extends React.Component<any, any> {
   render() {
@@ -62,26 +63,11 @@ export default class TestAlone extends React.Component<any, any> {
             </div>
           </div>
 
-          <div className="content">
-            <h3 className={ (level === '简单') ? 'easy' : (level === '中等') ? 'middle' : 'hard' }>{ level }</h3>
-            {/* <span>
-              {
-                tags.map((tag: any) => {
-                  let color = tag.length > 2 ? 'geekblue' : 'green';
-                  if (tag === 'loser') {
-                    color = 'volcano';
-                  }
-                  return (
-                    <Tag color={color} key={tag}>
-                      {tag}
-                    </Tag>
-                  );
-                })
-              }
-            </span> */}
+          <div className="content content-level">
+            <h3 className={ getExamLevel(level) }>{ level }</h3>
           </div>
 
-          <div className="content">
+          <div className="content content-point">
             <h3 >分数：{ point }</h3>
           </div>
 
