@@ -5,12 +5,13 @@ import 'style/showTests.less';
 import { getDays, getUrlParam, handleTime, getCookie } from 'common/utils';
 import TestAlone from 'common/components/testAlone';
 import CountDown from 'common/components/countdown';
-import { showTest, candidateInform } from 'api/modules/interface';
+import { showTest } from 'api/modules/test/interface';
+import { search, submit } from 'api/modules/candidate/interface';
 import { CANDIDATE } from 'common/const';
 
 const url = getUrlParam('paper');
 const cookie = getCookie();
-const obj = { paper: url, sign: false, cookie: cookie };
+const obj = { paper: url, cookie: cookie };
 
 export default class ShowTests extends React.Component {
   state = {
@@ -24,7 +25,7 @@ export default class ShowTests extends React.Component {
 
   async componentDidMount() {
     const res = await showTest(obj);
-    const ans = await candidateInform(obj);
+    const ans = await search(obj);
     const ret = ans.data.candidateInform[0];
     this.setState({ 
       tableArr: res.data.show,
@@ -58,8 +59,7 @@ export default class ShowTests extends React.Component {
 
   // 提交试卷事件
   submitPaper = () => {
-    obj.sign = true;
-    candidateInform(obj).then(res => {
+    submit(obj).then(res => {
       if (res.data.status) {
         message.success(res.msg);
         window.location.href = CANDIDATE;

@@ -10,7 +10,7 @@ import {
 // import 'style/code.css';
 // import 'style/program.less'
 import { getExamLevel, getUrlParam } from 'common/utils';
-import { showTest } from 'api/modules/interface';
+import { showTest } from 'api/modules/test/interface';
 import Wangeditor from './wangeditor';
 import { TEST_LEVEL } from '../const';
 

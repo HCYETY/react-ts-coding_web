@@ -11,7 +11,8 @@ import {
 } from '@ant-design/icons';
 import { FormInstance } from 'antd/es/form';
 
-import { addPaper, addTest } from 'api/modules/interface';
+import { addTest } from 'api/modules/test/interface';
+import { addPaper } from 'api/modules/paper/interface';
 import Navbar from 'common/components/navbar';
 import Foot from 'common/components/footer';
 import Tabler from 'common/components/tabler';

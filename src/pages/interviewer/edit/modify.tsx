@@ -5,8 +5,8 @@ import {
   Button, 
   message, 
 } from 'antd';
-import { modifyPaper } from 'api/modules/interface';
-import { showTest } from 'api/modules/interface';
+import { modifyPaper } from 'api/modules/paper/interface';
+import { showTest } from 'api/modules/test/interface';
 import { EDIT, TAGS } from 'common/const';
 import { getUrlParam } from 'common/utils';
 import Navbar from 'common/components/navbar';

@@ -1,14 +1,11 @@
 import React from 'react';
-import { Button, Form, Input, Select, Drawer, Divider, Radio, } from 'antd';
+import { Button, Select, Drawer, Radio, Input, } from 'antd';
 import {
-  EllipsisOutlined,
-  CheckSquareOutlined,
   LeftOutlined,
   RightOutlined,
   UnorderedListOutlined,
   CaretRightOutlined,
   DownOutlined,
-  InfoCircleOutlined,
   FilterOutlined,
   CheckOutlined,
   DeleteOutlined,
@@ -21,8 +18,10 @@ import 'style/program.less';
 import CodeEditor from 'common/components/codeEditor';
 import ProgramInform from 'common/components/programInform';
 import { getCookie, getExamLevel, getUrlParam } from 'common/utils';
-import { showTest, saveCode, candidateInform } from 'api/modules/interface';
-import { PROGRAM_LANGUAGE, TEST, PROGRAM_THEME, TEST_LEVEL, TEST_STATUS, } from 'src/common/const';
+import { search, submit } from 'api/modules/candidate/interface';
+import { TEST, PROGRAM_THEME, TEST_LEVEL, TEST_STATUS, } from 'src/common/const';
+
+const cookie = getCookie();
 
 export default class Program extends React.Component {
 
@@ -41,17 +40,17 @@ export default class Program extends React.Component {
   }
 
   componentDidMount() {
-    const cookie = getCookie();
-    candidateInform({ cookie }).then(res => {
-      const arr: string | any[] = [];
-      res.data.ret.map((item: any) => {
-        item.test_status === TEST_STATUS.DONE_KEY ? TEST_STATUS.DONE : item.test_status === TEST_STATUS.DOING_KEY ? TEST_STATUS.DOING : TEST_STATUS.NODO;
+    search({ cookie }).then(res => {
+      const ret = res.data.ret;
+      const arr: string[] = [];
+      arr.push('全部试卷')
+      ret.map((item: any) => {
         if (arr.indexOf(item.paper) === -1) {
           arr.push(item.paper);
         } 
       })
       this.setState({ 
-        examTest: res.data.ret,
+        examTest: ret,
         exam: arr
       });
     })
@@ -61,12 +60,11 @@ export default class Program extends React.Component {
   getProgramCode = (value: any) => {
     this.setState({ code: value })
   }
-  // 提交代码，需要验证代码的正确性（待完善）
+  // 提交代码，需要验证代码的正确性（待完善），如果正确则将 status 改为 true
   submitCode = async () => {
     const { code } = this.state;
     const url = getUrlParam('test');
-    const obj = { test: url, code: code };
-    const res = await candidateInform(obj);
+    const res = await submit({ testName: url, code: code, status: false });
     console.log(res);
   }
 
@@ -84,9 +82,16 @@ export default class Program extends React.Component {
     this.setState({ visible: false });
   }
 
-  // 选中“搜索题目”按钮时请求试题信息
-  onChange = () => {
-    this.setState({ examTest: })
+  // 选中“搜索试卷”按钮时请求试卷信息
+  searchExam = async (value: string, option: any) => {
+    const res = await search({ cookie, paper: value });
+    this.setState({ examTest: res.data.candidateInform });
+  }
+  // 选中“搜索试题”按钮时请求试题信息
+  searchTest = async (value: string) => {
+    const res = await search({ cookie, testName: value });
+    console.log(res)
+    this.setState({ examTest: res.data.ret });
   }
 
   // 筛选试题
@@ -111,7 +116,7 @@ export default class Program extends React.Component {
       console.log('buhao')
       this.setState({
         test_filter: test_filter.map(item => {
-          item === sign ? filter: item;
+          item === sign ? filter : item;
         })
       })
     }
@@ -127,7 +132,7 @@ export default class Program extends React.Component {
 
     // console.log(arr)
     // test_filter[0].level = filter;
-    const res = await candidateInform({ cookie, filter });
+    const res = await search({ cookie, filter });
     this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
     // console.log('xxxxxxxxxxx', test_filter)
   }
@@ -136,18 +141,25 @@ export default class Program extends React.Component {
     const filter: string = node.target.value;
     const { test_filter } = this.state;
     const sign = TEST_STATUS.NODO || TEST_STATUS.DOING || TEST_STATUS.DONE;
-    const arr: any[] = test_filter.length > 0 ? test_filter : [];
+    const arr: any[] = test_filter;
     if (arr.length === 0) {
-      arr.push(filter);
+      arr[0] = filter;
     } else {
       arr.map(item => {
-        item = item === sign ? filter: item;
-        console.log(item)
+        // console.log('1', item)
+        if (item === sign) {
+          item = filter;
+          // return;
+        }
+        // console.log('2', item)
       })
     }
+    console.log(arr)
+    // this.setState({ test_filter: arr });
     // test_filter[0].level = filter;
-    candidateInform({ cookie, filter }).then(res => {
+    search({ cookie, filter }).then(res => {
       this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
+      // console.log(this.state.test_filter)
     })
   }
 
@@ -220,7 +232,7 @@ export default class Program extends React.Component {
                       style={{ width: 200 }}
                       placeholder={ exam && exam[0] }
                       optionFilterProp="children"
-                      onChange={ this.onChange } // 选中 option，或 input 的 value 变化时，调用此函数
+                      onChange={ this.searchExam } // 选中 option，或 input 的 value 变化时，调用此函数
                       filterOption={(input, option) =>
                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       }
@@ -237,24 +249,29 @@ export default class Program extends React.Component {
 
                   <div className="top-right">
                     {/* 搜索全部试题，包括该候选人的其他试卷下的试题 */}
+                    {/* <Input.Search 
+                      defaultValue="搜索题目" 
+                      onChange={ this.searchTest } 
+                      style={{ width: 200 }} 
+                    /> */}
                     <Select
                       showSearch
+                      open={ false }
                       style={{ width: 200 }}
                       placeholder="搜索题目"
-                      optionFilterProp="children"
-                      onChange={ this.onChange } // 选中 option，或 input 的 value 变化时，调用此函数
-                      onFocus={ this.onFocus } // 	获得焦点时回调
-                      filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                      // optionFilterProp="children"
+                      onSearch={ this.searchTest } // 文本框值变化时回调		
+                      // filterOption={(input, option) =>
+                      //   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      // }
                     >
-                      {
+                      {/* {
                         examTest.map(item => {
                           return(
                             <Select.Option value={ item['test_name'] } key={ item['test_name'] }>{ item['test_name'] }</Select.Option>
                           )
                         })
-                      }
+                      } */}
                     </Select>
                     <div className="top-gap"></div>
                     {/* “筛选”按钮 */}
@@ -271,8 +288,7 @@ export default class Program extends React.Component {
                       // style={{ width: 200 }}
                       placeholder={ count }
                       optionFilterProp="children"
-                      onChange={ this.onChange } // 选中 option，或 input 的 value 变化时，调用此函数
-                      onFocus={ this.onFocus } // 	获得焦点时回调
+                      // onChange={ this.onChange } // 选中 option，或 input 的 value 变化时，调用此函数
                     >
                       {
                         exam.map(item => {

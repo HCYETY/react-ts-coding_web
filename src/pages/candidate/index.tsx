@@ -8,7 +8,7 @@ import {
 } from '@ant-design/icons';
 
 import 'style/candidateExam.css';
-import { showPaper } from 'api/modules/interface';
+import { showPaper } from 'api/modules/paper/interface';
 import { getCookie, handleTime, } from 'common/utils';
 import { SHOW_TESTS,  } from 'common/const';
 

@@ -17,7 +17,7 @@ import 'style/show.less';
 import Navbar from 'common/components/navbar';
 import Foot from 'common/components/footer';
 import { ADD, MODIFY } from 'common/const';
-import { showPaper, showTest, deletePaper } from 'api/modules/interface';
+import { showPaper, deletePaper } from 'api/modules/paper/interface';
 import { getCookie, handleTime } from 'common/utils';
 import Head from 'src/common/components/header';
 

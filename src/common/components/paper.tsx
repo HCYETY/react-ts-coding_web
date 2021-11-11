@@ -6,7 +6,7 @@ import {
   Radio,
   Select,
 } from 'antd';
-import { candidateInform } from 'src/api/modules/interface';
+import { search } from 'api/modules/candidate/interface';
 
 export default class Paper extends React.Component {
 
@@ -15,8 +15,8 @@ export default class Paper extends React.Component {
   }
 
   onFocus = () => {
-    candidateInform().then(item => {
-      this.setState({ candidateEmail: item.data.ret });
+    search().then(item => {
+      this.setState({ candidateEmail: item.data.candidateInform });
     })
   }
 
