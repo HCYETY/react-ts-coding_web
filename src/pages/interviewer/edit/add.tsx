@@ -4,6 +4,7 @@ import {
   Button, 
   message, 
   Drawer,
+  Layout
 } from 'antd';
 import { 
   RightOutlined, 
@@ -19,7 +20,6 @@ import Tabler from 'common/components/tabler';
 import Paper from 'common/components/paper';
 import { EDIT } from 'common/const';
 import { getCookie } from 'src/common/utils';
-import { Content } from '_antd@4.16.13@antd/lib/layout/layout';
 
 export default class Add extends React.Component<any, any> {
   modalRef = React.createRef<FormInstance>();
@@ -90,7 +90,7 @@ export default class Add extends React.Component<any, any> {
       <div className="site-layout">
         <Navbar/>
 
-        <Content className="site-layout-content">
+        <Layout.Content className="site-layout-content">
 
           <Button 
             className="form-button-right"
@@ -137,7 +137,7 @@ export default class Add extends React.Component<any, any> {
           </Drawer>
 
           <Tabler getTest={ this.getTest.bind(this) }/>
-        </Content>
+        </Layout.Content>
       </div>
     )
   }

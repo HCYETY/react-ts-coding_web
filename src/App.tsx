@@ -8,6 +8,7 @@ import Interviewer from 'pages/interviewer';
 import Edit from 'pages/interviewer/edit/show';
 import Add from 'pages/interviewer/edit/add';
 import Modify from 'pages/interviewer/edit/modify';
+import LookOver from 'pages/interviewer/consult/lookOver';
 import ShowTests from 'pages/candidate/showTests';
 import WatchTest from 'pages/candidate/WatchTest';
 import Program from 'pages/candidate/program';
@@ -22,7 +23,8 @@ import {
   MODIFY, 
   SHOW_TESTS, 
   TEST, 
-  WATCH_TEST 
+  WATCH_TEST,
+  LOOK_OVER,
 } from './common/const';
 
 class App extends PureComponent {
@@ -43,14 +45,18 @@ class App extends PureComponent {
           <Router>
             <Switch>
               <Route path={ LOGIN } component={ Login }></Route>
+
               <Route path={ INTERVIEWER } component={ Interviewer }></Route>
               <Route path={ EDIT } component={ Edit }></Route>
               <Route path={ ADD } component={ Add }></Route>
-              <Route path={ MODIFY} component={ Modify }></Route>
+              <Route path={ MODIFY } component={ Modify }></Route>
+              <Route path={ LOOK_OVER } component={ LookOver }></Route>
+
               <Route path={ CANDIDATE } component={ Candidate }></Route>
               <Route path={ SHOW_TESTS } component={ ShowTests }></Route>
               <Route path={ WATCH_TEST } component={ WatchTest }></Route>
               <Route path={ TEST } component={ Program }></Route>
+              
               <Redirect to={ LOGIN }></Redirect>
             </Switch>
           </Router>

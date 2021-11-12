@@ -90,7 +90,6 @@ export default class Program extends React.Component {
   // 选中“搜索试题”按钮时请求试题信息
   searchTest = async (value: string) => {
     const res = await search({ cookie, testName: value });
-    console.log(res)
     this.setState({ examTest: res.data.ret });
   }
 
@@ -140,26 +139,20 @@ export default class Program extends React.Component {
     const cookie = getCookie();
     const filter: string = node.target.value;
     const { test_filter } = this.state;
-    const sign = TEST_STATUS.NODO || TEST_STATUS.DOING || TEST_STATUS.DONE;
     const arr: any[] = test_filter;
     if (arr.length === 0) {
       arr[0] = filter;
     } else {
       arr.map(item => {
-        // console.log('1', item)
-        if (item === sign) {
+        console.log((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE))
+        if ((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE)) {
           item = filter;
-          // return;
+          return;
         }
-        // console.log('2', item)
       })
     }
-    console.log(arr)
-    // this.setState({ test_filter: arr });
-    // test_filter[0].level = filter;
     search({ cookie, filter }).then(res => {
       this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
-      // console.log(this.state.test_filter)
     })
   }
 
@@ -200,8 +193,10 @@ export default class Program extends React.Component {
       { value: '标签', placeholder: '标签' },
     ]
     const existChoice = [
-      { value: '难度', radio: level, func: this.choiceLevel },
-      { value: '状态', radio: status, func: this.choiceStatus },
+      { value: '难度', radio: level },
+      { value: '状态', radio: status },
+      // { value: '难度', radio: level, func: this.choiceStatus },
+      // { value: '状态', radio: status, func: this.choiceStatus },
     ]
     // console.log('哈哈哈哈哈哈哈哈哈哈哈哈', test_filter, test_filter.length)
     // console.log('dddddddd', examTest)
@@ -346,7 +341,8 @@ export default class Program extends React.Component {
                                 options={ item.radio }  
                                 optionType="button"
                                 buttonStyle="solid"
-                                onChange={ item.func }
+                                onChange={ this.choiceStatus }
+                                className="background-button"
                               />
                             </div>
                           )

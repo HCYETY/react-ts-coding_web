@@ -9,7 +9,7 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 import 'style/basic.less';
-import { EDIT, INTERVIEWER } from '../const';
+import { EDIT, INTERVIEWER, LOOK_OVER } from '../const';
 
 export default class Navbar extends React.PureComponent {
 
@@ -67,12 +67,16 @@ export default class Navbar extends React.PureComponent {
       >
         <div className="all-left-logo" />
 
+        <Menu.Item key="interviewer" icon={ <PieChartOutlined />} >
+          <NavLink to={ INTERVIEWER }>面试题展示</NavLink>
+        </Menu.Item>
+
         <Menu.Item key="edit" icon={ <DesktopOutlined />} >
           <NavLink to={ EDIT }>面试题管理</NavLink>
         </Menu.Item>
 
-        <Menu.Item key="interviewer" icon={ <PieChartOutlined />} >
-          <NavLink to={ INTERVIEWER }>面试题展示</NavLink>
+        <Menu.Item key="lookOver" icon={ <DesktopOutlined />} >
+          <NavLink to={ LOOK_OVER }>阅卷</NavLink>
         </Menu.Item>
 
         <Menu.SubMenu key="sub2" icon={<AppstoreOutlined />} title="Navigation Two">

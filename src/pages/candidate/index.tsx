@@ -10,7 +10,7 @@ import {
 import 'style/candidateExam.css';
 import { showPaper } from 'api/modules/paper/interface';
 import { getCookie, handleTime, } from 'common/utils';
-import { SHOW_TESTS,  } from 'common/const';
+import { PAPER_STATUS, SHOW_TESTS,  } from 'common/const';
 
 const { TabPane } = Tabs;
 
@@ -22,20 +22,26 @@ export default class Candidate extends React.Component<any, any> {
     doingExam: [] = [],
     doneExam: [] = [],
   };
+  timer: NodeJS.Timer;
 
   componentDidMount() {
+    this.countdown();
+  }
+  countdown = () => {
     const cookie = getCookie();
     showPaper({ cookie: cookie }).then(ret => {
-      const res = ret.data.show;
-      const allArr = handleTime(res, 2);
-      const doingArr = handleTime(res, 1);
-      const doneArr = handleTime(res, -1);
-      const nodoArr = handleTime(res, 0);
+      const allArr = handleTime(ret.data.show);
+      let nodoArr: any[] = [], doingArr: any[] = [], doneArr: any[] = [];
 
-      console.log('===========doneArr', doneArr)
-      console.log('===========doingArr', doingArr)
-      console.log('===========allArr', allArr)
-      console.log('===========nodoArr', nodoArr)
+      allArr.map(item => {
+        if (item['remaining_time'] === PAPER_STATUS.NODO) {
+          nodoArr.push(item);
+        } else if (item['remaining_time'] === PAPER_STATUS.DONE || item['remaining_time'] === PAPER_STATUS.OVER) {
+          doneArr.push(item);
+        } else {
+          doingArr.push(item);
+        }
+      })
 
       this.setState({ 
         allExam: allArr, 
@@ -44,6 +50,10 @@ export default class Candidate extends React.Component<any, any> {
         doneExam: doneArr 
       });
     });
+    this.timer = setTimeout(() => { this.countdown() }, 1000);
+  }
+  componentWillUnmount() {
+    clearTimeout(this.timer);
   }
 
 

@@ -7,7 +7,7 @@ import TestAlone from 'common/components/testAlone';
 import CountDown from 'common/components/countdown';
 import { showTest } from 'api/modules/test/interface';
 import { search, submit } from 'api/modules/candidate/interface';
-import { CANDIDATE } from 'common/const';
+import { CANDIDATE, TEST_STATUS } from 'common/const';
 
 const url = getUrlParam('paper');
 const cookie = getCookie();
@@ -17,7 +17,7 @@ export default class ShowTests extends React.Component {
   state = {
     tableArr: [] = [],
     visible: false,
-    isWatch: false,
+    isWatch: true,
     isOver: false,
     endTime: 0,
     time: '',
@@ -27,10 +27,11 @@ export default class ShowTests extends React.Component {
     const res = await showTest(obj);
     const ans = await search(obj);
     const ret = ans.data.candidateInform[0];
+    ret.test_status = ret.test_status === TEST_STATUS.DONE ? true : false;
     this.setState({ 
       tableArr: res.data.show,
       isWatch: ret.watch,
-      isOver: ret.over,
+      isOver: ret.test_status,
       endTime: Number(ret.time_end),
     });
   }

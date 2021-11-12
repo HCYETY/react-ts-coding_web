@@ -1,21 +1,14 @@
 import React from 'react';
-import {
-  message,
-  Tag,
-} from 'antd';
-import {
-  DoubleRightOutlined,
-} from '@ant-design/icons';
+import { message, Tag } from 'antd';
+import { DoubleRightOutlined, CheckCircleOutlined } from '@ant-design/icons';
 
 import 'style/testAlone.less';
-// import { nowTime } from 'common/utils';
-import { SHOW_TESTS, TEST, WATCH_TEST } from 'common/const';
-import { getExamLevel } from '../utils';
+import { TEST, WATCH_TEST } from 'common/const';
+import { getExamLevel } from 'common/utils';
 
 export default class TestAlone extends React.Component<any, any> {
   render() {
-    const watch = this.props.watch,
-      over = this.props.over;
+    const watch = this.props.watch, over = this.props.over;
     const item = this.props.values;
     const num = item.num, 
       title = item.test_name, 
@@ -43,10 +36,8 @@ export default class TestAlone extends React.Component<any, any> {
     return(
         <div className="exam-box">
           <div className="left">
-            <div className="leftTop">
-              <h3>{ num }. { title }</h3>
-            </div>
-            <div className="leftBottom">
+            <div> <h3>{ num }. { title }</h3> </div>
+            <div>
               {
                 tags.map((tag: any) => {
                   let color = tag.length > 2 ? 'geekblue' : 'green';
@@ -54,7 +45,7 @@ export default class TestAlone extends React.Component<any, any> {
                     color = 'volcano';
                   }
                   return (
-                    <Tag color={color} key={tag}>
+                    <Tag color={ color } key={ tag }>
                       {tag}
                     </Tag>
                   );
@@ -63,23 +54,19 @@ export default class TestAlone extends React.Component<any, any> {
             </div>
           </div>
 
-          <div className="content content-level">
-            <h3 className={ getExamLevel(level) }>{ level }</h3>
-          </div>
+          <div> <h3 className={ getExamLevel(level) }>{ level }</h3> </div>
 
-          <div className="content content-point">
-            <h3 >分数：{ point }</h3>
-          </div>
+          <div> <h3 >分数：{ point }</h3> </div>
 
           <div className="right">
             {
               (watch === true && over === true) ?  
               <a className='exam-status' onClick={ nodoJump }>
-                试卷已提交可点击查看
+                点击查看
                 <DoubleRightOutlined />
               </a> :
               (watch === false && over === true) ? 
-              <span className='exam-status'>试卷已提交且无法查看</span> : 
+              <span className='exam-status exam-status-finish'>已完成<CheckCircleOutlined/></span> : 
               <a className='exam-status' onClick={ doJump }>
                 去做题
                 <DoubleRightOutlined />

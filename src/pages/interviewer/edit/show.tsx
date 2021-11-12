@@ -7,6 +7,8 @@ import {
   Space,
   message,
   Popconfirm,
+  Row,
+  Col,
 } from 'antd';
 import {
   PlusOutlined,
@@ -15,13 +17,10 @@ import {
 
 import 'style/show.less';
 import Navbar from 'common/components/navbar';
-import Foot from 'common/components/footer';
 import { ADD, MODIFY } from 'common/const';
 import { showPaper, deletePaper } from 'api/modules/paper/interface';
 import { getCookie, handleTime } from 'common/utils';
 import Head from 'src/common/components/header';
-
-const { Content } = Layout;
 
 export default class Edit extends React.Component {
   state = {
@@ -45,10 +44,6 @@ export default class Edit extends React.Component {
     if (arr.length !== 0) {
       const res = await deletePaper(arr);
       const ret = handleTime(res, 2);
-      // res.data.map((ch: { check: string | number; key: string; paper: string; }) => {
-      //   ch.check = ch.check === 1 ? '是' : '否';
-      //   ch.key = ch.paper;
-      // })
       this.setState({ data: ret });
       message.success(res.msg);
     }
@@ -71,13 +66,77 @@ export default class Edit extends React.Component {
       onChange: this.onSelectChange,
       selectedRowKeys,
     };
-
+    const columns  = [
+      { title: '试卷', dataIndex: 'paper', key: 'paper', fixed: 'left' },
+      { title: '试卷描述', dataIndex: 'paper_description', key: 'paper_description' },
+      { 
+        title: '试题数量', 
+        dataIndex: 'tests_num', 
+        key: 'tests_num', 
+        sorter: (a: { tests_num: number; }, b: { tests_num: number; }) => a.tests_num - b.tests_num,
+      },
+      { 
+        title: '试卷总分', 
+        dataIndex: 'paper_point', 
+        key: 'paper_point', 
+        sorter: (a: { paper_point: number; }, b: { paper_point: number; }) => a.paper_point - b.paper_point,
+      },
+      { 
+        title: '候选人', 
+        children: [
+          {
+            title: '邮箱账号',
+            dataIndex: 'candidate',
+            key: 'candidate',
+            width: 175,
+            render: (candidate: any) => (
+              <span>
+                {
+                  candidate.map((item: string) => {
+                    let color = item.length > 16 ? 'green' : 'geekblue';
+                    return (
+                      <Col>
+                        <Tag color={ color } key={ item }>
+                          { item }
+                        </Tag>
+                      </Col>
+                    );
+                  })
+                }
+              </span>
+            ),
+          },
+          {
+            title: '试卷过期能否查看',
+            dataIndex: 'check',
+            key: 'check',
+          },
+        ],
+      },
+      { title: '开始时间', dataIndex: 'time_begin', key: 'time_begin' },
+      { title: '截止时间', dataIndex: 'time_end', key: 'time_end' },
+      { title: '剩余时间', dataIndex: 'remaining_time', key: 'remaining_time' },
+      { title: '作答时长', dataIndex: 'answer_time', key: 'answer_time' },
+      { 
+        title: '操作', 
+        dataIndex: 'action', 
+        key: 'action',
+        fixed: 'right',
+        render: (text: any, record: any) => {
+          return(
+            <Space size="middle">
+              <a href={`${ MODIFY }?paper=${ record.paper }`}>修改试卷</a>
+            </Space>
+          )
+        }
+      },
+    ]
     
     return(
       <div className="site-layout">
         <Navbar/>
 
-        <Content className="site-layout-content">
+        <Layout.Content className="site-layout-content">
           <Popconfirm 
             title="您确定要 删除试卷 吗？" 
             okText="确定删除" 
@@ -104,94 +163,13 @@ export default class Edit extends React.Component {
           
           <Table 
             rowSelection={ rowSelection } 
+            columns={ columns }
             dataSource={ [...data] } 
             bordered
-            scroll={{ x: 1500, y: 350 }}
-          >
-            <Table.Column 
-              title='试卷'
-              dataIndex='paper'
-              key='paper'
-              fixed='left'  
-            />
-
-            <Table.Column
-              title="试卷描述"
-              dataIndex="paper_description"
-              key="paperDescription"
-            />
-
-            <Table.Column 
-              title='试题数量'
-              dataIndex='tests_num'
-              key='tests_num'
-              sorter={ (a: { tests_num: number; }, b: { tests_num: number; }) => a.tests_num - b.tests_num }
-              />
-
-            <Table.Column
-              title="试卷总分"
-              dataIndex="paper_point"
-              key="paper_point"
-              sorter={ (a: { paper_point: number; }, b: { paper_point: number; }) => a.paper_point - b.paper_point }
-            />
-
-            <Table.ColumnGroup title="候选人">
-              <Table.Column 
-                title="邮箱账号" 
-                dataIndex="candidate" 
-                key="candidate" 
-              />
-              <Table.Column 
-                title="试卷过期能否查看" 
-                dataIndex="check" 
-                key="check" 
-              />
-            </Table.ColumnGroup>
-
-            <Table.Column 
-              title='开始时间'
-              dataIndex='time_begin'
-              key='time_begin'
-            />
-
-            <Table.Column 
-              title='截止时间'
-              dataIndex='time_end'
-              key='time_end'
-            />
-
-            <Table.Column 
-              title='剩余时间'
-              dataIndex='remaining_time'
-              key='remaining_time'
-            />
-
-            <Table.Column 
-              title='作答时长'
-              dataIndex='answer_time'
-              key='answer_time'
-            />
-
-            <Table.Column 
-              title='操作'
-              dataIndex='action'
-              key='action'
-              fixed='right'
-              render={
-                (text: any, record: any) => {
-                  console.log(record)
-                  return(
-                    <Space size="middle">
-                      <a href={`${ MODIFY }?paper=${ record.paper }`}>修改试卷</a>
-                    </Space>
-                  )
-                }
-              }
-            />
-          </Table>
-        </Content>
-
-        <Foot/>
+            scroll={{ y: 550 }}
+            // scroll={{ x: 1500, y: 550 }}
+          />
+        </Layout.Content>
       </div>
     )
   }

@@ -66,6 +66,9 @@ export default class Modify extends React.Component<any, any> {
   // 提交修改信息
   onFinish = async (values: any) => {
     console.log(values)
+    console.log(values.answerTime)
+    console.log(values.answerTime.target)
+    console.log(values.answerTime.target.value)
     const { tableArr, inform } = this.state;
     values.modifyTests = tableArr;
     values.oldPaper = inform.paper;

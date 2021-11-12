@@ -45,7 +45,7 @@ export function getDays(start: number, end: number, diff?: number) {
 }
 
 // 获取后端返回的试卷数据，对试卷时间数据进行处理
-export function handleTime(arr: any, status: number) {
+export function handleTime(arr: any, status?: number) {
   let nodoArr: any[] = [], doingArr: any[] = [], doneArr: any[] = [], allArr: any[] = [];
   arr.map((item: any) => {
     // 毫秒数
@@ -96,4 +96,21 @@ export function getExamLevel(difficulty: string) {
   } else if (difficulty === TEST_LEVEL.HARD) {
     return TEST_LEVEL.HARD_KEY;
   } 
+}
+
+// 获取以“小时”为单位的数字
+export function getHour() {
+  let ret = new Array(24);
+  for (let i = 0; i < 24; i++) {
+    ret[i] = i;
+  }
+  return ret;
+}
+// 获取以“分钟”为单位的数字
+export function getMinute() {
+  let ret = new Array(12);
+  for (let i = 0; i <= 55; i += 5) {
+    ret[i] = i;
+  }
+  return ret;
 }

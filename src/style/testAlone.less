@@ -1,17 +1,8 @@
-*{
-  margin: 0px;
-  padding: 0;
-}
-
 .exam-box{
   height: 100px;
   text-align: center;
   margin: 10px 10px 0px 10px;
   border-bottom: 1px solid rgba(53, 54, 56, 0.05);
-  // display: flex;
-  // justify-content: space-between;
-  // align-items: center;
-  // flex-wrap: wrap;
   display: grid;
   grid-template-columns: 2fr repeat(3,1fr);
   grid-template-rows: repeat(1,minmax(0,1fr));
@@ -21,24 +12,17 @@
 
   .left{
     overflow: hidden;
-    .leftTop{
-
-    }
-    .leftBottom{
-      // display: inline-block;
-    }
+    text-align: left;
   }
   
-  .content{
-    .easy{
-      color: rgba(0,175,155,1);
-    }
-    .middle{
-      color: rgba(255,184,0,1);
-    }
-    .hard{
-      color: rgba(255,45,85,1);
-    }
+  .easy{
+    color: rgba(0,175,155,1);
+  }
+  .middle{
+    color: rgba(255,184,0,1);
+  }
+  .hard{
+    color: rgba(255,45,85,1);
   }
   
   .right{
@@ -53,6 +37,10 @@
       float: right;
       padding: 0 0.75rem;
       font-size: 15px;
+    }
+    .exam-status-finish{
+      color: rgb(46, 196, 46);
+      background: none;
     }
   }
 }

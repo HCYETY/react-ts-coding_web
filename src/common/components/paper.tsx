@@ -5,26 +5,77 @@ import {
   DatePicker,
   Radio,
   Select,
+  Col,
+  Row,
+  Dropdown,
+  Menu,
+  Button,
+  InputNumber,
+  Space,
+  Divider,
 } from 'antd';
 import { search } from 'api/modules/candidate/interface';
+import { getHour, getMinute } from 'common/utils';
 
 export default class Paper extends React.Component {
 
   state = {
     candidateEmail: [] = [],
+    setTime: false,
+    hour: 0,
+    minute: 0,
   }
 
-  onFocus = () => {
-    search().then(item => {
-      this.setState({ candidateEmail: item.data.candidateInform });
+  onFocus = async () => {
+    const res = await search();
+    const getInform = res.data.show;
+    const arr: any[] = [];
+    getInform.map((item: { email: string; }) => {
+      // 数组去重
+      if (arr.indexOf(item.email) === -1) {
+        arr.push(item.email);
+      }
     })
+    this.setState({ candidateEmail: arr });
+  }
+
+  handleTime = () => {
+    this.state.setTime === false ? this.setState({ setTime: true }) : this.setState({ setTime: false });
+  }
+
+  getHours = (e: any) => {
+    console.log('ddddddddddd')
+    this.setState({ hour: e.key });
+  }
+  getMinutes = (e: any) => {
+    this.setState({ minute: e.key });
   }
 
   render() {
-    const { candidateEmail } = this.state;
+    const { candidateEmail, setTime, } = this.state;
+    const hours = getHour(),  minutes = getMinute(); 
+    const hour = (
+      <Menu >
+        {hours.map(item => {
+          return(
+            <Menu.Item onClick={ this.getHours } key={ item }> { item } </Menu.Item>
+          )
+        })}
+      </Menu>
+    )
+    const minute = (
+      <Menu >
+        {minutes.map(item => {
+          return(
+            <Menu.Item onClick={ this.getMinutes } key={ item }> { item } </Menu.Item>
+          )
+        })}
+      </Menu>
+    )
     // const disabledDate = (current: number) => {
     //   return current < moment().startOf('day');
     // }
+    console.log(this.state.hour, this.state.minute)
   
     return(
       <>
@@ -71,6 +122,7 @@ export default class Paper extends React.Component {
           >
           <DatePicker 
             showTime={{ format: 'HH:mm' }}
+            showNow={ true }
             format="YYYY-MM-DD HH:mm" 
             placeholder="选择试卷截止日期"
           />
@@ -82,15 +134,44 @@ export default class Paper extends React.Component {
           label="试卷作答时长" 
           className="time"
         >
-          <Radio.Group  buttonStyle="solid">
-            <Radio.Button value="30分钟">30分钟</Radio.Button>
-            <Radio.Button value="45分钟">45分钟</Radio.Button>
-            <Radio.Button value="1小时">1小时</Radio.Button>
-            <Radio.Button value="1小时30分钟">1小时30分钟</Radio.Button>
-            <Radio.Button value="2小时">2小时</Radio.Button>
-            <Radio.Button value="2小时30分钟">2小时30分钟</Radio.Button>
-          </Radio.Group>
-          {/* <a >&nbsp;手动设置</a> */}
+          {
+            setTime === false ? 
+            <Radio.Group  buttonStyle="solid">
+              <Radio.Button value="30分钟">30分钟</Radio.Button>
+              <Radio.Button value="45分钟">45分钟</Radio.Button>
+              <Radio.Button value="1小时">1小时</Radio.Button>
+              <Radio.Button value="1小时30分钟">1小时30分钟</Radio.Button>
+              <Radio.Button value="2小时">2小时</Radio.Button>
+              <Radio.Button value="2小时30分钟">2小时30分钟</Radio.Button>
+              <Radio.Button onClick={ this.handleTime } className="choice-time-button">手动设置</Radio.Button> 
+            </Radio.Group> :
+            // <Space className="choice-time" split={<Divider type="vertical" />}>
+            //   <Dropdown overlay={ hour } placement="bottomLeft" trigger={['click']}>
+            //     <InputNumber min={0} max={23} addonAfter="小时"></InputNumber>
+            //     <Input width='15' min={0} max={23} value={ this.state.hour }></Input>
+            //   </Dropdown>
+            //   <Dropdown overlay={ minute } placement="bottomLeft" trigger={['click']}>
+            //     <InputNumber min={0} max={59} addonAfter="分钟"></InputNumber>
+            //     <Input width='15' min={0} max={59} value={ this.state.minute }></Input>
+            //   </Dropdown>
+            //   <Button onClick={ this.handleTime } className="choice-time-button">快速选择</Button>
+            // </Space >
+
+            <Space className="choice-time" split={<Divider type="vertical" />}>
+              <Select
+                style={{ width: '100%' }}
+                placeholder="单位：小时"
+              >
+                { hour }
+              </Select>
+              <Select
+                style={{ width: '100%' }}
+                placeholder="单位：分钟"
+              >
+                { minute }
+              </Select>
+            </Space>
+          }
         </Form.Item>
 
         <Form.Item 
@@ -110,7 +191,6 @@ export default class Paper extends React.Component {
           >
             {
               candidateEmail.map((item: any) => {
-                console.log(item)
                 return(
                   <Select.Option value={ item } key={ item }>{ item }</Select.Option>
                 )

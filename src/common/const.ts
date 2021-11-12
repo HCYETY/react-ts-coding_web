@@ -4,6 +4,7 @@ export const INTERVIEWER: string = '/interviewer';
 export const EDIT: string = '/edit';
 export const ADD: string = '/add';
 export const MODIFY: string = '/modify';
+export const LOOK_OVER: string = '/lookOver';
 export const CANDIDATE: string = '/candidate';
 export const SHOW_TESTS: string = '/show-tests';
 export const WATCH_TEST: string = '/watch-test';
@@ -23,6 +24,11 @@ export enum PAPER_STATUS {
   NODO = '试卷未开放',
   DONE = '试卷已提交',
   OVER = '试卷已过期',
+}
+// 试卷批阅情况
+export enum PAPER_CONSULT {
+  YES = '已批阅',
+  NO = '未批阅',
 }
 // 答题情况
 export enum TEST_STATUS {
