@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Button, message, Input, Statistic } from 'antd';
 
 import 'style/showTests.less';
-import { getDays, getUrlParam, handleTime, getCookie } from 'common/utils';
+import { getDays, getUrlParam, handleTime, getCookie, transTime } from 'common/utils';
 import TestAlone from 'common/components/testAlone';
 import CountDown from 'common/components/countdown';
 import { showTest } from 'api/modules/test/interface';
@@ -21,6 +21,9 @@ export default class ShowTests extends React.Component {
     isOver: false,
     endTime: 0,
     time: '',
+    inputInfo: '',
+    count: 0,
+    updateTime: '',
   }
 
   async componentDidMount() {
@@ -33,44 +36,56 @@ export default class ShowTests extends React.Component {
       isWatch: ret.watch,
       isOver: ret.test_status,
       endTime: Number(ret.time_end),
+      count: Number(ret.time_end),
     });
+    this.countdown();
+  }
+  componentWillUnmount() {
+    clearTimeout(this.timer);
   }
 
   // 显示“提交试卷”抽屉，并执行倒计时函数
   showModal = () => {
     this.setState({ visible: true });
-    this.countdown(this.state.endTime);
   };
   hideModal = () => {
     this.setState({ visible: false });
-    clearInterval(this.timer);
   }
 
   // “提交试卷”抽屉中剩余时间倒计时
   timer: NodeJS.Timer = null;
-  countdown = (endTime: number) => {
-    const arr = handleTime(this.state.tableArr, 1);
-    console.log(arr)
-    const time = arr && arr[0] ? arr[0].remaining_time : null;
-    console.log('#',time)
-    this.timer = setInterval(() => {
-      this.countdown(this.state.endTime)
+  countdown = () => {
+    const { tableArr, count, updateTime } = this.state;
+    const info = tableArr[0].paper;
+    const nowtime = new Date().getTime();
+    const time = getDays(nowtime, count);
+    this.setState({ count: count - 1000, updateTime: time });
+    this.timer = setTimeout(() => {
+      this.countdown()
     }, 1000);
   }
 
+  // 获取输入框的内容
+  saveInput = (e: any) => {
+    this.setState({ inputInfo: e.target.value});
+  }
   // 提交试卷事件
   submitPaper = () => {
-    submit(obj).then(res => {
-      if (res.data.status) {
-        message.success(res.msg);
-        window.location.href = CANDIDATE;
-      }
-    })
+    if (this.state.inputInfo === '确定提前交卷') {
+      submit(obj).then(res => {
+        if (res.data.status) {
+          message.success(res.msg);
+          window.location.href = CANDIDATE;
+        }
+      })
+    } else {
+      message.error('请输入正确的信息，以确认提交！')
+    }
   };
 
 
   render() {
-    const { tableArr, visible, isWatch, isOver, endTime, time, } = this.state;
+    const { tableArr, visible, isWatch, isOver, endTime, count, updateTime, } = this.state;
 
     return(
       <div className="tests-box">
@@ -98,6 +113,7 @@ export default class ShowTests extends React.Component {
               title="试卷剩余时间" 
               value={ endTime } 
               format="D 天 H 时 m 分 s 秒" 
+              onFinish={ this.submitPaper }
             />
           </div>
 
@@ -118,9 +134,9 @@ export default class ShowTests extends React.Component {
             cancelText="取消"
           >
             {
-              '距离试卷截止时间 ' + (time) + ' ，如果你确定要提前交卷，请务必填写如下内容：'
+              '距离试卷截止时间 ' + (updateTime) + ' ，如果你确定要提前交卷，请务必填写如下内容：'
             }
-            本人已 <Input placeholder='完成该试卷'/> 现 <Input placeholder='确定提前交卷' />
+            <Input onChange={ this.saveInput } placeholder='确定提前交卷' />
           </Modal>
         </div>
       </div>

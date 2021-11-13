@@ -13,7 +13,12 @@ import { getTestNum } from 'common/utils';
 import Wangeditor from 'common/components/wangeditor';
 import Wangeditors from 'common/components/wangeditor2';
 
-export default class Tabler extends React.Component<any, any> {
+interface get{
+  getTest?: any,
+  pushTests?: any,
+}
+
+export default class Tabler extends React.Component<get, any> {
   formRef = React.createRef<FormInstance>();
 
   state={
@@ -37,8 +42,8 @@ export default class Tabler extends React.Component<any, any> {
       this.setState({ testAnswer: data.test });
     });
     // 在“修改试卷”中修改试题，获取从父组件传过来的已有试题
-    if (this.props.getTests) {
-      this.setState({ tableArr: this.props.getTests });
+    if (this.props.pushTests) {
+      this.setState({ tableArr: this.props.pushTests });
     }
   }
   componentWillUnmount() {

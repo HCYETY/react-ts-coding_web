@@ -1,10 +1,13 @@
 export const REQUESTIP: string = 'http://localhost:8080/api';
 export const LOGIN: string = '/login';
+
 export const INTERVIEWER: string = '/interviewer';
 export const EDIT: string = '/edit';
 export const ADD: string = '/add';
 export const MODIFY: string = '/modify';
-export const LOOK_OVER: string = '/lookOver';
+export const SHOW_EXAM: string = '/show-exam';
+export const LOOK_OVER: string = '/look-over';
+
 export const CANDIDATE: string = '/candidate';
 export const SHOW_TESTS: string = '/show-tests';
 export const WATCH_TEST: string = '/watch-test';

@@ -9,6 +9,7 @@ import Edit from 'pages/interviewer/edit/show';
 import Add from 'pages/interviewer/edit/add';
 import Modify from 'pages/interviewer/edit/modify';
 import LookOver from 'pages/interviewer/consult/lookOver';
+import ShowExam from 'pages/interviewer/consult/showExam';
 import ShowTests from 'pages/candidate/showTests';
 import WatchTest from 'pages/candidate/WatchTest';
 import Program from 'pages/candidate/program';
@@ -25,6 +26,7 @@ import {
   TEST, 
   WATCH_TEST,
   LOOK_OVER,
+  SHOW_EXAM,
 } from './common/const';
 
 class App extends PureComponent {
@@ -50,6 +52,7 @@ class App extends PureComponent {
               <Route path={ EDIT } component={ Edit }></Route>
               <Route path={ ADD } component={ Add }></Route>
               <Route path={ MODIFY } component={ Modify }></Route>
+              <Route path={ SHOW_EXAM } component={ ShowExam }></Route>
               <Route path={ LOOK_OVER } component={ LookOver }></Route>
 
               <Route path={ CANDIDATE } component={ Candidate }></Route>

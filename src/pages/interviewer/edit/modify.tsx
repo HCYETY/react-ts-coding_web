@@ -3,7 +3,8 @@ import {
   Card, 
   Form, 
   Button, 
-  message, 
+  message,
+  FormInstance, 
 } from 'antd';
 import moment from 'moment';
 
@@ -33,6 +34,8 @@ export default class Modify extends React.Component<any, any> {
       check: '', 
       paper_point: 0,
     },
+    hour: 0,
+    minute: 0,
   }
 
   componentDidMount() {
@@ -67,13 +70,11 @@ export default class Modify extends React.Component<any, any> {
 
   // 提交修改信息
   onFinish = async (values: any) => {
-    console.log(values)
-    console.log(values.answerTime)
-    console.log(values.answerTime.target)
-    console.log(values.answerTime.target.value)
-    const { tableArr, inform } = this.state;
+    const { tableArr, inform, hour, minute } = this.state;
+    values.answerTime = hour + '小时' + minute + '分钟';
     values.modifyTests = tableArr;
     values.oldPaper = inform.paper;
+    console.log(values)
     const res = await modifyPaper(values);
     if (res.data.status) {
       message.success(res.msg);
@@ -86,13 +87,17 @@ export default class Modify extends React.Component<any, any> {
   getTest = (val: any) => {
     this.setState({ tableArr: val });
   }
+  getHour = (val: number) => {
+    this.setState({ hour: val });
+  }
+  getMinute = (val: number) => {
+    this.setState({ minute: val });
+  }
 
   render() {
     const { inform, loading, tableArr } = this.state;
     const timeBegin = new Date(Number(inform.time_begin));
     const timeEnd = new Date(Number(inform.time_end));
-    console.log(timeBegin)
-    console.log(timeEnd)
 
     return(
       <div className="site-layout">
@@ -115,10 +120,10 @@ export default class Modify extends React.Component<any, any> {
                 }}
               >
                 <h2 className="site-card-divide">试卷信息</h2> 
-                <Paper />
+                <Paper getHour={ this.getHour.bind(this) } getMinute={ this.getMinute.bind(this) }/>
 
                 <h2 className="site-card-divide">试题信息</h2> 
-                <Tabler getTests={ tableArr } getTest={ this.getTest.bind(this) }/>
+                <Tabler pushTests={ tableArr } getTest={ this.getTest.bind(this) }/>
                 
                 <Form.Item wrapperCol={{ offset: 8 }}>
                   <Button type="primary" htmlType="submit">

@@ -5,19 +5,25 @@ import {
   DatePicker,
   Radio,
   Select,
-  Col,
-  Row,
   Dropdown,
   Menu,
   Button,
-  InputNumber,
   Space,
-  Divider,
 } from 'antd';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+
 import { search } from 'api/modules/candidate/interface';
 import { getHour, getMinute } from 'common/utils';
+import { get } from 'src/api';
 
-export default class Paper extends React.Component {
+interface get{
+  getHour?: any,
+  getMinute?: any,
+}
+
+export default class Paper extends React.Component<get, any> {
 
   state = {
     candidateEmail: [] = [],
@@ -26,6 +32,7 @@ export default class Paper extends React.Component {
     minute: 0,
   }
 
+  // 点击“邀请候选人”之后发送请求的函数
   onFocus = async () => {
     const res = await search();
     const getInform = res.data.show;
@@ -39,16 +46,39 @@ export default class Paper extends React.Component {
     this.setState({ candidateEmail: arr });
   }
 
+  // 点击“作答时长”后的“选择时间”按钮调用的函数
   handleTime = () => {
     this.state.setTime === false ? this.setState({ setTime: true }) : this.setState({ setTime: false });
   }
-
+  
+  // 选中下拉菜单的值后调用函数，并传递对应值给父组件
   getHours = (e: any) => {
-    console.log('ddddddddddd')
     this.setState({ hour: e.key });
+    this.props.getHour(e.key);
   }
   getMinutes = (e: any) => {
     this.setState({ minute: e.key });
+    this.props.getMinute(e.key);
+  }
+
+
+  // 不可选日期，限制“试卷截止日期”的选择范围
+  range = (start: any, end: any) => {
+    const result = [];
+    for (let i = start; i < end; i += 1) {
+      result.push(i);
+    }
+    return result;
+  };
+  disabledDate = (current: any) => {
+    return current && current < moment().endOf('day');
+  }
+  disabledDateTime = () => {
+    return {
+      disabledHours: () => this.range(0, 24).splice(4, 20),
+      disabledMinutes: () => this.range(30, 60),
+      disabledSeconds: () => [55, 56],
+    };
   }
 
   render() {
@@ -72,10 +102,6 @@ export default class Paper extends React.Component {
         })}
       </Menu>
     )
-    // const disabledDate = (current: number) => {
-    //   return current < moment().startOf('day');
-    // }
-    console.log(this.state.hour, this.state.minute)
   
     return(
       <>
@@ -110,7 +136,7 @@ export default class Paper extends React.Component {
             showTime={{ format: 'HH:mm' }}
             format="YYYY-MM-DD HH:mm" 
             placeholder="选择试卷开放日期"
-            // disabledDate={ disabledDate }
+            locale={ locale }
           />
         </Form.Item>
 
@@ -123,8 +149,10 @@ export default class Paper extends React.Component {
           <DatePicker 
             showTime={{ format: 'HH:mm' }}
             showNow={ true }
+            disabledDate={ this.disabledDate }
             format="YYYY-MM-DD HH:mm" 
             placeholder="选择试卷截止日期"
+            locale={ locale }
           />
         </Form.Item>
 
@@ -145,34 +173,18 @@ export default class Paper extends React.Component {
               <Radio.Button value="2小时30分钟">2小时30分钟</Radio.Button>
               <Radio.Button onClick={ this.handleTime } className="choice-time-button">手动设置</Radio.Button> 
             </Radio.Group> :
-            <Space    split={<Divider type="vertical" />}>
-              <Dropdown overlay={ hour } placement="bottomLeft" trigger={['click']}>
-                {/* <InputNumber min={0} max={23} addonAfter="小时"></InputNumber> */}
-                <Input width='15' min={0} max={23} value={ this.state.hour } suffix="小时"></Input>
-              </Dropdown>
-              <Dropdown overlay={ minute } placement="bottomLeft" trigger={['click']}>
-                {/* <InputNumber min={0} max={59} addonAfter="分钟"></InputNumber> */}
-                <Input width='15' min={0} max={59} value={ this.state.minute } suffix="分钟"></Input>
-              </Dropdown>
-              <Button onClick={ this.handleTime } className="choice-time-button">快速选择</Button>
+            <Space>
+                <Dropdown overlay={ hour } overlayStyle={{ width: '20px', height: '20px',  }} placement="bottomLeft" trigger={['click']}>
+                  <Input min={0} max={23} value={ this.state.hour } suffix="小时"></Input>
+                </Dropdown>
+                <Dropdown overlay={ minute } overlayStyle={{ width: '20', height: '20',  }} placement="bottomLeft" trigger={['click']}>
+                  <Input min={0} max={55} value={ this.state.minute } suffix="分钟"></Input>
+                </Dropdown>
+                <Button onClick={ this.handleTime } className="choice-time-button">快速选择</Button>
             </Space >
-
-            // <Space className="choice-time" split={<Divider type="vertical" />}>
-            //   <Select
-            //     style={{ width: '100%' }}
-            //     placeholder="单位：小时"
-            //   >
-            //     { hour }
-            //   </Select>
-            //   <Select
-            //     style={{ width: '100%' }}
-            //     placeholder="单位：分钟"
-            //   >
-            //     { minute }
-            //   </Select>
-            // </Space>
           }
         </Form.Item>
+
 
         <Form.Item 
           name="candidate" 

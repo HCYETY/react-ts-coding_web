@@ -1,15 +1,13 @@
 import React from 'react';
 import { NavLink } from "react-router-dom";
-import { Layout, Menu } from 'antd';
+import { Menu } from 'antd';
 import {
   DesktopOutlined,
   PieChartOutlined,
-  MailOutlined,
   AppstoreOutlined,
-  SettingOutlined,
 } from '@ant-design/icons';
 import 'style/basic.less';
-import { EDIT, INTERVIEWER, LOOK_OVER } from '../const';
+import { EDIT, INTERVIEWER, SHOW_EXAM } from '../const';
 
 export default class Navbar extends React.PureComponent {
 
@@ -75,8 +73,8 @@ export default class Navbar extends React.PureComponent {
           <NavLink to={ EDIT }>面试题管理</NavLink>
         </Menu.Item>
 
-        <Menu.Item key="lookOver" icon={ <DesktopOutlined />} >
-          <NavLink to={ LOOK_OVER }>阅卷</NavLink>
+        <Menu.Item key="showExam" icon={ <DesktopOutlined />} >
+          <NavLink to={ SHOW_EXAM }>阅卷</NavLink>
         </Menu.Item>
 
         <Menu.SubMenu key="sub2" icon={<AppstoreOutlined />} title="Navigation Two">
