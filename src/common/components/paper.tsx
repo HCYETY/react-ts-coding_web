@@ -145,32 +145,32 @@ export default class Paper extends React.Component {
               <Radio.Button value="2小时30分钟">2小时30分钟</Radio.Button>
               <Radio.Button onClick={ this.handleTime } className="choice-time-button">手动设置</Radio.Button> 
             </Radio.Group> :
-            // <Space className="choice-time" split={<Divider type="vertical" />}>
-            //   <Dropdown overlay={ hour } placement="bottomLeft" trigger={['click']}>
-            //     <InputNumber min={0} max={23} addonAfter="小时"></InputNumber>
-            //     <Input width='15' min={0} max={23} value={ this.state.hour }></Input>
-            //   </Dropdown>
-            //   <Dropdown overlay={ minute } placement="bottomLeft" trigger={['click']}>
-            //     <InputNumber min={0} max={59} addonAfter="分钟"></InputNumber>
-            //     <Input width='15' min={0} max={59} value={ this.state.minute }></Input>
-            //   </Dropdown>
-            //   <Button onClick={ this.handleTime } className="choice-time-button">快速选择</Button>
-            // </Space >
+            <Space    split={<Divider type="vertical" />}>
+              <Dropdown overlay={ hour } placement="bottomLeft" trigger={['click']}>
+                {/* <InputNumber min={0} max={23} addonAfter="小时"></InputNumber> */}
+                <Input width='15' min={0} max={23} value={ this.state.hour } suffix="小时"></Input>
+              </Dropdown>
+              <Dropdown overlay={ minute } placement="bottomLeft" trigger={['click']}>
+                {/* <InputNumber min={0} max={59} addonAfter="分钟"></InputNumber> */}
+                <Input width='15' min={0} max={59} value={ this.state.minute } suffix="分钟"></Input>
+              </Dropdown>
+              <Button onClick={ this.handleTime } className="choice-time-button">快速选择</Button>
+            </Space >
 
-            <Space className="choice-time" split={<Divider type="vertical" />}>
-              <Select
-                style={{ width: '100%' }}
-                placeholder="单位：小时"
-              >
-                { hour }
-              </Select>
-              <Select
-                style={{ width: '100%' }}
-                placeholder="单位：分钟"
-              >
-                { minute }
-              </Select>
-            </Space>
+            // <Space className="choice-time" split={<Divider type="vertical" />}>
+            //   <Select
+            //     style={{ width: '100%' }}
+            //     placeholder="单位：小时"
+            //   >
+            //     { hour }
+            //   </Select>
+            //   <Select
+            //     style={{ width: '100%' }}
+            //     placeholder="单位：分钟"
+            //   >
+            //     { minute }
+            //   </Select>
+            // </Space>
           }
         </Form.Item>
 

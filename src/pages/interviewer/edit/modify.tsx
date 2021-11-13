@@ -5,6 +5,8 @@ import {
   Button, 
   message, 
 } from 'antd';
+import moment from 'moment';
+
 import { modifyPaper } from 'api/modules/paper/interface';
 import { showTest } from 'api/modules/test/interface';
 import { EDIT, TAGS } from 'common/const';
@@ -87,6 +89,10 @@ export default class Modify extends React.Component<any, any> {
 
   render() {
     const { inform, loading, tableArr } = this.state;
+    const timeBegin = new Date(Number(inform.time_begin));
+    const timeEnd = new Date(Number(inform.time_end));
+    console.log(timeBegin)
+    console.log(timeEnd)
 
     return(
       <div className="site-layout">
@@ -101,8 +107,8 @@ export default class Modify extends React.Component<any, any> {
                 initialValues={{ 
                   paper: inform.paper,
                   paperDescription: inform.paper_description,
-                  // timeBegin: moment(inform.time_begin, 'YYYY-MM-DD'),
-                  // timeEnd: moment(inform.time_end, 'YYYY-MM-DD'),
+                  timeBegin: moment(timeBegin),
+                  timeEnd: moment(timeEnd),
                   answerTime: inform.answer_time,
                   candidate: inform.candidate,
                   check: inform.check,
