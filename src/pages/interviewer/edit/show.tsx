@@ -13,14 +13,15 @@ import {
 import {
   PlusOutlined,
   DeleteOutlined,
+  FormOutlined,
 } from '@ant-design/icons';
 
-import 'style/show.less';
+import 'style/interviewer/show.less';
 import Navbar from 'common/components/navbar';
 import { ADD, MODIFY } from 'common/const';
-import { showPaper, deletePaper } from 'api/modules/paper/interface';
+import { showPaper, deletePaper } from 'api/modules/paper';
 import { getCookie, handleTime } from 'common/utils';
-import Head from 'src/common/components/header';
+import Head from 'common/components/header';
 
 export default class Edit extends React.Component {
   state = {
@@ -43,7 +44,7 @@ export default class Edit extends React.Component {
     const arr = this.state.selectedRowKeys;
     if (arr.length !== 0) {
       const res = await deletePaper(arr);
-      const ret = handleTime(res, 2);
+      const ret = handleTime(res.data);
       this.setState({ data: ret });
       message.success(res.msg);
     }
@@ -67,7 +68,8 @@ export default class Edit extends React.Component {
       selectedRowKeys,
     };
     const columns  = [
-      { title: '试卷', dataIndex: 'paper', key: 'paper', fixed: 'left' },
+      { title: '试卷', dataIndex: 'paper', key: 'paper' },
+      // { title: '试卷', dataIndex: 'paper', key: 'paper', fixed: 'left' },
       { title: '试卷描述', dataIndex: 'paper_description', key: 'paper_description' },
       { 
         title: '试题数量', 
@@ -121,11 +123,11 @@ export default class Edit extends React.Component {
         title: '操作', 
         dataIndex: 'action', 
         key: 'action',
-        fixed: 'right',
+        // fixed: 'right',
         render: (text: any, record: any) => {
           return(
             <Space size="middle">
-              <a href={`${ MODIFY }?paper=${ record.paper }`}>修改试卷</a>
+              <a href={`${ MODIFY }?paper=${ record.paper }`}><FormOutlined/>修改试卷</a>
             </Space>
           )
         }

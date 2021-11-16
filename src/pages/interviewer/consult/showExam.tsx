@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, Route, Router, } from 'react-router-dom';
 import { 
   Layout,
   Table,
@@ -6,10 +7,11 @@ import {
 } from 'antd';
 import { 
 } from '@ant-design/icons';
-import { getCookie } from 'src/common/utils';
-import { search } from 'src/api/modules/candidate/interface';
-import { LOOK_OVER, PAPER_CONSULT } from 'src/common/const';
-import Navbar from 'src/common/components/navbar';
+import { getCookie, transTime } from 'common/utils';
+import { search } from 'api/modules/candidate';
+import { CANDIDATE, EXAM_INFORM, LOOK_OVER, PAPER_CONSULT, PAPER_STATUS } from 'common/const';
+import Navbar from 'common/components/navbar';
+import { lookOver, showPaper } from 'api/modules/paper';
 
 export default class LookOver extends React.Component {
 
@@ -17,48 +19,51 @@ export default class LookOver extends React.Component {
     tableArr: [] = [],
   }
   componentDidMount() {
-    search().then(result => {
+    showPaper().then(result => {
       const res = result.data.show;
-      const arr: any[] = [];
-      res.map((item: { email: string; paper: string; look_over: PAPER_CONSULT; }) => {
-        if (arr.indexOf(item.paper) === -1) {
-          arr.push(item);
-        }
+      const nowtime = new Date().getTime();
+      res.map((item: any) => {
+        const timeBegin = Number(item.time_begin);
+        const timeEnd = Number(item.time_end);
+        item.time_begin = transTime(timeBegin);
+        item.time_end = transTime(timeEnd);
+        item.ought_num = item.candidate.length + '人';
+        // item.look_over === false ? item.look_over = PAPER_CONSULT.NO : item.look_over = PAPER_CONSULT.YES;
+        // item.join_num = 
+        item.status = timeEnd < nowtime ? PAPER_STATUS.END : timeBegin > nowtime ? PAPER_STATUS.WILL : PAPER_STATUS.ING;
       })
-      arr.map(item => {
-        item.look_over === false ? item.look_over = PAPER_CONSULT.NO : item.look_over = PAPER_CONSULT.YES;
-      })
-      this.setState({ tableArr: arr });
-    })
+      this.setState({ tableArr: res });
+    });
   }
 
   render() {
     const { tableArr } = this.state;
     const columns = [
-      { title: '试卷', dataIndex: 'paper', key: 'paper' },
-      { title: '候选人邮箱', dataIndex: 'email', key: 'email' },
-      { title: '待批阅', dataIndex: 'look_over', key: 'look_over' },
-      {
-        title: '阅卷进度', 
-        dataIndex: 'progress', 
-        key: 'progress',
-        // render: (tags: [string]) => (
-        //   <span>
-        //     {
-        //       tableArr.map(tag => {
-        //       let color = tag.length > 2 ? 'geekblue' : 'green';
-        //       if (tag === 'loser') {
-        //         color = 'volcano';
-        //       }
-        //       return (
-        //         <Tag color={color} key={tag}>
-        //           {tag}
-        //         </Tag>
-        //       );
-        //     })}
-        //   </span>
-        // )
+      { 
+        title: '状态', 
+        dataIndex: 'status', 
+        key: 'status',
+        render: (status: string) => {
+          <span>
+            {(status: string) => {
+              let color = status === PAPER_STATUS.WILL ? 'yellow' : status === PAPER_STATUS.ING ? 'green' : 'red';
+              return (
+                <Tag color={ color } key={ status }>
+                  { status }
+                </Tag>
+              );
+            }}
+          </span>
+        }
       },
+      { title: '试卷', dataIndex: 'paper', key: 'paper' },
+      { title: '时长', dataIndex: 'answer_time', key: 'answer_time' },
+      { title: '已参与', dataIndex: 'join_num', key: 'join_num' },
+      { title: '应参与', dataIndex: 'ought_num', key: 'ought_num' },
+      { title: '开放时间', dataIndex: 'time_begin', key: 'time_begin' },
+      { title: '截止时间', dataIndex: 'time_end', key: 'time_end' },
+      { title: '总题数', dataIndex: 'tests_num', key: 'tests_num' },
+      { title: '是否批阅', dataIndex: 'look_over', key: 'look_over' },
     ];
     
     return(
@@ -71,7 +76,14 @@ export default class LookOver extends React.Component {
             dataSource={ [...tableArr] } 
             onRow={record => {
               return {
-                onClick: () => { window.location.href = `${ LOOK_OVER }?exam=${ record['test_name'] }` }, // 点击行
+                onClick: () => { 
+                  // return(
+                    // <Route>
+                    //   <Link to={"/exam-inform?exam=" + record['paper']}></Link>
+                    // </Route>
+                  // )
+                  window.location.href = `${ EXAM_INFORM }?exam=${ record['paper'] }` 
+                }, // 点击行
                 onMouseEnter: event => { console.log('xxxxx', record) }, // 鼠标移入行
               };
             }}

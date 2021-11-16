@@ -13,12 +13,12 @@ import {
   CloseOutlined,
 } from '@ant-design/icons';
 
-import 'style/drawer.css';
-import 'style/program.less';
-import CodeEditor from 'common/components/codeEditor';
-import ProgramInform from 'common/components/programInform';
+import 'style/candidate/drawer.css';
+import 'style/candidate/program.less';
+import CodeEditor from 'src/common/components/candidate/codeEditor';
+import ProgramInform from 'common/components/candidate/programInform';
 import { getCookie, getExamLevel, getUrlParam } from 'common/utils';
-import { search, submit } from 'api/modules/candidate/interface';
+import { search, submit } from 'api/modules/candidate';
 import { TEST, PROGRAM_THEME, TEST_LEVEL, TEST_STATUS, } from 'src/common/const';
 
 const cookie = getCookie();

@@ -17,7 +17,7 @@ import {
 } from '@ant-design/icons';
 
 import 'style/basic.less';
-import { logout } from 'src/api/modules/interface';
+import { logout } from 'api/modules/user';
 import { getCookie } from 'common/utils';
 import { LOGIN } from 'common/const';
 const { Header } = Layout;      

@@ -1,7 +1,7 @@
 import { post } from 'api/index';
 
 // 获取试卷接口
-export function showPaper(data: { cookie: string; interviewer?: boolean }) {
+export function showPaper(data?: { paper?: string; cookie?: string; interviewer?: boolean }) {
   return post('/paper', data);
 }
 // 新建试卷接口
@@ -15,4 +15,8 @@ export function deletePaper(data: number[]) {
 // 修改试卷接口
 export function modifyPaper(data: any) {
   return post('/modify_paper', data);
+}
+// 批阅试卷接口
+export function lookOver(data?: any) {
+  return post('/look_over', data);
 }

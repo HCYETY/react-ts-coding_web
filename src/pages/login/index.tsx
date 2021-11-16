@@ -2,11 +2,11 @@ import React, { PureComponent } from 'react';
 import { Form, Input, Button, Checkbox, Tabs, Radio, message, Row, Col, FormInstance } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
-import 'style/login.less';
+import 'style/login/login.less';
 import logoImg from 'img/logo.png';
-import { sendEmail, testLogin, testRegister } from 'api/modules/interface';
+import { sendEmail, testLogin, testRegister } from 'api/modules/user';
 import { INTERVIEWER, CANDIDATE } from 'common/const';
-import { transTime } from 'src/common/utils';
+import { transTime } from 'common/utils';
 
 export default class Login extends PureComponent<any> {
   // 页签切换

@@ -10,8 +10,8 @@ import PubSub from 'pubsub-js';
 
 import { TAGS } from 'common/const';
 import { getTestNum } from 'common/utils';
-import Wangeditor from 'common/components/wangeditor';
-import Wangeditors from 'common/components/wangeditor2';
+import Wangeditor from 'common/components/interviewer/wangeditor';
+import Wangeditors from 'common/components/interviewer/wangeditor2';
 
 interface get{
   getTest?: any,

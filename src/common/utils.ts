@@ -52,8 +52,8 @@ export function handleTime(arr: any, status?: number) {
     const timebegin = item.time_begin || item.paper.time_begin;
     const timend = item.time_end || item.paper.time_end;
     // yyyy-mm-dd hh:mm:ss 格式
-    const timeBegin = transTime(Number(timebegin));
-    const timeEnd = transTime(Number(timend));
+    const timeBegin = transTime(timebegin);
+    const timeEnd = transTime(timend);
     const nowtime = new Date().getTime();
     item.time_begin = timeBegin;
     item.time_end = timeEnd;
@@ -82,7 +82,7 @@ export function handleTime(arr: any, status?: number) {
 
 // 转化日期控件时间值
 export function transTime(time: number) {
-  const timeDate = new Date(time).toJSON();
+  const timeDate = new Date(Number(time));
   const getTime = new Date(+new Date(timeDate)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
   return getTime;
 }

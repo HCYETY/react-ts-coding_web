@@ -6,6 +6,7 @@ export const EDIT: string = '/edit';
 export const ADD: string = '/add';
 export const MODIFY: string = '/modify';
 export const SHOW_EXAM: string = '/show-exam';
+export const EXAM_INFORM: string = '/exam-inform';
 export const LOOK_OVER: string = '/look-over';
 
 export const CANDIDATE: string = '/candidate';
@@ -27,6 +28,9 @@ export enum PAPER_STATUS {
   NODO = '试卷未开放',
   DONE = '试卷已提交',
   OVER = '试卷已过期',
+  WILL = '未开始',
+  ING = '进行中',
+  END = '已结束'
 }
 // 试卷批阅情况
 export enum PAPER_CONSULT {
@@ -41,6 +45,9 @@ export enum TEST_STATUS {
   DONE_KEY = -1,
   DOING = '尝试过',
   DOING_KEY = 1,
+  WILL = '未开始',
+  ING = '进行中',
+  END = '已结束'
 }
 // 动态生成试卷标签
 export const ARR = ['数组', '字符串', '排序', '矩阵', '模拟', '枚举', '字符串匹配', '桶排序', '计数排序', '基数排序', '双指针', '链表', '堆栈', '队列', '图'];
@@ -64,7 +71,7 @@ export const TAGS = [
 ];
 
 // 代码编辑器的语言
-export const PROGRAM_LANGUAGE = ['cpp', 'java', 'python', 'javaccript', 'ruby', 'swift', 'go', 'rust', 'php', 'typescript'];
+export const PROGRAM_LANGUAGE = ['cpp', 'java', 'python', 'javascript', 'ruby', 'swift', 'go', 'rust', 'php', 'typescript'];
 // 代码编辑器的主题
 export enum PROGRAM_THEME {
   VS = 'vs',

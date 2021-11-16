@@ -1,5 +1,5 @@
 import React from 'react';
-import 'style/countDown.less';
+import 'style/candidate/countDown.less';
 import { getDays } from 'common/utils';
 
 export default class CountDown extends React.Component<any, any> {

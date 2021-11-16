@@ -16,9 +16,10 @@ import moment from 'moment';
 // import 'style/code.css';
 // import 'style/program.less'
 import { getExamLevel, getUrlParam } from 'common/utils';
-import { showTest } from 'api/modules/test/interface';
-import Wangeditor from './wangeditor';
-import { TEST_LEVEL } from '../const';
+import { showTest } from 'api/modules/test';
+import { comment } from 'api/modules/candidate';
+import { TEST_LEVEL } from 'common/const';
+import Wangeditor from 'common/components/interviewer/wangeditor';
 
 export default class ProgramInform extends React.Component {
   state = {
@@ -35,6 +36,9 @@ export default class ProgramInform extends React.Component {
     const url = getUrlParam('test');
     showTest({ test: url }).then(res => {
       this.setState({ testInform: res.data.show })
+    })
+    comment().then(res => {
+
     })
   }
 
@@ -53,7 +57,9 @@ export default class ProgramInform extends React.Component {
   }
   // 点击“评论”操作列表中的“回复”时的函数
   reply = () => {
-
+    comment({}).then(res => {
+      
+    })
   }
 
   render() {
@@ -88,7 +94,9 @@ export default class ProgramInform extends React.Component {
             </span>
           </Tooltip>,
         ],
-        author: 'syandeg',
+        author: (
+          <p style={{ color: 'red' }}>syandeg</p>
+        ),
         avatar: 'https://joeschmoe.io/api/v1/random',
         content: (
           <p>
@@ -98,8 +106,8 @@ export default class ProgramInform extends React.Component {
           </p>
         ),
         datetime: (
-          <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-            <span>{moment().subtract(1, 'days').fromNow()}</span>
+          <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
+            <span>{moment().subtract(2, 'days').fromNow()}</span>
           </Tooltip>
         ),
       }
@@ -140,7 +148,7 @@ export default class ProgramInform extends React.Component {
                     author={item.author}
                     avatar={item.avatar}
                     content={item.content}
-                    // datetime={item.datetime}
+                    datetime={item.datetime}
                   >
                     {
                       checkReply === false ? null :

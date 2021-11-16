@@ -12,12 +12,12 @@ import {
 } from '@ant-design/icons';
 import { FormInstance } from 'antd/es/form';
 
-import { addTest } from 'api/modules/test/interface';
-import { addPaper } from 'api/modules/paper/interface';
+import { addTest } from 'api/modules/test';
+import { addPaper } from 'api/modules/paper';
 import Navbar from 'common/components/navbar';
 import Foot from 'common/components/footer';
-import Tabler from 'common/components/tabler';
-import Paper from 'common/components/paper';
+import Tabler from 'src/common/components/interviewer/tabler';
+import Paper from 'src/common/components/interviewer/paper';
 import { EDIT } from 'common/const';
 import { getCookie } from 'src/common/utils';
 

@@ -8,15 +8,15 @@ import {
 } from 'antd';
 import moment from 'moment';
 
-import { modifyPaper } from 'api/modules/paper/interface';
-import { showTest } from 'api/modules/test/interface';
+import { modifyPaper } from 'api/modules/paper';
+import { showTest } from 'api/modules/test';
 import { EDIT, TAGS } from 'common/const';
 import { getUrlParam } from 'common/utils';
 import Navbar from 'common/components/navbar';
 import Foot from 'common/components/footer';
-import Tabler from 'common/components/tabler';
-import Paper from 'common/components/paper';
-import 'style/modify.less';
+import Tabler from 'src/common/components/interviewer/tabler';
+import Paper from 'src/common/components/interviewer/paper';
+import 'style/interviewer/modify.less';
 
 export default class Modify extends React.Component<any, any> {
   state = {

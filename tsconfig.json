@@ -22,8 +22,9 @@
   },
   "include": [
     "./src/*",
-    "./images.d.ts"
-, "../Online-programming-platform_service/src/Sendmail.js"  ],
+    "./images.d.ts",
+    "./src/Sendmail.js"
+  ],
   "exclude": [
     "./node_modules"
   ]

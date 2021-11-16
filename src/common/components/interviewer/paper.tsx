@@ -14,9 +14,8 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 
-import { search } from 'api/modules/candidate/interface';
+import { search, searchCandidate } from 'api/modules/candidate';
 import { getHour, getMinute } from 'common/utils';
-import { get } from 'src/api';
 
 interface get{
   getHour?: any,
@@ -34,8 +33,8 @@ export default class Paper extends React.Component<get, any> {
 
   // 点击“邀请候选人”之后发送请求的函数
   onFocus = async () => {
-    const res = await search();
-    const getInform = res.data.show;
+    const res = await searchCandidate();
+    const getInform = res.data.ret;
     const arr: any[] = [];
     getInform.map((item: { email: string; }) => {
       // 数组去重
@@ -43,6 +42,7 @@ export default class Paper extends React.Component<get, any> {
         arr.push(item.email);
       }
     })
+    console.log(arr)
     this.setState({ candidateEmail: arr });
   }
 

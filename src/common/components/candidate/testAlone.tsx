@@ -2,7 +2,7 @@ import React from 'react';
 import { message, Tag } from 'antd';
 import { DoubleRightOutlined, CheckCircleOutlined } from '@ant-design/icons';
 
-import 'style/testAlone.less';
+import 'style/interviewer/testAlone.less';
 import { TEST, WATCH_TEST } from 'common/const';
 import { getExamLevel } from 'common/utils';
 

@@ -3,17 +3,22 @@ import { BrowserRouter  as Router, Route, Switch, Redirect } from "react-router-
 
 import Head from 'common/components/header';
 import Login from 'pages/login';
-import Candidate from 'pages/candidate';
+
 import Interviewer from 'pages/interviewer';
 import Edit from 'pages/interviewer/edit/show';
 import Add from 'pages/interviewer/edit/add';
 import Modify from 'pages/interviewer/edit/modify';
-import LookOver from 'pages/interviewer/consult/lookOver';
+
 import ShowExam from 'pages/interviewer/consult/showExam';
+import ExamInform from 'pages/interviewer/consult/examInform';
+import LookOver from 'pages/interviewer/consult/lookOver';
+
+import Candidate from 'pages/candidate';
 import ShowTests from 'pages/candidate/showTests';
 import WatchTest from 'pages/candidate/WatchTest';
 import Program from 'pages/candidate/program';
-import { testLogin } from 'api/modules/interface';
+
+import { testLogin } from 'api/modules/user';
 import { getCookie } from 'common/utils';
 import { 
   ADD, 
@@ -25,9 +30,10 @@ import {
   SHOW_TESTS, 
   TEST, 
   WATCH_TEST,
-  LOOK_OVER,
   SHOW_EXAM,
-} from './common/const';
+  EXAM_INFORM,
+  LOOK_OVER,
+} from 'common/const';
 
 class App extends PureComponent {
   componentDidMount() {
@@ -53,6 +59,7 @@ class App extends PureComponent {
               <Route path={ ADD } component={ Add }></Route>
               <Route path={ MODIFY } component={ Modify }></Route>
               <Route path={ SHOW_EXAM } component={ ShowExam }></Route>
+              <Route path={ EXAM_INFORM } component={ ExamInform }></Route>
               <Route path={ LOOK_OVER } component={ LookOver }></Route>
 
               <Route path={ CANDIDATE } component={ Candidate }></Route>

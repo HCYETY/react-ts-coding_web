@@ -1,12 +1,12 @@
 import React from 'react';
 import { Modal, Button, message, Input, Statistic } from 'antd';
 
-import 'style/showTests.less';
+import 'style/candidate/showTests.less';
 import { getDays, getUrlParam, handleTime, getCookie, transTime } from 'common/utils';
-import TestAlone from 'common/components/testAlone';
-import CountDown from 'common/components/countdown';
-import { showTest } from 'api/modules/test/interface';
-import { search, submit } from 'api/modules/candidate/interface';
+import TestAlone from 'src/common/components/candidate/testAlone';
+import CountDown from 'src/common/components/candidate/countdown';
+import { showTest } from 'api/modules/test';
+import { search, submit } from 'api/modules/candidate';
 import { CANDIDATE, TEST_STATUS } from 'common/const';
 
 const url = getUrlParam('paper');
@@ -29,14 +29,14 @@ export default class ShowTests extends React.Component {
   async componentDidMount() {
     const res = await showTest(obj);
     const ans = await search(obj);
-    const ret = ans.data.candidateInform[0];
+    const ret = ans.data.ret[0];
     ret.test_status = ret.test_status === TEST_STATUS.DONE ? true : false;
     this.setState({ 
       tableArr: res.data.show,
       isWatch: ret.watch,
       isOver: ret.test_status,
-      endTime: Number(ret.time_end),
-      count: Number(ret.time_end),
+      endTime: ret.time_end,
+      count: ret.time_end,
     });
     this.countdown();
   }
@@ -55,8 +55,7 @@ export default class ShowTests extends React.Component {
   // “提交试卷”抽屉中剩余时间倒计时
   timer: NodeJS.Timer = null;
   countdown = () => {
-    const { tableArr, count, updateTime } = this.state;
-    const info = tableArr[0].paper;
+    const { count } = this.state;
     const nowtime = new Date().getTime();
     const time = getDays(nowtime, count);
     this.setState({ count: count - 1000, updateTime: time });
