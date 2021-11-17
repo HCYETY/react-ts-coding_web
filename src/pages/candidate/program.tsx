@@ -22,6 +22,13 @@ import { search, submit } from 'api/modules/candidate';
 import { TEST, PROGRAM_THEME, TEST_LEVEL, TEST_STATUS, } from 'src/common/const';
 
 const cookie = getCookie();
+const filterObj = {
+  paper: '全部试卷',
+  test_name: '',
+  test_level: '',
+  test_status: '',
+  tags: [] = [],
+}
 
 export default class Program extends React.Component {
 
@@ -35,8 +42,7 @@ export default class Program extends React.Component {
     preparation: false, // 标识“筛选”按钮的点击
     filter: false, // 标识“筛选试题要求”按钮的点击
     count: 1, // 页数
-    test_filter: [] = [], // 存储试题筛选时的所有要求
-    // test_filter: [] = [{ level: '' }, { status: '' }], // 存储试题筛选时的所有要求
+    test_filter: [] = [],
   }
 
   componentDidMount() {
@@ -98,63 +104,71 @@ export default class Program extends React.Component {
     const { preparation } = this.state;
     preparation === false ? this.setState({ preparation: true }) : this.setState({ preparation: false });
   }
+  
   // 选中试题 难度/状态 后的更新字段，以便渲染对应的试题
   choiceLevel = async (node: any) => {
     const cookie = getCookie();
     const filter: string = node.target.value;
-    const { test_filter } = this.state;
-    const sign = TEST_LEVEL.EASY || TEST_LEVEL.MIDDLE || TEST_LEVEL.HARD;
-    const arr: any[] = test_filter.length > 0 ? test_filter : [];
-    console.log(test_filter.length)
-    if (test_filter.length === 0) {
-      console.log('nihao')
-      const arr = [];
-      arr.push(filter)
-      this.setState({ test_filter: arr });
-    } else {
-      console.log('buhao')
-      this.setState({
-        test_filter: test_filter.map(item => {
-          item === sign ? filter : item;
-        })
-      })
-    }
-    // if (arr.length === 0) {
-    //   arr.push(filter);
+    // const { test_filter } = this.state;
+    // const sign = TEST_LEVEL.EASY || TEST_LEVEL.MIDDLE || TEST_LEVEL.HARD;
+    // const arr: any[] = test_filter.length > 0 ? test_filter : [];
+    // if (test_filter.length === 0) {
+    //   const arr = [];
+    //   arr.push(filter)
+    //   this.setState({ test_filter: arr });
     // } else {
-    //   arr.map(item => {
-    //     console.log('1', item)
-    //     item = item === sign ? filter: item;
-    //     console.log('2', item)
+    //   this.setState({
+    //     test_filter: test_filter.map(item => {
+    //       item === sign ? filter : item;
+    //     })
     //   })
     // }
-
-    // console.log(arr)
-    // test_filter[0].level = filter;
-    const res = await search({ cookie, filter });
-    this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
-    // console.log('xxxxxxxxxxx', test_filter)
+    filterObj.test_level = filter;
+    const res = await search({ cookie, filterObj });
+    this.setState({ examTest: res.data.ret, filter: true,  });
+    // this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
   }
-  choiceStatus = (node: any) => {
+  choiceStatus = async (node: any) => {
     const cookie = getCookie();
     const filter: string = node.target.value;
-    const { test_filter } = this.state;
-    const arr: any[] = test_filter;
-    if (arr.length === 0) {
-      arr[0] = filter;
-    } else {
-      arr.map(item => {
-        console.log((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE))
-        if ((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE)) {
-          item = filter;
-          return;
-        }
-      })
-    }
-    search({ cookie, filter }).then(res => {
-      this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
-    })
+    // const { test_filter } = this.state;
+    // const arr: any[] = test_filter;
+    // if (arr.length === 0) {
+    //   arr[0] = filter;
+    // } else {
+    //   arr.map(item => {
+    //     console.log((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE))
+    //     if ((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE)) {
+    //       item = filter;
+    //       return;
+    //     }
+    //   })
+    // }
+    filterObj.test_status = filter;
+    const res = await search({ cookie, filterObj });
+    this.setState({ examTest: res.data.ret, filter: true,  });
+    // this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
   }
+  // choiceStatus = (node: any) => {
+  //   const cookie = getCookie();
+  //   const filter: string = node.target.value;
+  //   const { test_filter } = this.state;
+  //   const arr: any[] = test_filter;
+  //   if (arr.length === 0) {
+  //     arr[0] = filter;
+  //   } else {
+  //     arr.map(item => {
+  //       console.log((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE))
+  //       if ((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE)) {
+  //         item = filter;
+  //         return;
+  //       }
+  //     })
+  //   }
+  //   search({ cookie, filter }).then(res => {
+  //     this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
+  //   })
+  // }
 
   // 展示上一页试题
   previousPage = () => {
@@ -193,8 +207,8 @@ export default class Program extends React.Component {
       { value: '标签', placeholder: '标签' },
     ]
     const existChoice = [
-      { value: '难度', radio: level },
-      { value: '状态', radio: status },
+      { value: '难度', radio: level, func: this.choiceLevel },
+      { value: '状态', radio: status, func: this.choiceStatus },
       // { value: '难度', radio: level, func: this.choiceStatus },
       // { value: '状态', radio: status, func: this.choiceStatus },
     ]
@@ -341,7 +355,8 @@ export default class Program extends React.Component {
                                 options={ item.radio }  
                                 optionType="button"
                                 buttonStyle="solid"
-                                onChange={ this.choiceStatus }
+                                onChange={ item.func }
+                                // onChange={ this.choiceStatus }
                                 className="background-button"
                               />
                             </div>

@@ -1,0 +1,21 @@
+.exam-inform-box{
+  padding: 20px;
+}
+
+.site-content-top{
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+}
+.site-content-top-left{
+  display: grid;
+  justify-content: start;
+}
+.site-content-top-right{
+  margin: 10px;
+  display: flex;
+}
+/* .site-content-top-left-top{
+  font-size: 20px;
+  margin: 10px;
+} */

@@ -15,12 +15,15 @@ import moment from 'moment';
 
 // import 'style/code.css';
 // import 'style/program.less'
-import { getExamLevel, getUrlParam } from 'common/utils';
+import { getCookie, getExamLevel, getUrlParam } from 'common/utils';
 import { showTest } from 'api/modules/test';
 import { comment } from 'api/modules/candidate';
 import { TEST_LEVEL } from 'common/const';
 import Wangeditor from 'common/components/interviewer/wangeditor';
+import MarkdownEditor from 'common/components/candidate/markdownEditor';
 
+const cookie: string = getCookie();
+  
 export default class ProgramInform extends React.Component {
   state = {
     testInform: {},
@@ -44,11 +47,17 @@ export default class ProgramInform extends React.Component {
 
   // 点击“评论”操作列表中的“赞”时的函数
   like = () => {
-    this.setState({ likes: 1, dislikes: 0, checkLike: 'like' });
+    const { likes } = this.state;
+    comment({ like_num: likes + 1, cookie, status: true }).then(res => {
+      this.setState({ likes: res.like_num, checkLike: 'like' });
+    })
   }
   // 点击“评论”操作列表中的“踩”时的函数
   dislike = () => {
-    this.setState({ likes: 0, dislikes: 1, checkLike: 'dislike'});
+    const { dislikes } = this.state;
+    comment({ dislike_num: dislikes + 1, cookie, status: true }).then(res => {
+      this.setState({ dislikes: res.dislike_num, checkLike: 'dislike'});
+    })
   }
   // 点击“评论”操作列表中的“查看评论”时的函数
   checkReply = () => {
@@ -57,9 +66,13 @@ export default class ProgramInform extends React.Component {
   }
   // 点击“评论”操作列表中的“回复”时的函数
   reply = () => {
-    comment({}).then(res => {
+    // comment({ comments, cookie, status: true }).then(res => {
       
-    })
+    // })
+  }
+  // 创建评论
+  createReply = () => {
+
   }
 
   render() {
@@ -135,7 +148,7 @@ export default class ProgramInform extends React.Component {
             tab={ <span> <CommentOutlined/> 评论 </span> }
             key='comments'
           >
-            <Wangeditor />
+            <MarkdownEditor />
             <List
               className="comment-list"
               header={`${data.length} replies`}

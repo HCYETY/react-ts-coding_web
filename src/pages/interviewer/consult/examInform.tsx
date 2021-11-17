@@ -1,7 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Descriptions, Layout, Space, Table, Tabs, Tag, } from 'antd';
-import { CheckCircleOutlined, EditOutlined, DeleteOutlined, } from '@ant-design/icons';
+import { 
+  Button, 
+  Descriptions, 
+  Layout, 
+  Space, 
+  Table, 
+  Tabs, 
+  Tag, 
+  Divider, 
+} from 'antd';
+import { 
+  CheckCircleOutlined, 
+  ClockCircleOutlined,
+  EditOutlined, 
+  DeleteOutlined, 
+} from '@ant-design/icons';
 
 import 'style/interviewer/examInform.css';
 import Navbar from 'common/components/navbar';
@@ -128,18 +142,25 @@ export default class CandidateInform extends React.Component {
     const timeEnd = transTime(Number(examInform.time_end));
 
     return(
-      <div className="site-layout">
+      <div className="site-layout exam-inform-box">
         <Navbar/>
 
         <Layout>
           <div className="site-content-top">
             <div className="site-content-top-left">
-              <div className="site-content-top-left-top"> { paper } </div>
-              <div className="site-content-top-left-bottom">
+              <h3> { paper } </h3>
+              <div>
                 <span>结束时间：</span>
               </div>
             </div>
-            <div className="site-content-top-right"></div>
+            <div className="site-content-top-right">
+              <span><CheckCircleOutlined />未参加</span>
+              <Divider/>
+              <span><ClockCircleOutlined />进行中</span>
+              <Divider/>
+              <span><CheckCircleOutlined />已结束</span>
+              <Divider/>
+            </div>
           </div>
           <Layout.Content>
             <Tabs defaultActiveKey="exam-report">
