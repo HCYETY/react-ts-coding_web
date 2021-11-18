@@ -23,10 +23,10 @@ import { TEST, PROGRAM_THEME, TEST_LEVEL, TEST_STATUS, } from 'src/common/const'
 
 const cookie = getCookie();
 const filterObj = {
-  paper: '全部试卷',
-  test_name: '',
-  test_level: '',
-  test_status: '',
+  paper: ['string'],
+  test_name: ['string'],
+  test_level: ['string'],
+  test_status: ['string'],
   tags: [] = [],
 }
 
@@ -123,9 +123,9 @@ export default class Program extends React.Component {
     //     })
     //   })
     // }
-    filterObj.test_level = filter;
+    filterObj.test_level.push(filter);
     const res = await search({ cookie, filterObj });
-    this.setState({ examTest: res.data.ret, filter: true,  });
+    this.setState({ examTest: res.data.ret, filter: true, cookie });
     // this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
   }
   choiceStatus = async (node: any) => {
@@ -144,7 +144,7 @@ export default class Program extends React.Component {
     //     }
     //   })
     // }
-    filterObj.test_status = filter;
+    filterObj.test_status.push(filter);
     const res = await search({ cookie, filterObj });
     this.setState({ examTest: res.data.ret, filter: true,  });
     // this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });

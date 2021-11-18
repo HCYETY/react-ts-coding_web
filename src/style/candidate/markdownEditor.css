@@ -1,0 +1,11 @@
+.editor{
+  display: flex;
+}
+.editor-textarea{
+  height: 40px;
+}
+.editor-bottom{
+  display: flex;
+  height: 10px;
+  line-height: 10px;
+}

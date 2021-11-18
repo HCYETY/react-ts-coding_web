@@ -25,6 +25,8 @@ import MarkdownEditor from 'common/components/candidate/markdownEditor';
 const cookie: string = getCookie();
   
 export default class ProgramInform extends React.Component {
+  authorRef = React.createRef<ProgramInform>();
+
   state = {
     testInform: {},
     likes: 0,         // 赞的数量
@@ -47,10 +49,12 @@ export default class ProgramInform extends React.Component {
 
   // 点击“评论”操作列表中的“赞”时的函数
   like = () => {
-    const { likes } = this.state;
-    comment({ like_num: likes + 1, cookie, status: true }).then(res => {
-      this.setState({ likes: res.like_num, checkLike: 'like' });
-    })
+  // console.log(this.authorRef.current.focus())
+  
+    // const { likes } = this.state;
+    // comment({ like_num: likes + 1, cookie, status: true }).then(res => {
+    //   this.setState({ likes: res.like_num, checkLike: 'like' });
+    // })
   }
   // 点击“评论”操作列表中的“踩”时的函数
   dislike = () => {
@@ -80,19 +84,19 @@ export default class ProgramInform extends React.Component {
     const data = [
       {
         actions: [
-          <Tooltip key="comment-basic-like" title="Like">
+          <Tooltip key="comment-basic-like" title="点赞">
             <span onClick={ this.like }>
               { checkLike === 'like' ? <LikeFilled /> : <LikeOutlined />}
               <span className="comment-action">{ likes === 0 ? '赞' : likes }</span>
             </span>
           </Tooltip>,
-          <Tooltip key="comment-basic-dislike" title="Dislike">
+          <Tooltip key="comment-basic-dislike" title="踩">
             <span onClick={ this.dislike }>
               { checkLike === 'dislike' ? <DislikeFilled /> : <DislikeOutlined /> }
               <span className="comment-action">{ dislikes === 0 ? '踩' : dislikes }</span>
             </span>
           </Tooltip>,
-          <Tooltip key="comment-basic-reply-check" title="Reply check">
+          <Tooltip key="comment-basic-reply-check" title="查看回复">
             <span onClick={ this.checkReply }>
               <CommentOutlined />
               <span className="comment-action">
@@ -100,7 +104,7 @@ export default class ProgramInform extends React.Component {
               </span>
             </span>
           </Tooltip>,
-          <Tooltip key="comment-basic-reply-to" title="Reply to">
+          <Tooltip key="comment-basic-reply-to" title="回复">
             <span onClick={ this.reply }>
               <VerticalAlignTopOutlined />
               <span className="comment-action">回复</span>
@@ -108,7 +112,7 @@ export default class ProgramInform extends React.Component {
           </Tooltip>,
         ],
         author: (
-          <p style={{ color: 'red' }}>syandeg</p>
+          <Tooltip key="comment-basic-author" title="用户邮箱" ref={this.authorRef}>1164939253@qq.com</Tooltip>
         ),
         avatar: 'https://joeschmoe.io/api/v1/random',
         content: (
