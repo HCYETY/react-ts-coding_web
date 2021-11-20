@@ -22,27 +22,38 @@ import { search, submit } from 'api/modules/candidate';
 import { TEST, PROGRAM_THEME, TEST_LEVEL, TEST_STATUS, } from 'src/common/const';
 
 const cookie = getCookie();
-const filterObj = {
-  paper: ['string'],
-  test_name: ['string'],
-  test_level: ['string'],
-  test_status: ['string'],
-  tags: [] = [],
-}
 
+interface filter{
+  exam: string,
+  test_name: string,
+  test_level: string,
+  test_status: string,
+  tags: string[],
+}
 export default class Program extends React.Component {
+
+  dele = (e: any) => {
+    console.log(e)
+  }
 
   state = {
     code: '',
     language: 'javascript',
     theme: PROGRAM_THEME.VS,
     visible: false,
-    exam: [] = [''],
+    exam: [] = [],
     examTest: [] = [],
-    preparation: false, // 标识“筛选”按钮的点击
-    filter: false, // 标识“筛选试题要求”按钮的点击
-    count: 1, // 页数
-    test_filter: [] = [],
+    preparation: false,   // 标识“筛选”按钮的点击，显示可供筛选的所有要求
+    filter: false,        // 标识“筛选试题要求”按钮的点击，点击过后显示已经筛选的信息
+    filterArr: [] = [],   // 筛选过后的数组
+    count: 1,             // 页数
+    test_filter: [] = [
+      { paper: '', class_name: 'paper'}, 
+      { test_name: '', class_name: 'test_name'}, 
+      { test_level: '', class_name: 'test_level'}, 
+      { test_status: '', class_name: 'test_status'}, 
+      { tags: '', class_name: 'tags'}, 
+    ]  // 试卷名、试题名、试题难度、试题完成状态、试题标签
   }
 
   componentDidMount() {
@@ -57,7 +68,8 @@ export default class Program extends React.Component {
       })
       this.setState({ 
         examTest: ret,
-        exam: arr
+        exam: arr,
+        filterArr: ret
       });
     })
   }
@@ -90,6 +102,8 @@ export default class Program extends React.Component {
 
   // 选中“搜索试卷”按钮时请求试卷信息
   searchExam = async (value: string, option: any) => {
+    const { filterArr } = this.state;
+
     const res = await search({ cookie, paper: value });
     this.setState({ examTest: res.data.candidateInform });
   }
@@ -106,69 +120,43 @@ export default class Program extends React.Component {
   }
   
   // 选中试题 难度/状态 后的更新字段，以便渲染对应的试题
-  choiceLevel = async (node: any) => {
-    const cookie = getCookie();
-    const filter: string = node.target.value;
-    // const { test_filter } = this.state;
-    // const sign = TEST_LEVEL.EASY || TEST_LEVEL.MIDDLE || TEST_LEVEL.HARD;
-    // const arr: any[] = test_filter.length > 0 ? test_filter : [];
-    // if (test_filter.length === 0) {
-    //   const arr = [];
-    //   arr.push(filter)
-    //   this.setState({ test_filter: arr });
-    // } else {
-    //   this.setState({
-    //     test_filter: test_filter.map(item => {
-    //       item === sign ? filter : item;
-    //     })
-    //   })
-    // }
-    filterObj.test_level.push(filter);
-    const res = await search({ cookie, filterObj });
-    this.setState({ examTest: res.data.ret, filter: true, cookie });
-    // this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
+  choice = async (value: any) => {
+    const filter: string =  value.target.value;
+    const { test_filter, examTest } = this.state;
+    let paper = test_filter[0], test_name = test_filter[1], test_level = test_filter[2].test_level, test_status = test_filter[3].test_status, tags = test_filter[4];
+
+    if (filter === TEST_LEVEL.EASY || filter === TEST_LEVEL.MIDDLE || filter === TEST_LEVEL.HARD) {
+      test_level = filter;
+      test_filter[2].test_level = filter;
+    } else if (filter === TEST_STATUS.NODO || filter === TEST_STATUS.DOING || filter === TEST_STATUS.DONE) {
+      test_status = filter;
+      test_filter[3].test_status = filter;
+    }
+    const after = examTest.filter((item: filter) => {
+      if (item['test_level'].indexOf(test_level) !== -1 && item['test_status'].indexOf(test_status) !== -1) {
+      // if (item['paper'].indexOf(paper) !== -1 && item['test_name'].indexOf(test_name) !== -1 && item['test_level'].indexOf(test_level) !== -1 && item['test_status'].indexOf(test_status) !== -1) {
+        return item;
+      }
+    })
+    this.setState({ filterArr: after, test_filter, filter: true });
   }
-  choiceStatus = async (node: any) => {
-    const cookie = getCookie();
-    const filter: string = node.target.value;
-    // const { test_filter } = this.state;
-    // const arr: any[] = test_filter;
-    // if (arr.length === 0) {
-    //   arr[0] = filter;
-    // } else {
-    //   arr.map(item => {
-    //     console.log((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE))
-    //     if ((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE)) {
-    //       item = filter;
-    //       return;
-    //     }
-    //   })
-    // }
-    filterObj.test_status.push(filter);
-    const res = await search({ cookie, filterObj });
-    this.setState({ examTest: res.data.ret, filter: true,  });
-    // this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
+  deleteChoice = (e: any) => {
+    console.log(this.dele)
+    // const className = this.dele.current.className
+    // const div = document.querySelector(`.${ className }`) as HTMLElement;
+    // console.log(div)
   }
-  // choiceStatus = (node: any) => {
-  //   const cookie = getCookie();
-  //   const filter: string = node.target.value;
-  //   const { test_filter } = this.state;
-  //   const arr: any[] = test_filter;
-  //   if (arr.length === 0) {
-  //     arr[0] = filter;
-  //   } else {
-  //     arr.map(item => {
-  //       console.log((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE))
-  //       if ((item === TEST_LEVEL.EASY || item === TEST_LEVEL.MIDDLE || item === TEST_LEVEL.HARD) || (item === TEST_STATUS.NODO || item === TEST_STATUS.DOING || item === TEST_STATUS.DONE)) {
-  //         item = filter;
-  //         return;
-  //       }
-  //     })
-  //   }
-  //   search({ cookie, filter }).then(res => {
-  //     this.setState({ examTest: res.data.ret, filter: true, test_filter: arr });
-  //   })
-  // }
+  deleteAllChoice = () => {
+    let { test_filter, examTest } = this.state;
+    test_filter = [
+      { paper: '', class_name: 'paper'}, 
+      { test_name: '', class_name: 'test_name'}, 
+      { test_level: '', class_name: 'test_level'}, 
+      { test_status: '', class_name: 'test_status'}, 
+      { tags: '', class_name: 'tags'}, 
+    ];
+    this.setState({ test_filter, filter: false, filterArr: examTest });
+  }
 
   // 展示上一页试题
   previousPage = () => {
@@ -191,7 +179,7 @@ export default class Program extends React.Component {
   }
 
   render() {
-    const { language, theme, visible, examTest, exam, preparation, count, test_filter, filter, } = this.state;
+    const { language, theme, visible, examTest, exam, preparation, count, filter, test_filter, filterArr, } = this.state;
     const level = [
       { label: TEST_LEVEL.EASY, value: TEST_LEVEL.EASY },
       { label: TEST_LEVEL.MIDDLE, value: TEST_LEVEL.MIDDLE },
@@ -204,16 +192,12 @@ export default class Program extends React.Component {
     ]
     const existSearch = [
       // { value: '分类', placeholder: '全部' },
-      { value: '标签', placeholder: '标签' },
+      { value: '标签', placeholder: '标签', },
     ]
     const existChoice = [
-      { value: '难度', radio: level, func: this.choiceLevel },
-      { value: '状态', radio: status, func: this.choiceStatus },
-      // { value: '难度', radio: level, func: this.choiceStatus },
-      // { value: '状态', radio: status, func: this.choiceStatus },
+      { value: '难度', radio: level },
+      { value: '状态', radio: status },
     ]
-    // console.log('哈哈哈哈哈哈哈哈哈哈哈哈', test_filter, test_filter.length)
-    // console.log('dddddddd', examTest)
 
     return(
       <div className="whole">
@@ -238,10 +222,11 @@ export default class Program extends React.Component {
                     {/* 搜索该候选人的试卷 */}
                     <Select
                       showSearch
+                      key="searchCandidateExam"
                       style={{ width: 200 }}
-                      placeholder={ exam && exam[0] }
+                      // placeholder={ exam && exam[0] }
                       optionFilterProp="children"
-                      onChange={ this.searchExam } // 选中 option，或 input 的 value 变化时，调用此函数
+                      onChange={ this.choice } // 选中 option，或 input 的 value 变化时，调用此函数
                       filterOption={(input, option) =>
                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       }
@@ -265,11 +250,12 @@ export default class Program extends React.Component {
                     /> */}
                     <Select
                       showSearch
+                      key="searchCandidateTest"
                       open={ false }
                       style={{ width: 200 }}
                       placeholder="搜索题目"
                       // optionFilterProp="children"
-                      onSearch={ this.searchTest } // 文本框值变化时回调		
+                      onSearch={ this.choice } // 文本框值变化时回调		
                       // filterOption={(input, option) =>
                       //   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                       // }
@@ -333,13 +319,22 @@ export default class Program extends React.Component {
                   filter === true ?
                   <div className="exist filter-box">
                     {
-                      test_filter.map(item => {
-                        return (
-                          <div className="filter-button">{ item }<CloseOutlined /> </div>
-                        )
+                      test_filter.map((item,index)=> {
+                        const allValue = Object.values(item);
+                        const value = allValue[0], classValue = allValue[1];
+                        if (value !== '') {
+                          return (
+                            <div key={value} className={ classValue } ref={ this.dele }>
+                              { value }
+                              <CloseOutlined onClick={ this.dele }/> 
+                            </div>
+                          )
+                        }
                       })
                     }
-                    <div className="filter-button-delete"><DeleteOutlined /></div>
+                    <div >
+                      <DeleteOutlined className="filter-button-delete" onClick={ this.deleteAllChoice }/>
+                    </div>
                   </div> : null
                 }
                 {
@@ -355,8 +350,7 @@ export default class Program extends React.Component {
                                 options={ item.radio }  
                                 optionType="button"
                                 buttonStyle="solid"
-                                onChange={ item.func }
-                                // onChange={ this.choiceStatus }
+                                onChange={ this.choice }
                                 className="background-button"
                               />
                             </div>
@@ -384,7 +378,7 @@ export default class Program extends React.Component {
                 <div className="content">
                   <div className="content-box">
                     {
-                      examTest.map(item => {
+                      filterArr.map(item => {
                         return(
                           <a className="content-test-box" href={ `${ TEST }?test=${ item['test_name'] }` }>
                             <div className="content-test-left">
@@ -429,38 +423,6 @@ export default class Program extends React.Component {
 
 
         <div className="right">
-
-          {/* <div className="right-top">
-            <Select 
-              defaultValue={ language } 
-              style={{ width: 120 }} 
-              onChange={ this.handleChange }
-              className="right-top-button"
-            >
-              {
-                PROGRAM_LANGUAGE.map(item => {
-                  return(
-                    <Select.Option value={ item }> { item } </Select.Option>
-                  )
-                })
-              }
-            </Select>
-            
-            <Select 
-              defaultValue={ theme } 
-              style={{ width: 120 }} 
-              onChange={ this.handleChange }
-              className="right-top-button"
-            >
-              {
-                THEME.map(item => {
-                  return(
-                    <Select.Option value={ item }> { item } </Select.Option>
-                  )
-                })
-              }
-            </Select>
-          </div> */}
 
           <div className="right-content">
             <CodeEditor getProgramCode={ this.getProgramCode.bind(this) } language={ language }/>

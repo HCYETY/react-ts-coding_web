@@ -23,6 +23,18 @@ export enum TEST_LEVEL {
   HARD = '困难',
   HARD_KEY = 'hard',
 };
+// 答题情况
+export enum TEST_STATUS {
+  NODO = '未做',
+  NODO_KEY = 0,
+  DONE = '已解答',
+  DONE_KEY = -1,
+  DOING = '尝试过',
+  DOING_KEY = 1,
+  WILL = '未开始',
+  ING = '进行中',
+  END = '已结束'
+}
 // 试卷状态
 export enum PAPER_STATUS {
   NODO = '试卷未开放',
@@ -36,18 +48,6 @@ export enum PAPER_STATUS {
 export enum PAPER_CONSULT {
   YES = '已批阅',
   NO = '未批阅',
-}
-// 答题情况
-export enum TEST_STATUS {
-  NODO = '未做',
-  NODO_KEY = 0,
-  DONE = '已解答',
-  DONE_KEY = -1,
-  DOING = '尝试过',
-  DOING_KEY = 1,
-  WILL = '未开始',
-  ING = '进行中',
-  END = '已结束'
 }
 // 动态生成试卷标签
 export const ARR = ['数组', '字符串', '排序', '矩阵', '模拟', '枚举', '字符串匹配', '桶排序', '计数排序', '基数排序', '双指针', '链表', '堆栈', '队列', '图'];
