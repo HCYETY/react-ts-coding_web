@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Select, Drawer, Radio, Input, } from 'antd';
+import { Button, Select, Drawer, Radio, } from 'antd';
 import {
   LeftOutlined,
   RightOutlined,
@@ -23,44 +23,58 @@ import { TEST, PROGRAM_THEME, TEST_LEVEL, TEST_STATUS, } from 'src/common/const'
 
 const cookie = getCookie();
 
-interface filter{
-  exam: string,
-  test_name: string,
-  test_level: string,
-  test_status: string,
-  tags: string[],
+interface Prop {
+  
 }
-export default class Program extends React.Component {
+interface examObj {
+  testStatus: string;
+  testName: string;
+  testLevel: string;
+}
+interface examTestObj {
+  paper: string;
+  testName: string;
+  testLevel: string;
+  testStatus: string;
+  tags: string;
+}
+interface testFilterObj {
+  label: string;
+  value: number;
+  type: string;
+}
+interface State {
+  code: string;
+  language: string;
+  theme: string;
+  visible: boolean;
+  exam: examObj[];              // 请求的所有试卷
+  examTest: examTestObj[];      // 该用户的所有试题
+  preparation: boolean;         // 标识“筛选”按钮的点击，显示可供筛选的所有要求
+  count: number;                // 页数
+  filterArr: examTestObj[];     // 筛选过后的数组
+  testFilter: testFilterObj[];  // 筛选试题的要求
+}
 
-  dele = (e: any) => {
-    console.log(e)
-  }
+export default class Program extends React.Component<Prop, State> {
 
   state = {
     code: '',
     language: 'javascript',
     theme: PROGRAM_THEME.VS,
     visible: false,
-    exam: [] = [],
-    examTest: [] = [],
+    exam: [],
+    examTest: [],
     preparation: false,   // 标识“筛选”按钮的点击，显示可供筛选的所有要求
-    filter: false,        // 标识“筛选试题要求”按钮的点击，点击过后显示已经筛选的信息
-    filterArr: [] = [],   // 筛选过后的数组
+    filterArr: [],   // 筛选过后的数组
     count: 1,             // 页数
-    test_filter: [] = [
-      { paper: '', class_name: 'paper'}, 
-      { test_name: '', class_name: 'test_name'}, 
-      { test_level: '', class_name: 'test_level'}, 
-      { test_status: '', class_name: 'test_status'}, 
-      { tags: '', class_name: 'tags'}, 
-    ]  // 试卷名、试题名、试题难度、试题完成状态、试题标签
+    testFilter: [] 
   }
 
   componentDidMount() {
     search({ cookie }).then(res => {
       const ret = res.data.ret;
-      const arr: string[] = [];
-      arr.push('全部试卷')
+      const arr: examObj[] = [];
       ret.map((item: any) => {
         if (arr.indexOf(item.paper) === -1) {
           arr.push(item.paper);
@@ -75,7 +89,7 @@ export default class Program extends React.Component {
   }
 
   // 获取子组件（代码编辑器）的 code
-  getProgramCode = (value: any) => {
+  getProgramCode = (value: string) => {
     this.setState({ code: value })
   }
   // 提交代码，需要验证代码的正确性（待完善），如果正确则将 status 改为 true
@@ -96,7 +110,7 @@ export default class Program extends React.Component {
     this.setState({ visible: true });
   }
   // 关闭题目列表
-  onClose =() => {
+  onClose = () => {
     this.setState({ visible: false });
   }
 
@@ -116,46 +130,88 @@ export default class Program extends React.Component {
   // 筛选试题
   filter = () => {
     const { preparation } = this.state;
-    preparation === false ? this.setState({ preparation: true }) : this.setState({ preparation: false });
+    this.setState({ preparation: !preparation })
   }
   
   // 选中试题 难度/状态 后的更新字段，以便渲染对应的试题
-  choice = async (value: any) => {
-    const filter: string =  value.target.value;
-    const { test_filter, examTest } = this.state;
-    let paper = test_filter[0], test_name = test_filter[1], test_level = test_filter[2].test_level, test_status = test_filter[3].test_status, tags = test_filter[4];
-
-    if (filter === TEST_LEVEL.EASY || filter === TEST_LEVEL.MIDDLE || filter === TEST_LEVEL.HARD) {
-      test_level = filter;
-      test_filter[2].test_level = filter;
-    } else if (filter === TEST_STATUS.NODO || filter === TEST_STATUS.DOING || filter === TEST_STATUS.DONE) {
-      test_status = filter;
-      test_filter[3].test_status = filter;
+  choice = async ( item: any) => {
+    const filter: string =  item.target.value;
+    const { testFilter, examTest } = this.state;
+    const copyFilterArr = testFilter.slice()
+    if (copyFilterArr.length > 0) {
+      copyFilterArr.map(item => {
+        console.log('item', item)
+        if (['简单', '中等', '困难'].includes(item.label)) {
+          item.label = filter;     
+          item.type = 'testLevel';
+        } else if (['未做', '已解答', '尝试过'].includes(item.label)) {
+          item.label = filter;
+          item.type = 'testStatus';
+        }
+      })
+    } else {
+      const obj: testFilterObj = {
+        label: filter,
+        value: 0,
+        type: 'testLevel'
+      }
+      copyFilterArr.push(obj);
     }
-    const after = examTest.filter((item: filter) => {
-      if (item['test_level'].indexOf(test_level) !== -1 && item['test_status'].indexOf(test_status) !== -1) {
+    console.log('copyFilterArr', copyFilterArr)
+
+    // if (['简单', '中等', '困难'].includes(filter)) {
+    // // if (filter === TEST_LEVEL.EASY || filter === TEST_LEVEL.MIDDLE || filter === TEST_LEVEL.HARD) {
+    //   testFilter.map(item => {
+    //     const old = item.label;
+    //     if (old === filter)
+    //     item.label = filter;
+    //   })
+    //   // test_level = filter;
+    //   testFilter[2].test_level = filter;
+    // } else if (['未做', '已解答', '尝试过'].includes(filter)) {
+    // // } else if (filter === TEST_STATUS.NODO || filter === TEST_STATUS.DOING || filter === TEST_STATUS.DONE) {
+    //   testFilter.map(item => {
+    //     item.label = filter;
+    //   })
+    //   // test_status = filter;
+    //   testFilter[3].test_status = filter;
+    // }
+
+    let testLevel: string = 'testLevel', testStatus: string = 'testStatus';
+    testFilter.map(item => {
+      console.log('testFilter,item', item)
+      if (item.type === testLevel) {
+        testLevel = item.label;
+      } else if (item.type === testStatus) {
+        testStatus = item.label;
+      }
+    })
+    console.log('testLevel', testLevel);
+    console.log('testStatus', testStatus);
+    const afterFilterArr = examTest.filter((item) => {
+      if (item['test_level'].indexOf(testLevel) !== -1 && 
+        item['test_status'].indexOf(testStatus) !== -1
+      ) {
       // if (item['paper'].indexOf(paper) !== -1 && item['test_name'].indexOf(test_name) !== -1 && item['test_level'].indexOf(test_level) !== -1 && item['test_status'].indexOf(test_status) !== -1) {
         return item;
       }
     })
-    this.setState({ filterArr: after, test_filter, filter: true });
+    this.setState({ 
+      filterArr: afterFilterArr, 
+      testFilter: copyFilterArr, 
+    });
   }
-  deleteChoice = (e: any) => {
-    console.log(this.dele)
+  deleteChoice = (val: any) => {
+    console.log(val)
     // const className = this.dele.current.className
     // const div = document.querySelector(`.${ className }`) as HTMLElement;
     // console.log(div)
   }
   deleteAllChoice = () => {
-    let { test_filter, examTest } = this.state;
-    test_filter = [
-      { paper: '', class_name: 'paper'}, 
-      { test_name: '', class_name: 'test_name'}, 
-      { test_level: '', class_name: 'test_level'}, 
-      { test_status: '', class_name: 'test_status'}, 
-      { tags: '', class_name: 'tags'}, 
-    ];
-    this.setState({ test_filter, filter: false, filterArr: examTest });
+    let { testFilter, examTest } = this.state;
+    let modify = testFilter.slice();
+    modify = [];
+    this.setState({ testFilter: modify, filterArr: examTest });
   }
 
   // 展示上一页试题
@@ -171,15 +227,12 @@ export default class Program extends React.Component {
     
   }
   // 下一题
-  id = 0;
   nextTest = () => {
-    const { examTest } = this.state;
-    console.log(examTest)
-    
-  }
 
-  render() {
-    const { language, theme, visible, examTest, exam, preparation, count, filter, test_filter, filterArr, } = this.state;
+  }
+  
+  renderDrawer = () => {
+    const { visible, exam, preparation, count, testFilter, filterArr, } = this.state;
     const level = [
       { label: TEST_LEVEL.EASY, value: TEST_LEVEL.EASY },
       { label: TEST_LEVEL.MIDDLE, value: TEST_LEVEL.MIDDLE },
@@ -191,7 +244,6 @@ export default class Program extends React.Component {
       { label: TEST_STATUS.DOING, value: TEST_STATUS.DOING },
     ]
     const existSearch = [
-      // { value: '分类', placeholder: '全部' },
       { value: '标签', placeholder: '标签', },
     ]
     const existChoice = [
@@ -199,6 +251,207 @@ export default class Program extends React.Component {
       { value: '状态', radio: status },
     ]
 
+    return(
+      <Drawer
+        width="60%"
+        visible={ visible }
+        onClose={ this.onClose }
+        closable={ false }
+        placement="left"
+        className="drawer"
+      >
+        <div className="drawer-box">
+          <div className="top">
+            <div className="top-left">
+              {/* 搜索该候选人的试卷 */}
+              <Select
+                showSearch
+                key="searchCandidateExam"
+                style={{ width: 200 }}
+                // placeholder={ exam && exam[0] }
+                optionFilterProp="children"
+                onChange={ this.choice } // 选中 option，或 input 的 value 变化时，调用此函数
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {
+                  exam.map(item => {
+                    return(
+                      <Select.Option value={ item.testName }  key={ item.testName } >{ item.testName }</Select.Option>
+                    )
+                  })
+                }
+              </Select>
+            </div>
+
+            <div className="top-right">
+              {/* 搜索全部试题，包括该候选人的其他试卷下的试题 */}
+              <Select
+                showSearch
+                key="searchCandidateTest"
+                open={ false }
+                style={{ width: 200 }}
+                placeholder="搜索题目"
+                // optionFilterProp="children"
+                onSearch={ this.choice } // 文本框值变化时回调		
+                // filterOption={(input, option) =>
+                //   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                // }
+              >
+                {/* {
+                  examTest.map(item => {
+                    return(
+                      <Select.Option value={ item['test_name'] } key={ item['test_name'] }>{ item['test_name'] }</Select.Option>
+                    )
+                  })
+                } */}
+              </Select>
+              <div className="top-gap"></div>
+
+              {/* “筛选”按钮 */}
+              <Button 
+                className="top-button" 
+                onClick={ this.filter } 
+                type="ghost"
+                >
+                <FilterOutlined/>
+              </Button>
+              <div className="top-gap"></div>
+
+              {/* “页数”按钮 */}
+              <Select
+                // style={{ width: 200 }}
+                placeholder={ count }
+                optionFilterProp="children"
+                // onChange={ this.onChange } // 选中 option，或 input 的 value 变化时，调用此函数
+              >
+                {
+                  exam.map(item => {
+                    return(
+                      <Select.Option value={ count }  key={ count } >{ count }</Select.Option>
+                    )
+                  })
+                }
+              </Select>
+              <div className="top-gap"></div>
+
+              {/* “上一页”按钮 */}
+              <Button 
+                className="top-button" 
+                onClick={ this.previousPage }
+                type="ghost"
+                >
+                  <LeftOutlined/>
+              </Button>
+              <div className="top-gap"></div>
+
+              {/* “下一页”按钮 */}
+              <Button 
+                className="top-button" 
+                onClick={ this.nextPage }
+                type="ghost"
+              >
+                <RightOutlined/>
+              </Button>
+            </div>
+
+          </div>
+
+          {
+            testFilter.length > 0 ?
+            <div className="exist filter-box">
+              {
+                testFilter.map(item => {
+                  const allValue = Object.values(item);
+                  const value = allValue[0];
+                  if (value !== '') {
+                    return (
+                      <div>
+                        { value }
+                        <CloseOutlined onClick={ (item) => this.deleteChoice(item) }/> 
+                      </div>
+                    )
+                  }
+                })
+              }
+              <div >
+                <DeleteOutlined 
+                  className="filter-button-delete" 
+                  onClick={ this.deleteAllChoice }
+                />
+              </div>
+            </div> : null
+          }
+          {
+            preparation === true ? 
+            <div className="exist">
+              <div className="exist-content">
+                {
+                  existChoice.map(item => {
+                    return(
+                      <div className="exist-content-box">
+                        <div className="exist-content-span">{ item.value }</div>
+                        <Radio.Group 
+                          options={ item.radio }  
+                          optionType="button"
+                          buttonStyle="solid"
+                          onChange={ this.choice }
+                          className="background-button"
+                        />
+                      </div>
+                    )
+                  })
+                }
+                {
+                  existSearch.map(item => {
+                    return(
+                      <div className="exist-content-box">
+                        <div className="exist-content-span">{ item.value }</div>
+                        <Select style={{ width: 120 }} placeholder={ item.placeholder }>
+                          <Select.Option value="lucy">Lucy</Select.Option>
+                        </Select>
+                      </div>
+                    )
+                  })
+                }
+              </div>
+
+              <span className="exist-icon" onClick={ this.filter }><UpOutlined/></span>
+            </div> : null
+          }
+
+          <div className="content">
+            <div className="content-box">
+              {
+                filterArr.map(item => {
+                  return(
+                    <a className="content-test-box" href={ `${ TEST }?test=${ item['test_name'] }` }>
+                      <div className="content-test-left">
+                        <span className="content-test-icon">
+                          { getUrlParam('test') === item['test_name'] ? <RightOutlined /> : item['test_status'] === TEST_STATUS.DONE ? <CheckOutlined /> :  undefined }
+                        </span>
+                        <span className="content-test-font">
+                          { item['num'] }. { item['test_name'] }
+                        </span>
+                      </div>
+                      <span className={['content-test-right', getExamLevel(item['test_level'])].join(' ')}>
+                        { item['test_level'] }
+                      </span>
+                    </a>
+                  )
+                })
+              }
+            </div>
+          </div>
+        </div>
+      </Drawer>
+    )
+  }
+
+  render() {
+    const { language, theme, } = this.state;
+    
     return(
       <div className="whole">
 
@@ -208,198 +461,7 @@ export default class Program extends React.Component {
           </div>
 
           <div className="left-bottom">
-            <Drawer
-              width="60%"
-              visible={ visible }
-              onClose={ this.onClose }
-              closable={ false }
-              placement="left"
-              className="drawer"
-            >
-              <div className="drawer-box">
-                <div className="top">
-                  <div className="top-left">
-                    {/* 搜索该候选人的试卷 */}
-                    <Select
-                      showSearch
-                      key="searchCandidateExam"
-                      style={{ width: 200 }}
-                      // placeholder={ exam && exam[0] }
-                      optionFilterProp="children"
-                      onChange={ this.choice } // 选中 option，或 input 的 value 变化时，调用此函数
-                      filterOption={(input, option) =>
-                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      {
-                        exam.map(item => {
-                          return(
-                            <Select.Option value={ item }  key={ item } >{ item }</Select.Option>
-                          )
-                        })
-                      }
-                    </Select>
-                  </div>
-
-                  <div className="top-right">
-                    {/* 搜索全部试题，包括该候选人的其他试卷下的试题 */}
-                    {/* <Input.Search 
-                      defaultValue="搜索题目" 
-                      onChange={ this.searchTest } 
-                      style={{ width: 200 }} 
-                    /> */}
-                    <Select
-                      showSearch
-                      key="searchCandidateTest"
-                      open={ false }
-                      style={{ width: 200 }}
-                      placeholder="搜索题目"
-                      // optionFilterProp="children"
-                      onSearch={ this.choice } // 文本框值变化时回调		
-                      // filterOption={(input, option) =>
-                      //   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      // }
-                    >
-                      {/* {
-                        examTest.map(item => {
-                          return(
-                            <Select.Option value={ item['test_name'] } key={ item['test_name'] }>{ item['test_name'] }</Select.Option>
-                          )
-                        })
-                      } */}
-                    </Select>
-                    <div className="top-gap"></div>
-                    {/* “筛选”按钮 */}
-                    <Button 
-                      className="top-button" 
-                      onClick={ this.filter } 
-                      type="ghost"
-                      >
-                      <FilterOutlined/>
-                    </Button>
-                    <div className="top-gap"></div>
-                    {/* “页数”按钮 */}
-                    <Select
-                      // style={{ width: 200 }}
-                      placeholder={ count }
-                      optionFilterProp="children"
-                      // onChange={ this.onChange } // 选中 option，或 input 的 value 变化时，调用此函数
-                    >
-                      {
-                        exam.map(item => {
-                          return(
-                            <Select.Option value={ count }  key={ count } >{ count }</Select.Option>
-                          )
-                        })
-                      }
-                    </Select>
-                    <div className="top-gap"></div>
-                    {/* “上一页”按钮 */}
-                    <Button 
-                      className="top-button" 
-                      onClick={ this.previousPage }
-                      type="ghost"
-                      >
-                        <LeftOutlined/>
-                    </Button>
-                    <div className="top-gap"></div>
-                    {/* “下一页”按钮 */}
-                    <Button 
-                      className="top-button" 
-                      onClick={ this.nextPage }
-                      type="ghost"
-                    >
-                      <RightOutlined/>
-                    </Button>
-                  </div>
-
-                </div>
-
-                {
-                  filter === true ?
-                  <div className="exist filter-box">
-                    {
-                      test_filter.map((item,index)=> {
-                        const allValue = Object.values(item);
-                        const value = allValue[0], classValue = allValue[1];
-                        if (value !== '') {
-                          return (
-                            <div key={value} className={ classValue } ref={ this.dele }>
-                              { value }
-                              <CloseOutlined onClick={ this.dele }/> 
-                            </div>
-                          )
-                        }
-                      })
-                    }
-                    <div >
-                      <DeleteOutlined className="filter-button-delete" onClick={ this.deleteAllChoice }/>
-                    </div>
-                  </div> : null
-                }
-                {
-                  preparation === true ? 
-                  <div className="exist">
-                    <div className="exist-content">
-                      {
-                        existChoice.map(item => {
-                          return(
-                            <div className="exist-content-box">
-                              <div className="exist-content-span">{ item.value }</div>
-                              <Radio.Group 
-                                options={ item.radio }  
-                                optionType="button"
-                                buttonStyle="solid"
-                                onChange={ this.choice }
-                                className="background-button"
-                              />
-                            </div>
-                          )
-                        })
-                      }
-                      {
-                        existSearch.map(item => {
-                          return(
-                            <div className="exist-content-box">
-                              <div className="exist-content-span">{ item.value }</div>
-                              <Select style={{ width: 120 }} placeholder={ item.placeholder }>
-                                <Select.Option value="lucy">Lucy</Select.Option>
-                              </Select>
-                            </div>
-                          )
-                        })
-                      }
-                    </div>
-
-                    <span className="exist-icon" onClick={ this.filter }><UpOutlined/></span>
-                  </div> : null
-                }
-
-                <div className="content">
-                  <div className="content-box">
-                    {
-                      filterArr.map(item => {
-                        return(
-                          <a className="content-test-box" href={ `${ TEST }?test=${ item['test_name'] }` }>
-                            <div className="content-test-left">
-                              <span className="content-test-icon">
-                                { getUrlParam('test') === item['test_name'] ? <RightOutlined /> : item['test_status'] === TEST_STATUS.DONE ? <CheckOutlined /> :  undefined }
-                              </span>
-                              <span className="content-test-font">
-                                { item['num'] }. { item['test_name'] }
-                              </span>
-                            </div>
-                            <span className={['content-test-right', getExamLevel(item['test_level'])].join(' ')}>
-                              { item['test_level'] }
-                            </span>
-                          </a>
-                        )
-                      })
-                    }
-                  </div>
-                </div>
-              </div>
-            </Drawer>
+            { this.renderDrawer() }
 
             <Button className="left-bottom-list left-bottom-button" onClick={ this.openModal }>
               <UnorderedListOutlined />
@@ -429,7 +491,6 @@ export default class Program extends React.Component {
           </div>
 
           <div className="right-bottom">
-            
             {/* <div> */}
               <Button 
                 className="right-bottom-submit right-bottom-button"

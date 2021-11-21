@@ -77,21 +77,6 @@ export default class CodeEditor extends React.Component<any, any> {
               })
             }
           </Select>
-          
-          {/* <Select 
-            defaultValue={ theme } 
-            style={{ width: 120 }} 
-            // onChange={ this.changeTheme }
-            className="right-top-button"
-          >
-            {
-              THEME.map(item => {
-                return(
-                  <Select.Option value={ item }> { item } </Select.Option>
-                )
-              })
-            }
-          </Select> */}
         </div>
 
         <div id="container" style={{ height: '560px' }}></div>

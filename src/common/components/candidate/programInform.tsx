@@ -152,7 +152,7 @@ export default class ProgramInform extends React.Component {
             tab={ <span> <CommentOutlined/> 评论 </span> }
             key='comments'
           >
-            <MarkdownEditor />
+            {/* <MarkdownEditor /> */}
             <List
               className="comment-list"
               header={`${data.length} replies`}

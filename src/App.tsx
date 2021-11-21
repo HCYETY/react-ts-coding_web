@@ -4,7 +4,7 @@ import { BrowserRouter  as Router, Route, Switch, Redirect } from "react-router-
 import Head from 'common/components/header';
 import Login from 'pages/login';
 
-import Interviewer from 'pages/interviewer';
+// import Interviewer from 'pages/interviewer';
 import Edit from 'pages/interviewer/edit/show';
 import Add from 'pages/interviewer/edit/add';
 import Modify from 'pages/interviewer/edit/modify';
@@ -12,6 +12,8 @@ import Modify from 'pages/interviewer/edit/modify';
 import ShowExam from 'pages/interviewer/consult/showExam';
 import ExamInform from 'pages/interviewer/consult/examInform';
 import LookOver from 'pages/interviewer/consult/lookOver';
+
+import InterviewRoom from 'pages/interviewer/communicate/interviewRoom';
 
 import Candidate from 'pages/candidate';
 import ShowTests from 'pages/candidate/showTests';
@@ -23,8 +25,6 @@ import { getCookie } from 'common/utils';
 import { 
   ADD, 
   CANDIDATE, 
-  EDIT, 
-  INTERVIEWER, 
   LOGIN, 
   MODIFY, 
   SHOW_TESTS, 
@@ -33,6 +33,8 @@ import {
   SHOW_EXAM,
   EXAM_INFORM,
   LOOK_OVER,
+  MANAGE,
+  COMMUNICATE,
 } from 'common/const';
 
 class App extends PureComponent {
@@ -54,13 +56,13 @@ class App extends PureComponent {
             <Switch>
               <Route path={ LOGIN } component={ Login }></Route>
 
-              <Route path={ INTERVIEWER } component={ Interviewer }></Route>
-              <Route path={ EDIT } component={ Edit }></Route>
+              <Route path={ MANAGE } component={ Edit }></Route>
               <Route path={ ADD } component={ Add }></Route>
               <Route path={ MODIFY } component={ Modify }></Route>
               <Route path={ SHOW_EXAM } component={ ShowExam }></Route>
               <Route path={ EXAM_INFORM } component={ ExamInform }></Route>
               <Route path={ LOOK_OVER } component={ LookOver }></Route>
+              <Route path={ COMMUNICATE } component={ InterviewRoom }></Route>
 
               <Route path={ CANDIDATE } component={ Candidate }></Route>
               <Route path={ SHOW_TESTS } component={ ShowTests }></Route>

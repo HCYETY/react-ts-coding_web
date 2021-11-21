@@ -7,12 +7,12 @@ import {
   AppstoreOutlined,
 } from '@ant-design/icons';
 import 'style/basic.less';
-import { EDIT, INTERVIEWER, SHOW_EXAM } from '../const';
+import { COMMUNICATE, MANAGE, SHOW_EXAM } from '../const';
 
 export default class Navbar extends React.PureComponent {
 
   state = {
-    selectedKeysArr: [] = [EDIT],
+    selectedKeysArr: [] = [MANAGE],
   }
 
   handleClick = (value: any) => {
@@ -65,21 +65,19 @@ export default class Navbar extends React.PureComponent {
       >
         <div className="all-left-logo" />
 
-        <Menu.Item key="interviewer" icon={ <PieChartOutlined />} >
-          <NavLink to={ INTERVIEWER }>面试题展示</NavLink>
-        </Menu.Item>
+        <Menu.SubMenu key="writtenExamination" icon={<AppstoreOutlined />} title="笔试">
+          <Menu.Item key="manage" icon={ <DesktopOutlined />} >
+            <NavLink to={ MANAGE }>面试题管理</NavLink>
+          </Menu.Item>
+          <Menu.Item key="showExam" icon={ <PieChartOutlined />} >
+            <NavLink to={ SHOW_EXAM }>阅卷</NavLink>
+          </Menu.Item>
+        </Menu.SubMenu>
 
-        <Menu.Item key="edit" icon={ <DesktopOutlined />} >
-          <NavLink to={ EDIT }>面试题管理</NavLink>
-        </Menu.Item>
-
-        <Menu.Item key="showExam" icon={ <DesktopOutlined />} >
-          <NavLink to={ SHOW_EXAM }>阅卷</NavLink>
-        </Menu.Item>
-
-        <Menu.SubMenu key="sub2" icon={<AppstoreOutlined />} title="Navigation Two">
-          <Menu.Item key="5">Option 5</Menu.Item>
-          <Menu.Item key="6">Option 6</Menu.Item>
+        <Menu.SubMenu key="interview" icon={<AppstoreOutlined />} title="面试">
+          <Menu.Item key="communicate" icon={ <PieChartOutlined />} >
+            <NavLink to={ COMMUNICATE }>面试间</NavLink>
+          </Menu.Item>
         </Menu.SubMenu>
       </Menu>
     )
