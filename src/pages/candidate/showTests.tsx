@@ -35,7 +35,7 @@ export default class ShowTests extends React.Component {
       tableArr: res.data.show,
       isWatch: ret.watch,
       isOver: ret.test_status,
-      endTime: ret.time_end,
+      endTime: +ret.time_end,
       count: ret.time_end,
     });
     this.countdown();
@@ -85,6 +85,7 @@ export default class ShowTests extends React.Component {
 
   render() {
     const { tableArr, visible, isWatch, isOver, endTime, count, updateTime, } = this.state;
+    const nowtime = new Date().getTime();
 
     return(
       <div className="tests-box">
@@ -120,7 +121,7 @@ export default class ShowTests extends React.Component {
             type="primary" 
             className="submit-button"
             onClick={ this.showModal } 
-            disabled={ isOver === true ? true : false }
+            disabled={ endTime < nowtime }
           >
             提交试卷
           </Button>

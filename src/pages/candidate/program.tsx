@@ -26,11 +26,11 @@ const cookie = getCookie();
 interface Prop {
   
 }
-interface examObj {
-  testStatus: string;
-  testName: string;
-  testLevel: string;
-}
+// interface examObj {
+//   testStatus: string;
+//   testName: string;
+//   testLevel: string;
+// }
 interface examTestObj {
   paper: string;
   testName: string;
@@ -40,7 +40,7 @@ interface examTestObj {
 }
 interface testFilterObj {
   label: string;
-  value: number;
+  // value: number;
   type: string;
 }
 interface State {
@@ -48,7 +48,7 @@ interface State {
   language: string;
   theme: string;
   visible: boolean;
-  exam: examObj[];              // 请求的所有试卷
+  exam: string[];              // 请求的所有试卷
   examTest: examTestObj[];      // 该用户的所有试题
   preparation: boolean;         // 标识“筛选”按钮的点击，显示可供筛选的所有要求
   count: number;                // 页数
@@ -74,18 +74,24 @@ export default class Program extends React.Component<Prop, State> {
   componentDidMount() {
     search({ cookie }).then(res => {
       const ret = res.data.ret;
-      const arr: examObj[] = [];
+      const examArr: string[] = [];
+      const examTestArr: examTestObj[] = [];
+      console.log(ret)
       ret.map((item: any) => {
-        if (arr.indexOf(item.paper) === -1) {
-          arr.push(item.paper);
+        if (examArr.indexOf(item.paper) === -1) {
+          examArr.push(item.paper);
         } 
+        if (examTestArr.indexOf(item.test_name) === -1) {
+          examTestArr.push(item);
+        }
       })
       this.setState({ 
-        examTest: ret,
-        exam: arr,
+        examTest: examTestArr,
+        exam: examArr,
         filterArr: ret
       });
     })
+    // submit()
   }
 
   // 获取子组件（代码编辑器）的 code
@@ -121,11 +127,6 @@ export default class Program extends React.Component<Prop, State> {
     const res = await search({ cookie, paper: value });
     this.setState({ examTest: res.data.candidateInform });
   }
-  // 选中“搜索试题”按钮时请求试题信息
-  searchTest = async (value: string) => {
-    const res = await search({ cookie, testName: value });
-    this.setState({ examTest: res.data.ret });
-  }
 
   // 筛选试题
   filter = () => {
@@ -134,78 +135,78 @@ export default class Program extends React.Component<Prop, State> {
   }
   
   // 选中试题 难度/状态 后的更新字段，以便渲染对应的试题
-  choice = async ( item: any) => {
-    const filter: string =  item.target.value;
-    const { testFilter, examTest } = this.state;
-    const copyFilterArr = testFilter.slice()
-    if (copyFilterArr.length > 0) {
-      copyFilterArr.map(item => {
-        console.log('item', item)
-        if (['简单', '中等', '困难'].includes(item.label)) {
-          item.label = filter;     
-          item.type = 'testLevel';
-        } else if (['未做', '已解答', '尝试过'].includes(item.label)) {
-          item.label = filter;
-          item.type = 'testStatus';
-        }
-      })
-    } else {
+  choice = async (item?: any) => {
+    const { testFilter, examTest, exam } = this.state;
+    const copyFilterArr = testFilter.slice();
+    let paper: string = '', testName: string = '', testLevel: string = '', testStatus: string = '', tags: string = '';
+    
+    if (item != undefined) {
+      const value = item && item.target && item.target.value ? item.target.value : item;
+      const findTest = examTest.find((para) => para.test_name === item);
+      const findExam = exam.find((para) => para === item);
+      const objType: string = ['简单', '中等', '困难'].includes(value) ? 'testLevel' : ['未做', '已解答', '尝试中'].includes(value) ? 'testStatus' : findTest !== undefined ? 'testName' : findExam !== undefined ? 'paper' : 'tags';
       const obj: testFilterObj = {
-        label: filter,
-        value: 0,
-        type: 'testLevel'
+        label: value,
+        type: objType
       }
-      copyFilterArr.push(obj);
+  
+      if (copyFilterArr.length > 0) {
+        const ret = copyFilterArr.find((item) => item.type === objType );
+        if (ret === undefined) {
+          copyFilterArr.push(obj);
+        } else {
+          copyFilterArr.map(item => {
+            if (item.type === objType) {
+              item.label = value;
+            }
+          })
+        }
+      } else {
+        copyFilterArr.push(obj);
+      }
     }
-    console.log('copyFilterArr', copyFilterArr)
+      
+    copyFilterArr.map(item => {
+      // if (item.type === objType) {
 
-    // if (['简单', '中等', '困难'].includes(filter)) {
-    // // if (filter === TEST_LEVEL.EASY || filter === TEST_LEVEL.MIDDLE || filter === TEST_LEVEL.HARD) {
-    //   testFilter.map(item => {
-    //     const old = item.label;
-    //     if (old === filter)
-    //     item.label = filter;
-    //   })
-    //   // test_level = filter;
-    //   testFilter[2].test_level = filter;
-    // } else if (['未做', '已解答', '尝试过'].includes(filter)) {
-    // // } else if (filter === TEST_STATUS.NODO || filter === TEST_STATUS.DOING || filter === TEST_STATUS.DONE) {
-    //   testFilter.map(item => {
-    //     item.label = filter;
-    //   })
-    //   // test_status = filter;
-    //   testFilter[3].test_status = filter;
-    // }
-
-    let testLevel: string = 'testLevel', testStatus: string = 'testStatus';
-    testFilter.map(item => {
-      console.log('testFilter,item', item)
-      if (item.type === testLevel) {
+      // }
+      if (item.type === 'testLevel') {
         testLevel = item.label;
-      } else if (item.type === testStatus) {
+      } else if (item.type === 'testStatus') {
         testStatus = item.label;
+      } else if (item.type === 'testName') {
+        testName = item.label;
+      } else if (item.type === 'paper') {
+        paper = item.label;
       }
     })
-    console.log('testLevel', testLevel);
-    console.log('testStatus', testStatus);
+
     const afterFilterArr = examTest.filter((item) => {
-      if (item['test_level'].indexOf(testLevel) !== -1 && 
-        item['test_status'].indexOf(testStatus) !== -1
+      if (
+        item['paper'].indexOf(paper) !== -1 && 
+        item['test_name'].indexOf(testName) !== -1 && 
+        item['test_level'].indexOf(testLevel) !== -1 && 
+        item['test_status'].indexOf(testStatus) !== -1 
+        // item['tags'].indexOf(tags) !== -1
       ) {
-      // if (item['paper'].indexOf(paper) !== -1 && item['test_name'].indexOf(test_name) !== -1 && item['test_level'].indexOf(test_level) !== -1 && item['test_status'].indexOf(test_status) !== -1) {
         return item;
       }
     })
+
     this.setState({ 
       filterArr: afterFilterArr, 
       testFilter: copyFilterArr, 
     });
   }
-  deleteChoice = (val: any) => {
-    console.log(val)
-    // const className = this.dele.current.className
-    // const div = document.querySelector(`.${ className }`) as HTMLElement;
-    // console.log(div)
+  deleteChoice = (val: string) => {
+    const { testFilter } = this.state;
+    const copyArr = testFilter.slice();
+    const noDeleteArr = copyArr.filter(item => item.label !== val);
+    this.setState({ 
+      testFilter: noDeleteArr 
+    }, () => {
+      this.choice();
+    });
   }
   deleteAllChoice = () => {
     let { testFilter, examTest } = this.state;
@@ -278,7 +279,7 @@ export default class Program extends React.Component<Prop, State> {
                 {
                   exam.map(item => {
                     return(
-                      <Select.Option value={ item.testName }  key={ item.testName } >{ item.testName }</Select.Option>
+                      <Select.Option value={ item }  key={ item } >{ item }</Select.Option>
                     )
                   })
                 }
@@ -363,16 +364,12 @@ export default class Program extends React.Component<Prop, State> {
             <div className="exist filter-box">
               {
                 testFilter.map(item => {
-                  const allValue = Object.values(item);
-                  const value = allValue[0];
-                  if (value !== '') {
-                    return (
-                      <div>
-                        { value }
-                        <CloseOutlined onClick={ (item) => this.deleteChoice(item) }/> 
-                      </div>
-                    )
-                  }
+                  return (
+                    <div className="filter-button">
+                      { item.label }
+                      <CloseOutlined onClick={ () => this.deleteChoice(item.label) }/> 
+                    </div>
+                  )
                 })
               }
               <div >

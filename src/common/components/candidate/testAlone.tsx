@@ -35,7 +35,7 @@ export default class TestAlone extends React.Component<any, any> {
 
     return(
         <div className="exam-box">
-          <div className="left">
+          <div className="exam-box-left">
             <div> <h3>{ num }. { title }</h3> </div>
             <div>
               {
@@ -58,7 +58,7 @@ export default class TestAlone extends React.Component<any, any> {
 
           <div> <h3 >分数：{ point }</h3> </div>
 
-          <div className="right">
+          <div className="exam-box-right">
             {
               (watch === true && over === true) ?  
               <a className='exam-status' onClick={ nodoJump }>

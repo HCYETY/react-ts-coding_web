@@ -30,7 +30,7 @@ export enum TEST_STATUS {
   NODO_KEY = 0,
   DONE = '已解答',
   DONE_KEY = -1,
-  DOING = '尝试过',
+  DOING = '尝试中',
   DOING_KEY = 1,
   WILL = '未开始',
   ING = '进行中',

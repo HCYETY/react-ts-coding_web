@@ -48,7 +48,9 @@ export default class CandidateInform extends React.Component {
 
     });
     PubSub.publish('getExam', { exam: paper });
-    lookOver({ paper }).then(item => {
+
+    const cookie = getCookie();
+    lookOver({ cookie, paper }).then(item => {
       this.setState({ tableArr: item.data.ret });
       // const ret = item.data.ret;
       // const arr: any[] = [];    // 存放试卷所属的候选人邮箱

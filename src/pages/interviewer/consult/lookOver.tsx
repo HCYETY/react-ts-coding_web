@@ -1,12 +1,15 @@
 import React from 'react';
-import { Layout } from 'antd';
+import { Button, Layout } from 'antd';
 
 import 'style/interviewer/examReport.css';
 import Navbar from 'common/components/navbar';
-import { getUrlParam } from 'common/utils';
+import { getCookie, getUrlParam } from 'common/utils';
 import { search } from 'api/modules/candidate';
 import ExamReport from 'common/components/interviewer/examReport';
 import { showTest } from 'api/modules/test';
+import { submit } from 'api/modules/candidate';
+
+const cookie = getCookie();
 
 export default class LookOver extends React.Component {
 
@@ -15,13 +18,11 @@ export default class LookOver extends React.Component {
     exam: [] = [],
     test: [] = [],
   }
+
   token: string;
   componentDidMount() {
     const reqEmail = getUrlParam('exam-email');
     let reqPaper = null;
-    this.token = PubSub.subscribe('getExam', (_, data) => {
-      reqPaper = data.exam;
-    });
     search({ reqEmail, reqPaper }).then(item => {
       this.setState({ examInform: item.data.ret });
     })
@@ -29,9 +30,10 @@ export default class LookOver extends React.Component {
       this.setState({ test: item.data.show });
     })
   }
-  componentWillUnmount() {
-    PubSub.unsubscribe(this.token);
-  }
+
+  submit({ cookie }).then(res => {
+
+  })
 
   render() {
     const { examInform, exam, test } = this.state;
@@ -54,6 +56,7 @@ export default class LookOver extends React.Component {
               })
             }
           </div>
+          <Button onClick={ this.submit }>提交试卷评分</Button>
         </Layout.Content>
       </div>
     )

@@ -13,6 +13,7 @@ export default class Navbar extends React.PureComponent {
 
   state = {
     selectedKeysArr: [] = [MANAGE],
+    openKeys: ['writtenExamination'],
   }
 
   handleClick = (value: any) => {
@@ -42,9 +43,19 @@ export default class Navbar extends React.PureComponent {
   //       }
   //  }
 
+  onOpenChange = (keys: any[]) => {
+    const { openKeys } = this.state;
+    const rootSubmenuKeys = ['writtenExamination', 'interview'];
+    const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
+    if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+      this.setState({ openKeys: keys });
+    } else {
+      this.setState({ openKeys: latestOpenKey ? [latestOpenKey] : [] });
+    }
+  }
 
   render() {
-    const { selectedKeysArr } = this.state;
+    const { selectedKeysArr, openKeys } = this.state;
     // 动态获取 url 的路径，使选中的菜单及时更新
     // 由于每次渲染后数值更新，所以每次 push 都只有一个值
     // const pathname = window.location.pathname;
@@ -56,10 +67,9 @@ export default class Navbar extends React.PureComponent {
         onSelect={ this.handleClick }
         // selectedKeys={ selectedKeysArr }
         // selectedKeys={ [window.location.pathname] }
-        defaultSelectedKeys={[window.location.pathname]}  // 初始选中的菜单项 key 数组	
-        // defaultOpenKeys={['sub1']}  // 初始展开的 SubMenu 菜单项 key 数组	
+        openKeys={ openKeys }	// 当前展开的 SubMenu 菜单项 key 数组
+        onOpenChange={ this.onOpenChange }
         mode="inline"
-        // onSelect={ this.selectMenu }
         theme="dark"
         className="all-left-menu"
       >

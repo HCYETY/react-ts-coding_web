@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import { modifyPaper } from 'api/modules/paper';
 import { showTest } from 'api/modules/test';
-import { EDIT, TAGS } from 'common/const';
+import { EDIT, MANAGE, TAGS } from 'common/const';
 import { getUrlParam } from 'common/utils';
 import Navbar from 'common/components/navbar';
 import Foot from 'common/components/footer';
@@ -78,7 +78,7 @@ export default class Modify extends React.Component<any, any> {
     const res = await modifyPaper(values);
     if (res.data.status) {
       message.success(res.msg);
-      window.location.href = EDIT;
+      window.location.href = MANAGE;
     } else {
       message.error(res.msg);
     }

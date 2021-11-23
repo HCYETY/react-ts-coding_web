@@ -11,7 +11,6 @@
   padding-bottom: 10px;
   border-bottom: 1px solid red;
   /* border-bottom: 1px solid rgba(167, 168, 168, 0.05); */
-  background-color: skyblue;
 }
 
 .report-top{
@@ -29,10 +28,7 @@
   flex-grow: 1;
 }
 .report-content-right-top{
-
+  display: grid;
 }
 .report-content-right-content{
-}
-.report-content-right-bottom{
-
 }
