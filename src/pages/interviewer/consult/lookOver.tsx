@@ -31,9 +31,9 @@ export default class LookOver extends React.Component {
     })
   }
 
-  submit({ cookie }).then(res => {
+  // submit({ cookie }).then(res => {
 
-  })
+  // })
 
   render() {
     const { examInform, exam, test } = this.state;
@@ -56,7 +56,7 @@ export default class LookOver extends React.Component {
               })
             }
           </div>
-          <Button onClick={ this.submit }>提交试卷评分</Button>
+          {/* <Button onClick={ this.submit }>提交试卷评分</Button> */}
         </Layout.Content>
       </div>
     )

@@ -3,16 +3,41 @@
   margin: 15px;
   height: 100vh;
 }
-.left{
-  width: 80%;
+.box-left{
+  width: 75%;
   background: white;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,.1);
 }
+.program{
+  display: flex;
+}
 .program-left{
-  width: 40%;
+  width: 30%;
+  padding: 10px;
+  background: red;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+}
+.program-inform{
+  overflow: hidden;
+}
+.program-left-top{
+  display: flex;
+  justify-content: space-between;
+}
+.program-left-bottom{
+  display: grid;
+  height: 100%;
+  justify-content: center;
+  align-content: center;
+}
+.program-right{
+  width: 70%;
+  background: skyblue;
 }
 
-.right{
-  width: 20%;
+.box-right{
+  width: 25%;
   background: rgb(23, 33, 51);;
 }
