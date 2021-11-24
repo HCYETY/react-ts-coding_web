@@ -1,7 +1,7 @@
 .box{
   display: flex;
   margin: 15px;
-  height: 100vh;
+  height: 100%;
 }
 .box-left{
   width: 75%;
@@ -17,7 +17,7 @@
   background: red;
   align-items: center;
   justify-content: center;
-  overflow: auto;
+  overflow: hidden;
 }
 .program-inform{
   overflow: hidden;

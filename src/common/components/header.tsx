@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, BrowserRouter as Router } from 'react-router-dom';
 import { 
   Layout, 
   Avatar, 
@@ -7,6 +8,7 @@ import {
   Menu,
   Dropdown,
   Popconfirm,
+  Breadcrumb,
 } from 'antd';
 import { 
   UserOutlined,
@@ -19,11 +21,10 @@ import {
 import 'style/basic.less';
 import { logout } from 'api/modules/user';
 import { getCookie } from 'common/utils';
-import { LOGIN } from 'common/const';
-const { Header } = Layout;      
+import { LOGIN, routes } from 'common/const';
+import { Route } from 'common/types';
 
 export default class Head extends React.PureComponent{
-
   logOut = () => {
     const cookie = getCookie();
     console.log(cookie)
@@ -36,6 +37,54 @@ export default class Head extends React.PureComponent{
       }
     })
   }
+
+  renderBreadCrumb = () => {
+    const url = window.location.pathname;
+    const newRoute = routes.find(item => item.path === url);
+    console.log(newRoute)
+    if (newRoute && newRoute.children && newRoute.children.length > 0) {
+      newRoute.children.map(item => {
+        return(
+          <Breadcrumb.Item key={ url }>
+            <Router>
+              <Link to={ item.path }>{ item.breadcrumbName }</Link>
+            </Router>
+          </Breadcrumb.Item>
+        )
+      })
+    } else {
+      return(
+        <Breadcrumb.Item key={ url }>
+          <Router>
+          <Link to={ url }>{ newRoute.breadcrumbName }</Link>
+          </Router>
+        </Breadcrumb.Item>
+      )
+    }
+  }
+  // itemRender = (route: Route, params: any, routes:Route[], paths: string[]) => {
+  //   console.log('route', route)
+  //   console.log('params', params)
+  //   console.log('routes', routes)
+  //   console.log('paths', paths)
+  //   const location = window.location.pathname;
+  //   const find = routes.find(item => item.path === location);
+  //   return(
+  //     <Router>
+  //       <Link to={ find.path }>{ find.breadcrumbName }</Link>
+  //     </Router>
+  //   )
+  //   // const last = routes.indexOf(route) === routes.length - 1;
+  //   // return last ? ( 
+  //   //   <span>{route.breadcrumbName}</span>
+  //   // ) : (
+  //   //   <Router>
+  //   //     {/* <span>{ route.breadcrumbName }：</span> */}
+  //   //     <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
+  //   //   </Router>
+  //   // );
+  // }
+  
 
   render() {
 
@@ -77,7 +126,16 @@ export default class Head extends React.PureComponent{
       <>
         <div className="all-header-div"></div>
         <div className="all-header">
-          
+          {/* {
+            const newRoute = routes.find(item => item.path === window.location.pathname) 
+            routes ? 
+                <Breadcrumb>
+                  { this.renderBreadCrumb() }
+                </Breadcrumb>
+              )
+            }
+          } */}
+
           <div className="all-header-avatar-box">
             <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
               <Avatar className="all-header-avatar" size="large" icon={<UserOutlined />} />

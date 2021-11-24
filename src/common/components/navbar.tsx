@@ -84,7 +84,7 @@ export default class Navbar extends React.PureComponent {
           </Menu.Item>
         </Menu.SubMenu>
 
-        <Menu.SubMenu key="interview" icon={<AppstoreOutlined />} title="面试">
+        <Menu.SubMenu key="interviewExamination" icon={<AppstoreOutlined />} title="面试">
           <Menu.Item key="communicate" icon={ <PieChartOutlined />} >
             <NavLink to={ COMMUNICATE }>面试间</NavLink>
           </Menu.Item>

@@ -1,3 +1,13 @@
+import Add from "src/pages/interviewer/edit/add";
+import Modify from "src/pages/interviewer/edit/modify";
+import Edit from "src/pages/interviewer/edit/show";
+import Login from "src/pages/login";
+import ShowExam from 'pages/interviewer/consult/showExam';
+import InterviewRoom from "src/pages/interviewer/communicate/interviewRoom";
+import ExamInform from 'pages/interviewer/consult/examInform';
+import LookOver from "src/pages/interviewer/consult/lookOver";
+import { Route } from 'common/types';
+
 export const REQUESTIP: string = 'http://localhost:8080/api';
 export const LOGIN: string = '/login';
 
@@ -14,6 +24,53 @@ export const CANDIDATE: string = '/candidate';
 export const SHOW_TESTS: string = '/show-tests';
 export const WATCH_TEST: string = '/watch-test';
 export const TEST: string = '/test';
+
+// 路由栈
+export const routes = [
+  {
+    path: COMMUNICATE,
+    breadcrumbName: '面试间',
+    // component: InterviewRoom,
+  },
+  {
+    path: MANAGE,
+    breadcrumbName: '面试题管理',
+    // component: Edit,
+    children: [
+      {
+        path: ADD,
+        breadcrumbName: '新建试卷',
+        // component: Add,
+      },
+      {
+        path: MODIFY,
+        breadcrumbName: '修改试卷',
+        // component: Modify,
+      }
+    ]
+  },
+  {
+    path: SHOW_EXAM,
+    breadcrumbName: '阅卷管理',
+    // component: ShowExam,
+    children: [
+      {
+        path: EXAM_INFORM,
+        breadcrumbName: '展示阅卷信息',
+        // component: ExamInform
+      },
+      {
+        path: LOOK_OVER,
+        breadcrumbName: '开始阅卷',
+        // component: LookOver
+      }
+    ]
+  }
+  // {
+  //   // path: CANDIDATE,
+  //   // breadcrumbName: 
+  // }
+]
 
 // 试题难度
 export enum TEST_LEVEL {

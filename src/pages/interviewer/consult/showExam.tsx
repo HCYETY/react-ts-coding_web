@@ -43,18 +43,18 @@ export default class LookOver extends React.Component {
         title: '状态', 
         dataIndex: 'status', 
         key: 'status',
-        render: (status: string) => {
-          <span>
-            {(status: string) => {
-              let color = status === PAPER_STATUS.WILL ? 'yellow' : status === PAPER_STATUS.ING ? 'green' : 'red';
-              return (
-                <Tag color={ color } key={ status }>
-                  { status }
-                </Tag>
-              );
-            }}
-          </span>
-        }
+        // render: (status: string) => {
+        //   <span>
+        //     {(status: string) => {
+        //       let color = status === PAPER_STATUS.WILL ? 'yellow' : status === PAPER_STATUS.ING ? 'green' : 'red';
+        //       return (
+        //         <Tag color={ color } key={ status }>
+        //           { status }
+        //         </Tag>
+        //       );
+        //     }}
+        //   </span>
+        // }
       },
       { title: '试卷', dataIndex: 'paper', key: 'paper' },
       { title: '时长', dataIndex: 'answer_time', key: 'answer_time' },

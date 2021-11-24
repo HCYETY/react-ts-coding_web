@@ -32,6 +32,23 @@ export default class InterviewRoom extends React.Component<Prop, State> {
     allTest: [],
   }
 
+  componentDidMount() {
+    const ws = new WebSocket('ws:localhost:8080/api/communicate');
+    ws.onopen = function(evt) { 
+      console.log("正在连接 ..."); 
+      ws.send("Hello WebSockets!");
+    };
+    
+    ws.onmessage = function(evt) {
+      console.log( "接收数据: " + evt.data);
+      ws.close();
+    };
+    
+    ws.onclose = function(evt) {
+      console.log("连接关闭.");
+    };      
+  }
+
   addTest =() => {
 
   }
