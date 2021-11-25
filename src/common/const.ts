@@ -20,8 +20,8 @@ export const SHOW_EXAM: string = '/show-exam';
 export const EXAM_INFORM: string = '/exam-inform';
 export const LOOK_OVER: string = '/look-over';
 
-export const INTERVIEW_MANAGE: string = '/interviewManage';
-export const INTERVIEW_ROOM: string = '/interviewRoom';
+export const INTERVIEW_MANAGE: string = '/interview-manage';
+export const INTERVIEW_ROOM: string = '/interview-room';
 
 export const CANDIDATE: string = '/candidate';
 export const SHOW_TESTS: string = '/show-tests';
@@ -36,8 +36,12 @@ export const routes = [
     // component: InterviewRoom,
   },
   {
+    path: INTERVIEW_MANAGE,
+    breadcrumbName: '面试管理',
+  },
+  {
     path: TEST_MANAGE,
-    breadcrumbName: '面试题管理',
+    breadcrumbName: '试题管理',
     // component: Edit,
     children: [
       {

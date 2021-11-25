@@ -8,10 +8,16 @@ import { search } from 'api/modules/candidate';
 import ExamReport from 'common/components/interviewer/examReport';
 import { showTest } from 'api/modules/test';
 import { submit } from 'api/modules/candidate';
+import store from 'useRedux/store';
+import { connect } from 'react-redux';
 
 const cookie = getCookie();
 
-export default class LookOver extends React.Component {
+interface Prop {
+  exam: string;
+}
+
+class LookOver extends React.Component<Prop> {
 
   state = {
     examInform: [] = [],
@@ -22,7 +28,7 @@ export default class LookOver extends React.Component {
   token: string;
   componentDidMount() {
     const reqEmail = getUrlParam('exam-email');
-    let reqPaper = null;
+    let reqPaper = this.props.exam;
     search({ reqEmail, reqPaper }).then(item => {
       this.setState({ examInform: item.data.ret });
     })
@@ -37,10 +43,12 @@ export default class LookOver extends React.Component {
 
   render() {
     const { examInform, exam, test } = this.state;
-
+console.log(this.props)
     return(
       <div className="site-layout">
         <Navbar/>
+<h1>获取的试卷名为{this.props.exam}</h1>
+
         <Layout.Content>
           <div className="top"></div>
           <div className="content">
@@ -62,3 +70,10 @@ export default class LookOver extends React.Component {
     )
   }
 }
+
+function mapStateToProps(state: any) {
+  return{
+    exam: state.exam
+  }
+}
+export default connect(mapStateToProps)(LookOver);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Route, Router, } from 'react-router-dom';
+import { Link, BrowserRouter  as Router, Route, } from 'react-router-dom';
 import { 
   Layout,
   Table,
@@ -12,11 +12,23 @@ import { search } from 'api/modules/candidate';
 import { CANDIDATE, EXAM_INFORM, LOOK_OVER, PAPER_CONSULT, PAPER_STATUS } from 'common/const';
 import Navbar from 'common/components/navbar';
 import { lookOver, showPaper } from 'api/modules/paper';
+import ExamInformContainer from 'pages/interviewer/consult/examInform';
 
-export default class LookOver extends React.Component {
+import { connect } from 'react-redux';
+import store from 'useRedux/store';
+import { GET_EXAM } from 'useRedux/constant';
+
+interface Prop {
+  exam: string;
+  changeState: any;
+  dispatch: any
+}
+
+class ShowExam extends React.Component<Prop> {
 
   state = {
     tableArr: [] = [],
+    exam: '',
   }
   componentDidMount() {
     showPaper().then(result => {
@@ -64,11 +76,26 @@ export default class LookOver extends React.Component {
       { title: '截止时间', dataIndex: 'time_end', key: 'time_end' },
       { title: '总题数', dataIndex: 'tests_num', key: 'tests_num' },
       { title: '是否批阅', dataIndex: 'look_over', key: 'look_over' },
+      {
+        title: '操作',
+        dataIndex: 'action',
+        render: (text: any, record: any) => {
+          return(
+              // <a href={`${ MODIFY }?paper=${ record.paper }`}><FormOutlined/>修改试卷</a>
+          <Link to={`${ EXAM_INFORM }?exam=${ record.paper }`}>
+            跳转
+          </Link>
+          )
+        }
+      }
     ];
-    
+    const { exam, changeState } = this.props;
+
     return(
       <div className="site-layout">
         <Navbar/>
+        <h1>当前求和为：{ exam }</h1>
+
         <Layout.Content>
           <Table
             bordered
@@ -77,14 +104,24 @@ export default class LookOver extends React.Component {
             onRow={record => {
               return {
                 onClick: () => { 
+                  this.setState({ exam: record['paper'] }, () => {
+                    changeState(record['paper'])
+                    // window.location.href = `${ EXAM_INFORM }?exam=${ record['paper'] }` 
+                    
+                    {
+                      <Link to={`${ EXAM_INFORM }?exam=${ record['paper'] }` }/>
+                    }
+
+                    // return(
+                    //   <a href={`${ EXAM_INFORM }?exam=${ record['paper'] }`}></a>
+                    // )
+                  });
                   // return(
-                    // <Route>
-                    //   <Link to={"/exam-inform?exam=" + record['paper']}></Link>
-                    // </Route>
+                  //   <Router>
+                  //     <Route path={ EXAM_INFORM } component={ ExamInformContainer }></Route>
+                  //   </Router>
                   // )
-                  window.location.href = `${ EXAM_INFORM }?exam=${ record['paper'] }` 
                 }, // 点击行
-                onMouseEnter: event => { console.log('xxxxx', record) }, // 鼠标移入行
               };
             }}
           />
@@ -93,3 +130,21 @@ export default class LookOver extends React.Component {
     )
   }
 }
+
+function mapStateToProps(state: any) {
+  return{
+    exam: state.exam
+  }
+}
+function mapDispatchToProps(dispatch: any, ownProps: any) {
+  return{
+    changeState: (exam: string) => {
+      dispatch({
+        type: GET_EXAM,
+        exam: exam
+      });
+    }
+  }
+}
+const ShowExamContainer = connect(mapStateToProps, mapDispatchToProps)(ShowExam)
+export default ShowExamContainer;

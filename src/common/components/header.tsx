@@ -121,11 +121,33 @@ export default class Head extends React.PureComponent{
         </Menu.Item>
       </Menu>
     );
-    
+    const url = window.location.pathname;
+    const findRoute = routes.find(item => item.path === url);
+    console.log('findRoute', findRoute)
+
     return(
       <>
         <div className="all-header-div"></div>
         <div className="all-header">
+          {
+            findRoute && findRoute.path === url ? 
+            <Breadcrumb.Item key={ findRoute.breadcrumbName }>
+              { findRoute.breadcrumbName }
+            </Breadcrumb.Item> :
+            findRoute && findRoute.children.length > 0 ? 
+            findRoute.children.map(item => {
+              if (item.path === url) {
+                return(
+                  <Breadcrumb.Item href={ findRoute.path } key={ findRoute.breadcrumbName }>
+                    { item.breadcrumbName }
+                  </Breadcrumb.Item> 
+                )
+              }
+            }) :
+            <Breadcrumb.Item>
+              { findRoute}
+            </Breadcrumb.Item>
+          }
           {/* {
             const newRoute = routes.find(item => item.path === window.location.pathname) 
             routes ? 

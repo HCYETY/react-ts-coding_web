@@ -110,7 +110,8 @@ const commonConfig = {
       'api': path.resolve(__dirname, '../src/api'),
       'common': path.resolve(__dirname, '../src/common'),
       'pages': path.resolve(__dirname, '../src/pages'),
-      'style': path.resolve(__dirname, '../src/style')
+      'style': path.resolve(__dirname, '../src/style'),
+      'useRedux': path.resolve(__dirname, '../src/useRedux')
     },
   },
 };

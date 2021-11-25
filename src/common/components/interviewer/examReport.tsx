@@ -1,9 +1,9 @@
 import React from 'react';
 import { Rate } from 'antd';
 
-import { showTest } from 'src/api/modules/test';
+import { showTest } from 'api/modules/test';
 import 'style/interviewer/examReport.css';
-import { getDays, transTime } from 'src/common/utils';
+import { getDays, transTime } from 'common/utils';
 
 interface Get {
   inform: [],

@@ -17,6 +17,7 @@
       "api/*": ["./src/api/*"],
       "pages/*": ["./src/pages/*"],
       "common/*": ["./src/common/*"],
+      "useRedux/*": ["./src/useRedux/*"],
       "style/*": ["./src/style/*"],
     }
   },

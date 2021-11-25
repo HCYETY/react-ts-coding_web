@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux'
 import { 
   Button, 
   Descriptions, 
@@ -25,10 +26,14 @@ import { getCookie, getUrlParam, transTime } from 'common/utils';
 import { search } from 'api/modules/candidate';
 import { showTest } from 'api/modules/test';
 import { lookOver, showPaper } from 'api/modules/paper';
+import store from 'useRedux/store';
 
 const paper = getUrlParam('exam');
-
-export default class CandidateInform extends React.Component {
+interface Prop {
+  exam: string;
+  changeState: string
+}
+class ExamInform extends React.Component<Prop> {
 
   state = {
     tableArr: [] = [],
@@ -47,7 +52,6 @@ export default class CandidateInform extends React.Component {
     lookOver().then(result => {
 
     });
-    PubSub.publish('getExam', { exam: paper });
 
     const cookie = getCookie();
     lookOver({ cookie, paper }).then(item => {
@@ -143,10 +147,14 @@ export default class CandidateInform extends React.Component {
     const timeBegin = transTime(Number(examInform.time_begin));
     const timeEnd = transTime(Number(examInform.time_end));
 
+    console.log('jjjjjjjjjjjjjjjjjjj', this.props, this.props.exam)
+    console.log('store=====', store.getState())
+    console.log(this.props.changeState)
+
     return(
       <div className="site-layout exam-inform-box">
         <Navbar/>
-
+<h1>获取的试卷名为{this.props.exam}</h1>
         <Layout>
           <div className="site-content-top">
             <div className="site-content-top-left">
@@ -213,3 +221,11 @@ export default class CandidateInform extends React.Component {
     )
   }
 }
+
+function mapStateToProps(state: any) {
+  console.log('examInform', state)
+  return{
+    exam: state.exam
+  }
+}
+export default connect(mapStateToProps)(ExamInform);
