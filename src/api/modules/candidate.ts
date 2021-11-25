@@ -1,8 +1,8 @@
 import { post } from 'api/index';
 
 // 查找所有候选人的邮箱接口
-export function searchCandidate() {
-  return post('/search_candidate');
+export function searchCandidate(data?: { cookie?: string }) {
+  return post('/search_candidate', data);
 }
 // 查找候选人信息接口
 export function search(data?: any) {

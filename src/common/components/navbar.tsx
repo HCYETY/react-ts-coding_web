@@ -7,17 +7,27 @@ import {
   AppstoreOutlined,
 } from '@ant-design/icons';
 import 'style/basic.less';
-import { COMMUNICATE, MANAGE, SHOW_EXAM } from '../const';
+import { INTERVIEW_MANAGE, INTERVIEW_ROOM, TEST_MANAGE, SHOW_EXAM } from 'common/const';
 
 export default class Navbar extends React.PureComponent {
 
   state = {
-    selectedKeysArr: [] = [MANAGE],
+    selectedKeysArr: [] = [TEST_MANAGE],
     openKeys: ['writtenExamination'],
   }
 
+  componentDidMount() {
+    const pathname = window.location.pathname;
+    const { selectedKeysArr } = this.state;
+    const arr = [pathname];
+    console.log(pathname)
+    console.log(arr)
+    this.setState({ selectedKeysArr: arr });
+  }
+
   handleClick = (value: any) => {
-    this.setState({ selectedKeysArr: value.keyPath })
+    console.log(value)
+    this.setState({ selectedKeysArr: value.selectedKeys })
   };
   // //这个方法是实现菜单高亮的核心方法
   // setActiveMenu = (location: { pathname: any; }) => {
@@ -45,7 +55,7 @@ export default class Navbar extends React.PureComponent {
 
   onOpenChange = (keys: any[]) => {
     const { openKeys } = this.state;
-    const rootSubmenuKeys = ['writtenExamination', 'interview'];
+    const rootSubmenuKeys = ['writtenExamination', 'interviewExamination'];
     const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
     if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
       this.setState({ openKeys: keys });
@@ -56,6 +66,7 @@ export default class Navbar extends React.PureComponent {
 
   render() {
     const { selectedKeysArr, openKeys } = this.state;
+    console.log(selectedKeysArr)
     // 动态获取 url 的路径，使选中的菜单及时更新
     // 由于每次渲染后数值更新，所以每次 push 都只有一个值
     // const pathname = window.location.pathname;
@@ -65,7 +76,7 @@ export default class Navbar extends React.PureComponent {
     return(
       <Menu
         onSelect={ this.handleClick }
-        // selectedKeys={ selectedKeysArr }
+        selectedKeys={ selectedKeysArr }
         // selectedKeys={ [window.location.pathname] }
         openKeys={ openKeys }	// 当前展开的 SubMenu 菜单项 key 数组
         onOpenChange={ this.onOpenChange }
@@ -76,17 +87,20 @@ export default class Navbar extends React.PureComponent {
         <div className="all-left-logo" />
 
         <Menu.SubMenu key="writtenExamination" icon={<AppstoreOutlined />} title="笔试">
-          <Menu.Item key="manage" icon={ <DesktopOutlined />} >
-            <NavLink to={ MANAGE }>面试题管理</NavLink>
+          <Menu.Item key="testManage" icon={ <DesktopOutlined />} >
+            <NavLink to={ TEST_MANAGE }>试题管理</NavLink>
           </Menu.Item>
           <Menu.Item key="showExam" icon={ <PieChartOutlined />} >
-            <NavLink to={ SHOW_EXAM }>阅卷</NavLink>
+            <NavLink to={ SHOW_EXAM }>阅卷管理</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
 
         <Menu.SubMenu key="interviewExamination" icon={<AppstoreOutlined />} title="面试">
-          <Menu.Item key="communicate" icon={ <PieChartOutlined />} >
-            <NavLink to={ COMMUNICATE }>面试间</NavLink>
+          <Menu.Item key="interviewManage" icon={ <PieChartOutlined />} >
+            <NavLink to={ INTERVIEW_MANAGE }>面试管理</NavLink>
+          </Menu.Item>
+          <Menu.Item key="interviewRoom" icon={ <PieChartOutlined />} >
+            <NavLink to={ INTERVIEW_ROOM }>面试间</NavLink>
           </Menu.Item>
         </Menu.SubMenu>
       </Menu>

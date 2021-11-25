@@ -11,14 +11,17 @@ import { Route } from 'common/types';
 export const REQUESTIP: string = 'http://localhost:8080/api';
 export const LOGIN: string = '/login';
 
-export const MANAGE: string = '/manage';
+export const TEST_MANAGE: string = '/test-manage';
 export const EDIT: string = '/edit';
-export const SHOW_EXAM: string = '/show-exam';
-export const COMMUNICATE: string = '/communicate';
 export const ADD: string = '/add';
 export const MODIFY: string = '/modify';
+
+export const SHOW_EXAM: string = '/show-exam';
 export const EXAM_INFORM: string = '/exam-inform';
 export const LOOK_OVER: string = '/look-over';
+
+export const INTERVIEW_MANAGE: string = '/interviewManage';
+export const INTERVIEW_ROOM: string = '/interviewRoom';
 
 export const CANDIDATE: string = '/candidate';
 export const SHOW_TESTS: string = '/show-tests';
@@ -28,12 +31,12 @@ export const TEST: string = '/test';
 // 路由栈
 export const routes = [
   {
-    path: COMMUNICATE,
+    path: INTERVIEW_ROOM,
     breadcrumbName: '面试间',
     // component: InterviewRoom,
   },
   {
-    path: MANAGE,
+    path: TEST_MANAGE,
     breadcrumbName: '面试题管理',
     // component: Edit,
     children: [

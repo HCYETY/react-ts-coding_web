@@ -13,6 +13,7 @@ import ShowExam from 'pages/interviewer/consult/showExam';
 import ExamInform from 'pages/interviewer/consult/examInform';
 import LookOver from 'pages/interviewer/consult/lookOver';
 
+import InterviewManage from 'pages/interviewer/communicate/interviewManage';
 import InterviewRoom from 'pages/interviewer/communicate/interviewRoom';
 
 import Candidate from 'pages/candidate';
@@ -33,8 +34,9 @@ import {
   SHOW_EXAM,
   EXAM_INFORM,
   LOOK_OVER,
-  MANAGE,
-  COMMUNICATE,
+  TEST_MANAGE,
+  INTERVIEW_ROOM,
+  INTERVIEW_MANAGE,
 } from 'common/const';
 
 class App extends PureComponent {
@@ -56,13 +58,14 @@ class App extends PureComponent {
             <Switch>
               <Route path={ LOGIN } component={ Login }></Route>
 
-              <Route path={ MANAGE } component={ Edit }></Route>
+              <Route path={ TEST_MANAGE } component={ Edit }></Route>
               <Route path={ ADD } component={ Add }></Route>
               <Route path={ MODIFY } component={ Modify }></Route>
               <Route path={ SHOW_EXAM } component={ ShowExam }></Route>
               <Route path={ EXAM_INFORM } component={ ExamInform }></Route>
               <Route path={ LOOK_OVER } component={ LookOver }></Route>
-              <Route path={ COMMUNICATE } component={ InterviewRoom }></Route>
+              <Route path={ INTERVIEW_MANAGE } component={ InterviewManage }></Route>
+              <Route path={ INTERVIEW_ROOM } component={ InterviewRoom }></Route>
 
               <Route path={ CANDIDATE } component={ Candidate }></Route>
               <Route path={ SHOW_TESTS } component={ ShowTests }></Route>

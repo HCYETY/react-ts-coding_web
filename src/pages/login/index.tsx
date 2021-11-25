@@ -5,7 +5,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import 'style/login/login.less';
 import logoImg from 'img/logo.png';
 import { sendEmail, testLogin, testRegister } from 'api/modules/user';
-import { MANAGE, CANDIDATE } from 'common/const';
+import { TEST_MANAGE, CANDIDATE } from 'common/const';
 import { transTime } from 'common/utils';
 
 export default class Login extends PureComponent<any> {
@@ -68,7 +68,7 @@ export default class Login extends PureComponent<any> {
       if (res.data.isLogin === true) {
         message.success(res.msg);
         if (res.data.interviewer === true) {
-          window.location.href = MANAGE;
+          window.location.href = TEST_MANAGE;
         } else {
           window.location.href = CANDIDATE;
         }

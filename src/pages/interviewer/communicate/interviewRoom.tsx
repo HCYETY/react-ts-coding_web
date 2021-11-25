@@ -1,11 +1,13 @@
 import React from 'react';
-import { Button, Tabs, Space } from 'antd';
+import { Button, Tabs, Space, Input, Form } from 'antd';
 
 import 'style/interviewer/InterviewRoom.css';
 import CodeEditor from 'common/components/candidate/codeEditor';
 import ShowTest from 'pages/interviewer/communicate/showTest';
 import { testObj } from 'common/types';
 import { showTest } from 'src/api/modules/test';
+
+import Websocket from 'common/components/websocket';
 
 interface Prop {
 
@@ -30,23 +32,6 @@ export default class InterviewRoom extends React.Component<Prop, State> {
     choiceTestSwitch: false,
     showTest: [],
     allTest: [],
-  }
-
-  componentDidMount() {
-    const ws = new WebSocket('ws:localhost:8080/api/communicate');
-    ws.onopen = function(evt) { 
-      console.log("正在连接 ..."); 
-      ws.send("Hello WebSockets!");
-    };
-    
-    ws.onmessage = function(evt) {
-      console.log( "接收数据: " + evt.data);
-      ws.close();
-    };
-    
-    ws.onclose = function(evt) {
-      console.log("连接关闭.");
-    };      
   }
 
   addTest =() => {
@@ -120,7 +105,20 @@ export default class InterviewRoom extends React.Component<Prop, State> {
           </Tabs>
         </div>
 
-        <div className="box-right">fffffff</div>
+        <div className="box-right">
+          <Websocket/>
+          {/* <div className="box-right-show-inform">
+            <p id="responseText">
+            </p>
+          </div>
+
+          <Form onFinish={ this.send }>
+            <Form.Item name="inputInform">
+              <Input placeholder="请输入聊天内容"></Input>
+            </Form.Item>
+            <span>回车键发送</span>
+          </Form> */}
+        </div>
       </div>
     )
   }

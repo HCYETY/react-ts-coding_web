@@ -17,10 +17,11 @@
   background: red;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  /* overflow-y: auto; */
+  overflow-y: hidden;
 }
 .program-inform{
-  overflow: hidden;
+  overflow-y: auto;
 }
 .program-left-top{
   display: flex;
@@ -35,9 +36,16 @@
 .program-right{
   width: 70%;
   background: skyblue;
+  overflow-y: auto;
 }
 
 .box-right{
   width: 25%;
   background: rgb(23, 33, 51);;
+}
+.box-right-show-inform{
+  width: 100%;
+  height: 200px;
+  background: green;
+  overflow-y: auto;
 }
