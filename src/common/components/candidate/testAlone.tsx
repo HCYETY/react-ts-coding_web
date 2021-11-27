@@ -8,16 +8,16 @@ import { getExamLevel } from 'common/utils';
 
 export default class TestAlone extends React.Component<any, any> {
   render() {
-    const watch = this.props.watch, over = this.props.over;
-    const item = this.props.values;
-    const num = item.num, 
-      title = item.test_name, 
-      level = item.level, 
-      point = item.point, 
-      tags = item.tags, 
-      check = item.check, 
-      timeBegin = item.paper.time_begin, 
-      timeEnd = item.paper.time_end;
+    const { watch, over, values } = this.props;
+    console.log('item', values)
+    const num = values.num, 
+      title = values.test_name, 
+      level = values.level, 
+      point = values.point, 
+      tags = values.tags, 
+      check = values.check, 
+      timeBegin = values.paper.time_begin, 
+      timeEnd = values.paper.time_end;
     const nowtime = new Date().getTime();
 
     function doJump() {

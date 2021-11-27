@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { 
   Table,
   Tabs ,
@@ -11,10 +13,11 @@ import 'style/candidate/candidateExam.css';
 import { showPaper } from 'api/modules/paper';
 import { getCookie, handleTime, } from 'common/utils';
 import { PAPER_STATUS, SHOW_TESTS,  } from 'common/const';
+import { GET_PROGRAM_EXAM } from 'src/useRedux/constant';
 
 const { TabPane } = Tabs;
 
-export default class Candidate extends React.Component<any, any> {
+class Candidate extends React.Component<any, any> {
 
   state = {
     allExam: [] = [],
@@ -58,6 +61,8 @@ export default class Candidate extends React.Component<any, any> {
 
 
   render() {
+    const { allExam, nodoExam, doingExam, doneExam, } = this.state;
+    const { changeEmail } = this.props;
     const columns = [
       { title: '试卷', dataIndex: 'paper', key: 'paper' },
       { title: '试卷描述', dataIndex: 'paper_description', key: 'paper_description' },
@@ -81,17 +86,20 @@ export default class Candidate extends React.Component<any, any> {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        render: (text: any, record: { paper: string; }) => (
-          <Space size="middle">
-            <a href={ `${ SHOW_TESTS }?paper=${ record.paper }` }>查看试卷</a>
-          </Space>
-        ),
+        render: (text: any, record: { paper: string; }) => {
+          // changeEmail(record.paper);
+          return(
+            <Space size="middle">
+              <Link to={ `${ SHOW_TESTS }?paper=${ record.paper }` }> 查看试卷 </Link>
+            </Space>
+          )
+        }
       }
     ]
-    const { allExam, nodoExam, doingExam, doneExam, } = this.state;
 
     return(
       <div className="card-container candidate-site-layout">
+        <h1>你好，{this.props.programExam}</h1>
         <Tabs type="card">
           <TabPane tab="全部" key="all">
             <Table
@@ -126,3 +134,21 @@ export default class Candidate extends React.Component<any, any> {
     )
   }
 }
+
+function mapStateToProps(state: any) {
+  return{
+    programExam: state.programExam
+  }
+}
+function mapDispatchToProps(dispatch: any, ownProps: any) {
+  return{
+    changeEmail: (exam: string) => {
+      dispatch({
+        type: GET_PROGRAM_EXAM,
+        programExam: exam
+      });
+    }
+  }
+}
+const CandidateContainer = connect(mapStateToProps, mapDispatchToProps)(Candidate)
+export default CandidateContainer;

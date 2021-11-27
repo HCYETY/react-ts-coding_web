@@ -15,6 +15,15 @@
   margin: 10px;
   display: flex;
 }
+.nodo{
+  color: rgb(33,40,53);
+}
+.doing{
+  color: rgba(255,184,0,1);
+}
+.done{
+  color: rgba(0,175,155,1);
+}
 /* .site-content-top-left-top{
   font-size: 20px;
   margin: 10px;

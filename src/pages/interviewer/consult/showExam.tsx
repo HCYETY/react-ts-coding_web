@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, BrowserRouter  as Router, Route, } from 'react-router-dom';
+import { Link, } from 'react-router-dom';
 import { 
   Layout,
   Table,
@@ -7,49 +7,48 @@ import {
 } from 'antd';
 import { 
 } from '@ant-design/icons';
-import { getCookie, transTime } from 'common/utils';
-import { search } from 'api/modules/candidate';
-import { CANDIDATE, EXAM_INFORM, LOOK_OVER, PAPER_CONSULT, PAPER_STATUS } from 'common/const';
+
+import { EXAM_INFORM, LOOK_OVER, PAPER_CONSULT, PAPER_STATUS } from 'common/const';
 import Navbar from 'common/components/navbar';
-import { lookOver, showPaper } from 'api/modules/paper';
-import ExamInformContainer from 'pages/interviewer/consult/examInform';
+import { showPaper } from 'api/modules/paper';
 
 import { connect } from 'react-redux';
-import store from 'useRedux/store';
 import { GET_EXAM } from 'useRedux/constant';
+import { transTime } from 'common/utils';
 
 interface Prop {
-  exam: string;
-  changeState: any;
+  lookExam: string;
+  changeEmail: any;
   dispatch: any
 }
 
 class ShowExam extends React.Component<Prop> {
 
   state = {
-    tableArr: [] = [],
-    exam: '',
+    examArr: [] = [],
   }
+
   componentDidMount() {
     showPaper().then(result => {
       const res = result.data.show;
       const nowtime = new Date().getTime();
+      console.log('res', res)
       res.map((item: any) => {
         const timeBegin = Number(item.time_begin);
         const timeEnd = Number(item.time_end);
         item.time_begin = transTime(timeBegin);
         item.time_end = transTime(timeEnd);
         item.ought_num = item.candidate.length + '人';
-        // item.look_over === false ? item.look_over = PAPER_CONSULT.NO : item.look_over = PAPER_CONSULT.YES;
-        // item.join_num = 
-        item.status = timeEnd < nowtime ? PAPER_STATUS.END : timeBegin > nowtime ? PAPER_STATUS.WILL : PAPER_STATUS.ING;
+        item.status = item.time_end < nowtime ? PAPER_STATUS.END : item.time_begin > nowtime ? PAPER_STATUS.WILL : PAPER_STATUS.ING;
+        item.look_over = item.look_over === false ? PAPER_CONSULT.NO : PAPER_CONSULT.YES;
       })
-      this.setState({ tableArr: res });
+      this.setState({ examArr: res });
     });
   }
 
   render() {
-    const { tableArr } = this.state;
+    const { lookExam, changeEmail } = this.props;
+    const { examArr } = this.state;
     const columns = [
       { 
         title: '状态', 
@@ -81,47 +80,27 @@ class ShowExam extends React.Component<Prop> {
         dataIndex: 'action',
         render: (text: any, record: any) => {
           return(
-              // <a href={`${ MODIFY }?paper=${ record.paper }`}><FormOutlined/>修改试卷</a>
-          <Link to={`${ EXAM_INFORM }?exam=${ record.paper }`}>
-            跳转
-          </Link>
+            <Link to={`${ EXAM_INFORM }?exam=${ record.paper }`}>
+              查看试卷情况
+            </Link>
           )
         }
       }
     ];
-    const { exam, changeState } = this.props;
 
     return(
       <div className="site-layout">
         <Navbar/>
-        <h1>当前求和为：{ exam }</h1>
+        <h1>当前求和为：{ lookExam }</h1>
 
         <Layout.Content>
           <Table
             bordered
             columns={ columns } 
-            dataSource={ [...tableArr] } 
+            dataSource={ [...examArr] } 
             onRow={record => {
               return {
-                onClick: () => { 
-                  this.setState({ exam: record['paper'] }, () => {
-                    changeState(record['paper'])
-                    // window.location.href = `${ EXAM_INFORM }?exam=${ record['paper'] }` 
-                    
-                    {
-                      <Link to={`${ EXAM_INFORM }?exam=${ record['paper'] }` }/>
-                    }
-
-                    // return(
-                    //   <a href={`${ EXAM_INFORM }?exam=${ record['paper'] }`}></a>
-                    // )
-                  });
-                  // return(
-                  //   <Router>
-                  //     <Route path={ EXAM_INFORM } component={ ExamInformContainer }></Route>
-                  //   </Router>
-                  // )
-                }, // 点击行
+                onClick: () => { changeEmail(record['paper']) }
               };
             }}
           />
@@ -133,15 +112,15 @@ class ShowExam extends React.Component<Prop> {
 
 function mapStateToProps(state: any) {
   return{
-    exam: state.exam
+    lookExam: state.lookExam
   }
 }
 function mapDispatchToProps(dispatch: any, ownProps: any) {
   return{
-    changeState: (exam: string) => {
+    changeEmail: (exam: string) => {
       dispatch({
         type: GET_EXAM,
-        exam: exam
+        lookExam: exam
       });
     }
   }

@@ -12,6 +12,7 @@ import { CANDIDATE, TEST_STATUS } from 'common/const';
 const url = getUrlParam('paper');
 const cookie = getCookie();
 const obj = { paper: url, cookie: cookie };
+console.log('url', url)
 
 export default class ShowTests extends React.Component {
   state = {
@@ -28,6 +29,8 @@ export default class ShowTests extends React.Component {
 
   async componentDidMount() {
     const res = await showTest(obj);
+    console.log('obj', obj)
+    console.log('res', res)
     const ans = await search(obj);
     const ret = ans.data.ret[0];
     ret.test_status = ret.test_status === TEST_STATUS.DONE ? true : false;

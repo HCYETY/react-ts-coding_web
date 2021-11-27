@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Select, Drawer, Radio, } from 'antd';
+import { Button, Select, Drawer, Radio, message } from 'antd';
+import { connect } from 'react-redux';
 import {
   LeftOutlined,
   RightOutlined,
@@ -20,11 +21,12 @@ import ProgramInform from 'common/components/candidate/programInform';
 import { getCookie, getExamLevel, getUrlParam } from 'common/utils';
 import { search, submit } from 'api/modules/candidate';
 import { TEST, PROGRAM_THEME, TEST_LEVEL, TEST_STATUS, } from 'src/common/const';
+import { GET_EXAM, GET_PROGRAM_EXAM } from 'src/useRedux/constant';
 
 const cookie = getCookie();
 
 interface Prop {
-  
+  programExam: string;
 }
 // interface examObj {
 //   testStatus: string;
@@ -56,7 +58,7 @@ interface State {
   testFilter: testFilterObj[];  // 筛选试题的要求
 }
 
-export default class Program extends React.Component<Prop, State> {
+class Program extends React.Component<Prop, State> {
 
   state = {
     code: '',
@@ -100,10 +102,15 @@ export default class Program extends React.Component<Prop, State> {
   }
   // 提交代码，需要验证代码的正确性（待完善），如果正确则将 status 改为 true
   submitCode = async () => {
-    const { code } = this.state;
+    const { code, language } = this.state;
+    const { programExam } = this.props;
     const url = getUrlParam('test');
-    const res = await submit({ testName: url, code: code, status: false });
-    console.log(res);
+    const res = await submit({ cookie, paper: programExam, testName: url, code, language, status: false, submit: true });
+    if (res.status === true) {
+      message.success('代码提交成功');
+    } else {
+      message.error('代码提交失败');
+    }
   }
 
   // 动态修改代码编辑器的支持语言
@@ -513,3 +520,11 @@ export default class Program extends React.Component<Prop, State> {
     )
   }
 }
+
+function mapStateToProps(state: any) {
+  return{
+    programExam: state.programExam
+  }
+}
+const ProgramContainer = connect(mapStateToProps)(Program)
+export default ProgramContainer;

@@ -1,20 +1,17 @@
 import React from 'react';
-import { Button, Layout } from 'antd';
+import { Layout } from 'antd';
 
 import 'style/interviewer/examReport.css';
-import Navbar from 'common/components/navbar';
-import { getCookie, getUrlParam } from 'common/utils';
 import { search } from 'api/modules/candidate';
-import ExamReport from 'common/components/interviewer/examReport';
 import { showTest } from 'api/modules/test';
 import { submit } from 'api/modules/candidate';
-import store from 'useRedux/store';
+import Navbar from 'common/components/navbar';
+import ExamReport from 'common/components/interviewer/examReport';
 import { connect } from 'react-redux';
 
-const cookie = getCookie();
-
 interface Prop {
-  exam: string;
+  lookExam: string;
+  lookEmail: string;
 }
 
 class LookOver extends React.Component<Prop> {
@@ -27,12 +24,11 @@ class LookOver extends React.Component<Prop> {
 
   token: string;
   componentDidMount() {
-    const reqEmail = getUrlParam('exam-email');
-    let reqPaper = this.props.exam;
-    search({ reqEmail, reqPaper }).then(item => {
+    const { lookExam, lookEmail } = this.props;
+    search({ paper: lookExam, reqEmail: lookEmail }).then(item => {
       this.setState({ examInform: item.data.ret });
     })
-    showTest({ paper: reqPaper  }).then(item => {
+    showTest({ paper: lookExam }).then(item => {
       this.setState({ test: item.data.show });
     })
   }
@@ -43,11 +39,10 @@ class LookOver extends React.Component<Prop> {
 
   render() {
     const { examInform, exam, test } = this.state;
-console.log(this.props)
+
     return(
       <div className="site-layout">
         <Navbar/>
-<h1>获取的试卷名为{this.props.exam}</h1>
 
         <Layout.Content>
           <div className="top"></div>
@@ -73,7 +68,8 @@ console.log(this.props)
 
 function mapStateToProps(state: any) {
   return{
-    exam: state.exam
+    lookExam: state.lookExam,
+    lookEmail: state.lookEmail
   }
 }
 export default connect(mapStateToProps)(LookOver);

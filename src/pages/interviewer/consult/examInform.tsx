@@ -26,13 +26,15 @@ import { getCookie, getUrlParam, transTime } from 'common/utils';
 import { search } from 'api/modules/candidate';
 import { showTest } from 'api/modules/test';
 import { lookOver, showPaper } from 'api/modules/paper';
-import store from 'useRedux/store';
+import { GET_EMAIL } from 'src/useRedux/constant';
 
-const paper = getUrlParam('exam');
 interface Prop {
-  exam: string;
-  changeState: string
+  lookExam: string;
+  lookEmail: string;
+  changeEmail: any;
+  dispatch: any;
 }
+
 class ExamInform extends React.Component<Prop> {
 
   state = {
@@ -49,23 +51,9 @@ class ExamInform extends React.Component<Prop> {
   }
 
   componentDidMount() {
-    lookOver().then(result => {
-
-    });
-
-    const cookie = getCookie();
+    const cookie = getCookie(), paper = this.props.lookExam;
     lookOver({ cookie, paper }).then(item => {
       this.setState({ tableArr: item.data.ret });
-      // const ret = item.data.ret;
-      // const arr: any[] = [];    // 存放试卷所属的候选人邮箱
-      // const value: any[] = [];  // 存放候选人的试卷信息
-      // ret.map((item: { email: string; status: TEST_STATUS; }) => {
-      //   if (arr.indexOf(item.email) === -1 && item.status !== TEST_STATUS.NODO) {
-      //     arr.push(item.email);
-      //     value.push(item);
-      //   }
-      // })
-      // this.setState({ tableArr: value });
     })
     showTest({ paper }).then(item => {
       this.setState({ examContent: item.data.show });
@@ -73,15 +61,6 @@ class ExamInform extends React.Component<Prop> {
     showPaper({ paper }).then(item => {
       this.setState({ examInform: item.data });
     })
-  }
-
-  // a 标签跳转至批阅界面
-  jump = () => {
-    // PubSub.publish('getExam', { exam: this.state.examInform });
-    // window.location.href = `${ LOOK_OVER }?exam-email=${ record['email'] }`;
-    // return(
-    //   <Link to={LOOK_OVER}/>
-    // )
   }
 
   render() {
@@ -113,7 +92,7 @@ class ExamInform extends React.Component<Prop> {
         key: 'action',
         render: (text: any, record: any) => {
           return(
-            <a href={ `${ LOOK_OVER }?exam-email=${ record['email'] }` }>前去批阅</a>
+            <Link to={ `${ LOOK_OVER }?exam-email=${ record['email'] }` }> 前往批阅 </Link>
           )
         }
       }
@@ -144,37 +123,46 @@ class ExamInform extends React.Component<Prop> {
       { title: '难易度', dataIndex: 'level', key: 'level' },
       { title: '分数', dataIndex: 'point', key: 'point' },
     ];
-    const timeBegin = transTime(Number(examInform.time_begin));
-    const timeEnd = transTime(Number(examInform.time_end));
-
-    console.log('jjjjjjjjjjjjjjjjjjj', this.props, this.props.exam)
-    console.log('store=====', store.getState())
-    console.log(this.props.changeState)
+    const timeBegin = transTime(+examInform.time_begin);
+    const timeEnd = transTime(+examInform.time_end);
 
     return(
       <div className="site-layout exam-inform-box">
         <Navbar/>
-<h1>获取的试卷名为{this.props.exam}</h1>
+
         <Layout>
           <div className="site-content-top">
             <div className="site-content-top-left">
-              <h3> { paper } </h3>
+              <h1> { this.props.lookExam } </h1>
               <div>
-                <span>结束时间：</span>
+                <span>结束时间：{ timeEnd }</span>
               </div>
             </div>
             <div className="site-content-top-right">
-              <span><CheckCircleOutlined />未参加</span>
-              <Divider/>
-              <span><ClockCircleOutlined />进行中</span>
-              <Divider/>
-              <span><CheckCircleOutlined />已结束</span>
-              <Divider/>
+              <span className="nodo">
+                <CheckCircleOutlined />
+                &nbsp;未参加&nbsp;
+              </span>
+              <Divider type="vertical"/>
+              <span className="doing">
+                <ClockCircleOutlined />
+                &nbsp;进行中&nbsp;
+              </span>
+              <Divider type="vertical"/>
+              <span className="done">
+                <CheckCircleOutlined />
+                &nbsp;已结束&nbsp;
+              </span>
+              <Divider type="vertical"/>
             </div>
           </div>
           <Layout.Content>
             <Tabs defaultActiveKey="exam-report">
-              <Tabs.TabPane tab="试卷报告" key="exam-report">
+              <Tabs.TabPane 
+                tab="试卷报告" 
+                key="exam-report"
+                disabled={ true }
+              >
                 Content of Tab Pane 1
               </Tabs.TabPane>
               <Tabs.TabPane tab="参与候选人" key="join-candidate">
@@ -182,17 +170,15 @@ class ExamInform extends React.Component<Prop> {
                   bordered
                   columns={ candidateColumns } 
                   dataSource={ [...tableArr] } 
-                  // onRow={record => {
-                  //   return {
-                  //     onClick: () => { 
-                  //       window.location.href = `${ LOOK_OVER }?exam-email=${ record['email'] }`;
-                  //     }, // 点击行
-                  //   };
-                  // }}
+                  onRow={record => {
+                    return {
+                      onClick: () => { this.props.changeEmail(record['email']); },
+                    };
+                  }}
                 />
               </Tabs.TabPane>
 
-              <Tabs.TabPane tab="试卷内容" key="exam-content">
+              <Tabs.TabPane tab="试题内容" key="exam-content">
                 <Table
                   bordered
                   columns={ testColumns } 
@@ -223,9 +209,19 @@ class ExamInform extends React.Component<Prop> {
 }
 
 function mapStateToProps(state: any) {
-  console.log('examInform', state)
   return{
-    exam: state.exam
+    lookExam: state.lookExam,
+    lookEmail: state.lookEmail
   }
 }
-export default connect(mapStateToProps)(ExamInform);
+function mapDispatchToProps(dispatch: any, ownProps: any) {
+  return{
+    changeEmail: (email: string) => {
+      dispatch({
+        type: GET_EMAIL,
+        lookEmail: email
+      });
+    }
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(ExamInform);
