@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { BrowserRouter  as Router, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect, withRouter, RouteComponentProps } from "react-router-dom";
 
 import Head from 'common/components/header';
 import Login from 'pages/login';
@@ -24,13 +24,13 @@ import Program from 'pages/candidate/program';
 import { testLogin } from 'api/modules/user';
 import { getCookie } from 'common/utils';
 import { 
-  ADD, 
+  TEST_ADD, 
+  TEST_MODIFY, 
   CANDIDATE, 
   LOGIN, 
-  MODIFY, 
-  SHOW_TESTS, 
-  TEST, 
-  WATCH_TEST,
+  CANDIDATE_SHOW_TESTS, 
+  CANDIDATE_TEST, 
+  CANDIDATE_WATCH_TEST,
   SHOW_EXAM,
   EXAM_INFORM,
   LOOK_OVER,
@@ -57,21 +57,21 @@ class App extends PureComponent {
           <Head/>
           <Router>
             <Switch>
-              <Route path={ LOGIN } component={ Login }></Route>
+              <Route path={ LOGIN } component={ Login } exact></Route>
 
-              <Route path={ TEST_MANAGE } component={ Edit }></Route>
-              <Route path={ ADD } component={ Add }></Route>
-              <Route path={ MODIFY } component={ Modify }></Route>
-              <Route path={ SHOW_EXAM } component={ ShowExamContainer }></Route>
-              <Route path={ EXAM_INFORM } component={ ExamInformContainer }></Route>
+              <Route path={ TEST_MANAGE } component={ Edit } exact></Route>
+              <Route path={ TEST_ADD } component={ Add }></Route>
+              <Route path={ TEST_MODIFY } component={ Modify }></Route>
+              <Route path={ SHOW_EXAM } component={ ShowExamContainer } exact></Route>
+              <Route path={ EXAM_INFORM } component={ ExamInformContainer }></Route> 
               <Route path={ LOOK_OVER } component={ LookOverContainer }></Route>
-              <Route path={ INTERVIEW_MANAGE } component={ InterviewManage }></Route>
-              <Route path={ INTERVIEW_ROOM } component={ InterviewRoom }></Route>
+              <Route path={ INTERVIEW_MANAGE } component={ InterviewManage } exact></Route> 
+              <Route path={ INTERVIEW_ROOM } component={ InterviewRoom } exact></Route> 
 
-              <Route path={ CANDIDATE } component={ Candidate }></Route>
-              <Route path={ SHOW_TESTS } component={ ShowTests }></Route>
-              <Route path={ WATCH_TEST } component={ WatchTest }></Route>
-              <Route path={ TEST } component={ Program }></Route>
+              <Route path={ CANDIDATE } component={ Candidate } exact></Route>
+              <Route path={ CANDIDATE_SHOW_TESTS } component={ ShowTests }></Route> 
+              <Route path={ CANDIDATE_WATCH_TEST } component={ WatchTest }></Route> 
+              <Route path={ CANDIDATE_TEST } component={ Program }></Route>
               
               <Redirect to={ LOGIN }></Redirect>
             </Switch>

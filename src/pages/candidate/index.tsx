@@ -12,7 +12,7 @@ import {
 import 'style/candidate/candidateExam.css';
 import { showPaper } from 'api/modules/paper';
 import { getCookie, handleTime, } from 'common/utils';
-import { PAPER_STATUS, SHOW_TESTS,  } from 'common/const';
+import { PAPER_STATUS, CANDIDATE_SHOW_TESTS,  } from 'common/const';
 import { GET_PROGRAM_EXAM } from 'src/useRedux/constant';
 
 const { TabPane } = Tabs;
@@ -90,7 +90,7 @@ class Candidate extends React.Component<any, any> {
           // changeEmail(record.paper);
           return(
             <Space size="middle">
-              <Link to={ `${ SHOW_TESTS }?paper=${ record.paper }` }> 查看试卷 </Link>
+              <Link to={ `${ CANDIDATE_SHOW_TESTS }?paper=${ record.paper }` }> 查看试卷 </Link>
             </Space>
           )
         }

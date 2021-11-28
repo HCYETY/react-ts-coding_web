@@ -10,7 +10,7 @@ import moment from 'moment';
 
 import { modifyPaper } from 'api/modules/paper';
 import { showTest } from 'api/modules/test';
-import { EDIT, TEST_MANAGE, TAGS } from 'common/const';
+import { TEST_MANAGE, TAGS } from 'common/const';
 import { getUrlParam } from 'common/utils';
 import Navbar from 'common/components/navbar';
 import Foot from 'common/components/footer';

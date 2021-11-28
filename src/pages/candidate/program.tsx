@@ -20,7 +20,7 @@ import CodeEditor from 'src/common/components/candidate/codeEditor';
 import ProgramInform from 'common/components/candidate/programInform';
 import { getCookie, getExamLevel, getUrlParam } from 'common/utils';
 import { search, submit } from 'api/modules/candidate';
-import { TEST, PROGRAM_THEME, TEST_LEVEL, TEST_STATUS, } from 'src/common/const';
+import { CANDIDATE_TEST, PROGRAM_THEME, TEST_LEVEL, TEST_STATUS, } from 'src/common/const';
 import { GET_EXAM, GET_PROGRAM_EXAM } from 'src/useRedux/constant';
 
 const cookie = getCookie();
@@ -430,7 +430,7 @@ class Program extends React.Component<Prop, State> {
               {
                 filterArr.map(item => {
                   return(
-                    <a className="content-test-box" href={ `${ TEST }?test=${ item['test_name'] }` }>
+                    <a className="content-test-box" href={ `${ CANDIDATE_TEST }?test=${ item['test_name'] }` }>
                       <div className="content-test-left">
                         <span className="content-test-icon">
                           { getUrlParam('test') === item['test_name'] ? <RightOutlined /> : item['test_status'] === TEST_STATUS.DONE ? <CheckOutlined /> :  undefined }

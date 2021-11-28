@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink, BrowserRouter as Router, Route } from 'react-router-dom';
 import { 
   Layout, 
   Table, 
@@ -18,7 +19,7 @@ import {
 
 import 'style/interviewer/show.less';
 import Navbar from 'common/components/navbar';
-import { ADD, MODIFY } from 'common/const';
+import { TEST_ADD, TEST_MODIFY } from 'common/const';
 import { showPaper, deletePaper } from 'api/modules/paper';
 import { getCookie, handleTime } from 'common/utils';
 import Head from 'common/components/header';
@@ -51,7 +52,10 @@ export default class Edit extends React.Component {
   };
   // 新建试卷的按钮事件
   add = () => {
-    window.location.href = ADD;
+    window.location.href = TEST_ADD;
+    // return(
+    //   <Link to={ TEST_ADD }></Link>
+    // )
   };
 
   // 表格复选框的选择情况
@@ -127,7 +131,9 @@ export default class Edit extends React.Component {
         render: (text: any, record: any) => {
           return(
             <Space size="middle">
-              <a href={`${ MODIFY }?paper=${ record.paper }`}><FormOutlined/>修改试卷</a>
+              <NavLink to={ `${ TEST_MODIFY }?paper=${ record.paper }` }>
+                <FormOutlined/>修改试卷
+              </NavLink>
             </Space>
           )
         }

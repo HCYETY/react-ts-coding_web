@@ -3,7 +3,7 @@ import { message, Tag } from 'antd';
 import { DoubleRightOutlined, CheckCircleOutlined } from '@ant-design/icons';
 
 import 'style/interviewer/testAlone.less';
-import { TEST, WATCH_TEST } from 'common/const';
+import { CANDIDATE_TEST, CANDIDATE_WATCH_TEST } from 'common/const';
 import { getExamLevel } from 'common/utils';
 
 export default class TestAlone extends React.Component<any, any> {
@@ -24,13 +24,13 @@ export default class TestAlone extends React.Component<any, any> {
       if (nowtime < timeBegin || timeEnd < nowtime) {
         message.error('不在答题时间范围之内无法进行答题');
       } else if (timeBegin <= nowtime &&  nowtime <= timeEnd) {
-        window.location.href = `${ TEST }?test=${ title }`;
+        window.location.href = `${ CANDIDATE_TEST }?test=${ title }`;
       }
       console.log(nowtime, timeBegin, timeEnd)
     }
     function nodoJump() {
       PubSub.publish('isProgram', { status: false });
-      window.location.href = `${ WATCH_TEST }?test=${ title }`;
+      window.location.href = `${ CANDIDATE_WATCH_TEST }?test=${ title }`;
     }
 
     return(

@@ -18,7 +18,7 @@ import Navbar from 'common/components/navbar';
 import Foot from 'common/components/footer';
 import Tabler from 'src/common/components/interviewer/tabler';
 import Paper from 'src/common/components/interviewer/paper';
-import { EDIT } from 'common/const';
+import { TEST_MANAGE } from 'common/const';
 import { getCookie } from 'src/common/utils';
 
 export default class Add extends React.Component<any, any> {
@@ -64,7 +64,7 @@ export default class Add extends React.Component<any, any> {
     const res = await addTest(obj);
     if (res.data.status) {
       message.success(res.msg);
-      window.location.href = EDIT;
+      window.location.href = TEST_MANAGE;
     } else {
       message.error(res.msg);
     }

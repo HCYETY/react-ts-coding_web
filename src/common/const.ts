@@ -12,21 +12,21 @@ export const REQUESTIP: string = 'http://localhost:8080/api';
 export const LOGIN: string = '/login';
 
 export const TEST_MANAGE: string = '/test-manage';
-export const EDIT: string = '/edit';
-export const ADD: string = '/add';
-export const MODIFY: string = '/modify';
+// export const TEST_EDIT: string = '/test-manage/edit';
+export const TEST_ADD: string = '/test-manage/add';
+export const TEST_MODIFY: string = '/test-manage/modify';
 
 export const SHOW_EXAM: string = '/show-exam';
-export const EXAM_INFORM: string = '/exam-inform';
-export const LOOK_OVER: string = '/look-over';
+export const EXAM_INFORM: string = '/show-exam/exam-inform';
+export const LOOK_OVER: string = '/show-exam/look-over';
 
 export const INTERVIEW_MANAGE: string = '/interview-manage';
 export const INTERVIEW_ROOM: string = '/interview-room';
 
 export const CANDIDATE: string = '/candidate';
-export const SHOW_TESTS: string = '/show-tests';
-export const WATCH_TEST: string = '/watch-test';
-export const TEST: string = '/test';
+export const CANDIDATE_SHOW_TESTS: string = '/candidate/show-tests';
+export const CANDIDATE_WATCH_TEST: string = '/candidate/watch-test';
+export const CANDIDATE_TEST: string = '/candidate/test';
 
 // 路由栈
 export const routes = [
@@ -45,12 +45,12 @@ export const routes = [
     // component: Edit,
     children: [
       {
-        path: ADD,
+        path: TEST_ADD,
         breadcrumbName: '新建试卷',
         // component: Add,
       },
       {
-        path: MODIFY,
+        path: TEST_MODIFY,
         breadcrumbName: '修改试卷',
         // component: Modify,
       }

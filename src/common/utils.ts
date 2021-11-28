@@ -1,5 +1,15 @@
 import { TEST_LEVEL, PAPER_STATUS } from "common/const";
 
+// 以递归的方式展平数组
+export function flattenRoutes(arr: any) {
+  return arr.reduce(function(prev: any, item: any) {
+    prev.push(item);
+    return prev.concat(
+      Array.isArray(item.children) ? flattenRoutes(item.children) : []
+    );
+  }, []);
+}
+
 export function getUrlParam(key: string) {
   // 获取参数
   const url = window.location.search;
