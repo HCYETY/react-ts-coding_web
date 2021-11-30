@@ -5,8 +5,9 @@ import { showTest } from 'api/modules/test';
 import 'style/interviewer/examReport.css';
 import { getDays, transTime } from 'common/utils';
 
-interface Get {
-  inform: [],
+interface Prop {
+  examInform: [],
+  getRate: any,
 }
 
 // interface programObj {
@@ -32,7 +33,7 @@ interface State {
   value: number;
 }
 
-export default class ExamReport extends React.Component<Get, State> {
+export default class ExamReport extends React.Component<Prop, State> {
 
   state = {
     tableArr: [],
@@ -40,23 +41,24 @@ export default class ExamReport extends React.Component<Get, State> {
     testPoint: 0,
     value: 3,
   }
-
-  handleChange = (value: number) => {
-    const { testPoint } = this.state;
-    const step =  testPoint / 5;
-    this.setState({ value: value * step });
-  };
   
   componentDidMount() {
-    showTest({ test: this.props.inform['test_name'] }).then(res => {
+    showTest({ test: this.props.examInform['test_name'] }).then(res => {
       const ret = res.data.show;
       this.setState({ testContent: ret.test, testPoint: ret.point });
     })
   }
 
+  handleChange = (value: number) => {
+    const { testPoint } = this.state;
+    const step =  testPoint / 5;
+    this.props.getRate(this.props.examInform['test_name'], value * step);
+    this.setState({ value });
+  };
+
   render() {
     const { tableArr, value, testContent, testPoint } = this.state;
-    const examInform = this.props.inform;
+    const { examInform } = this.props;
     const step = testPoint / 5;
     const program_time = transTime(examInform['answer_end'] - examInform['answer_end']);
 
@@ -84,8 +86,8 @@ export default class ExamReport extends React.Component<Get, State> {
                 评分
                 <Rate 
                   character={ ({ index }) => (index + 1) * step } 
-                  onChange={this.handleChange} 
-                  value={value} 
+                  onChange={ this.handleChange } 
+                  value={ value } 
                 />
               </span>
             </div>

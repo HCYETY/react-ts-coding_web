@@ -1,4 +1,5 @@
 import { TEST_LEVEL, PAPER_STATUS } from "common/const";
+import { searchEmail } from "api/modules/user";
 
 // 以递归的方式展平数组
 export function flattenRoutes(arr: any) {
@@ -10,6 +11,7 @@ export function flattenRoutes(arr: any) {
   }, []);
 }
 
+// 获取地址栏的信息
 export function getUrlParam(key: string) {
   // 获取参数
   const url = window.location.search;
@@ -92,8 +94,11 @@ export function handleTime(arr: any, status?: number) {
 
 // 转化日期控件时间值
 export function transTime(time: number) {
-  const timeDate = new Date(Number(time));
-  const getTime = new Date(+new Date(timeDate)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'');
+  const timeDate = new Date(+time);
+  const getTime = new Date(+new Date(timeDate)+8*3600*1000)
+    .toISOString()
+    .replace(/T/g,' ')
+    .replace(/\.[\d]{3}Z/,'');
   return getTime;
 }
 
@@ -123,4 +128,23 @@ export function getMinute() {
     ret[i] = i;
   }
   return ret;
+}
+
+// 获取该项目中所有面试官和候选人的邮箱
+export async function findEmail() {
+  const result = await searchEmail();
+  const res = result.data.ret;
+  const candArr: string[] = [], interArr: string[] = [];
+  res.map((item: { interviewer: boolean; email: string; }) => {
+    if (item.interviewer === true) {
+      interArr.push(item.email);
+    } else if (item.interviewer === false) {
+      candArr.push(item.email);
+    }
+  })
+  const obj = {
+    allInterview: interArr,
+    allCandidate: candArr
+  }
+  return obj;
 }

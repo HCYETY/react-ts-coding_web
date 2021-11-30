@@ -47,7 +47,7 @@ class ShowExam extends React.Component<Prop> {
   }
 
   render() {
-    const { lookExam, changeEmail } = this.props;
+    const { changeEmail } = this.props;
     const { examArr } = this.state;
     const columns = [
       { 
@@ -91,7 +91,6 @@ class ShowExam extends React.Component<Prop> {
     return(
       <div className="site-layout">
         <Navbar/>
-        <h1>当前求和为：{ lookExam }</h1>
 
         <Layout.Content>
           <Table

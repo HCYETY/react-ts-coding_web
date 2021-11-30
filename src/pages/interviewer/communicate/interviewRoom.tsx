@@ -1,7 +1,8 @@
-import React from 'react';
-import { Button, Tabs, Space, Input, Form } from 'antd';
 
-import 'style/interviewer/InterviewRoom.css';
+import React from 'react';
+import { Button, Tabs, Space, notification, Radio, Form, Input, Alert, } from 'antd';
+
+import 'style/interviewer/interviewRoom.css';
 import CodeEditor from 'common/components/candidate/codeEditor';
 import ShowTest from 'pages/interviewer/communicate/showTest';
 import { testObj } from 'common/types';
@@ -19,6 +20,7 @@ interface showTestObj {
   test: string;
 }
 interface State {
+  showInterview: boolean;
   showTestSwitch: boolean;
   choiceTestSwitch: boolean;
   showTest: showTestObj[];
@@ -28,27 +30,48 @@ interface State {
 export default class InterviewRoom extends React.Component<Prop, State> {
 
   state = {
+    showInterview: false,
     showTestSwitch: false,
     choiceTestSwitch: false,
     showTest: [],
     allTest: [],
   }
 
+  componentDidMount() {
+    this.openNotificationWithIcon('success');
+  }
+
+  // 弹出 antd 提醒框
+  openNotificationWithIcon = (type: string) => {
+    notification[type]({
+      message: ' 号房间',
+      description:
+        '您已进入面试间，即将开始面试！'
+    });
+  };
+  
+
   addTest =() => {
 
   }
   choiceTest =() => {
+    const { choiceTestSwitch } = this.state;
     showTest().then(res => {
-      this.setState({ choiceTestSwitch: true, allTest: res.data.show });
+      this.setState({ choiceTestSwitch: !choiceTestSwitch, allTest: res.data.show });
     })
   }
   getTest = (val: any) => {
     this.setState({ showTestSwitch: true, choiceTestSwitch: false, showTest: val });
   }
 
+  // 面试官提交面试评价的回调函数
+  submitEvaluation = (value: any) => {
+
+  }
+
   render() {
     const { showTestSwitch, choiceTestSwitch, showTest, allTest } = this.state;
-
+    
     return(
       <div className="box">
         <div className="box-left">
@@ -58,18 +81,18 @@ export default class InterviewRoom extends React.Component<Prop, State> {
                 <div className="program-left">
                   {
                     showTestSwitch === false ?
-                    <>
-                      <div className="program-left-bottom">
-                        <Space direction="vertical">
-                          <Button onClick={ this.addTest }>新增试题</Button>
-                          <Button onClick={ this.choiceTest }>从题库中选题</Button>
-                        </Space>
-                      </div>
-                    </> :
+                    <div className="program-left-before">
+                      <Space direction="vertical">
+                        <Button onClick={ this.addTest }>新增试题</Button>
+                        <Button onClick={ this.choiceTest }>从题库中选题</Button>
+                      </Space>
+                    </div> :
                     <div className="program-inform">
-                      <div className="program-left-top">
+                      <div className="program-left-after">
                         <span>任务</span>
-                        <Button onClick={ this.choiceTest }>再出一题</Button>
+                        <Button onClick={ this.choiceTest }>
+                          { choiceTestSwitch === false ? '再出一题' : '取消出题' }
+                        </Button>
                       </div>
                       <div className="testName">{ showTest.test_name }</div> 
                       <div className="proviso">{ showTest.language }</div> 
@@ -99,8 +122,36 @@ export default class InterviewRoom extends React.Component<Prop, State> {
               <div className="achievement-right"></div>
             </Tabs.TabPane>
             <Tabs.TabPane tab="面试评价" key="evaluation">
-              <div className="evaluation-left"></div>
-              <div className="evaluation-right"></div>
+              <span>面试评价</span>
+              <span>候选人无法查看您的评价</span>
+              <Form onFinish={ this.submitEvaluation }>
+                <Form.Item
+                  label="面试综合评价"
+                  name="evaluation"
+                  key="evaluation"
+                >
+                  <Radio.Group>
+                    <Radio value="卓越">5（卓越）</Radio>
+                    <Radio value="优秀">4（优秀）</Radio>
+                    <Radio value="标准">3（标准）</Radio>
+                    <Radio value="搁置">2（搁置）</Radio>
+                    <Radio value="淘汰">1（淘汰）</Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Alert message="注意：3-5分为通过，1-2分为淘汰" type="error" />
+
+                <Form.Item
+                  name="comment"
+                  key="comment"
+                >
+                  <span>评语（优势/劣势/需下轮面试官关注点）：</span>
+                  <Input.TextArea placeholder="在此输入您的评语，输入内容将即时保存"/>
+                </Form.Item>
+
+                <Form.Item >
+                  <Button type="primary" htmlType="submit">保存</Button>
+                </Form.Item>
+              </Form>
             </Tabs.TabPane>
           </Tabs>
         </div>

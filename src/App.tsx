@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect, withRouter, RouteComponentProps } from "react-router-dom";
 
 import Head from 'common/components/header';
@@ -13,6 +13,7 @@ import ShowExamContainer from 'src/pages/interviewer/consult/showExam';
 import ExamInformContainer from 'pages/interviewer/consult/examInform';
 import LookOverContainer from 'pages/interviewer/consult/lookOver';
 
+import InterviewEntrance from 'pages/interviewer/communicate/interviewEntrance';
 import InterviewManage from 'pages/interviewer/communicate/interviewManage';
 import InterviewRoom from 'pages/interviewer/communicate/interviewRoom';
 
@@ -35,12 +36,13 @@ import {
   EXAM_INFORM,
   LOOK_OVER,
   TEST_MANAGE,
-  INTERVIEW_ROOM,
   INTERVIEW_MANAGE,
+  INTERVIEW,
+  INTERVIEW_ENTRANCE,
 } from 'common/const';
 
 
-class App extends PureComponent {
+class App extends React.Component {
   componentDidMount() {
     const cookie = getCookie();
     const url = window.location.pathname;
@@ -53,7 +55,7 @@ class App extends PureComponent {
   
   render() {
       return (
-        <>
+        <div>
           <Head/>
           <Router>
             <Switch>
@@ -62,11 +64,14 @@ class App extends PureComponent {
               <Route path={ TEST_MANAGE } component={ Edit } exact></Route>
               <Route path={ TEST_ADD } component={ Add }></Route>
               <Route path={ TEST_MODIFY } component={ Modify }></Route>
+
               <Route path={ SHOW_EXAM } component={ ShowExamContainer } exact></Route>
               <Route path={ EXAM_INFORM } component={ ExamInformContainer }></Route> 
               <Route path={ LOOK_OVER } component={ LookOverContainer }></Route>
+
+              <Route path={ INTERVIEW_ENTRANCE } component={ InterviewEntrance } exact></Route> 
               <Route path={ INTERVIEW_MANAGE } component={ InterviewManage } exact></Route> 
-              <Route path={ INTERVIEW_ROOM } component={ InterviewRoom } exact></Route> 
+              <Route path={ INTERVIEW } component={ InterviewRoom }></Route> 
 
               <Route path={ CANDIDATE } component={ Candidate } exact></Route>
               <Route path={ CANDIDATE_SHOW_TESTS } component={ ShowTests }></Route> 
@@ -76,7 +81,7 @@ class App extends PureComponent {
               <Redirect to={ LOGIN }></Redirect>
             </Switch>
           </Router>
-        </>
+        </div>
       )
     // }
   }

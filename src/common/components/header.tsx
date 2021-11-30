@@ -74,11 +74,16 @@ export default class Head extends React.PureComponent{
       <>
         <div className="all-header-div"></div>
         <div className="all-header">
-          <Breadcrumbs url={ window.location.pathname }/>
+          <Breadcrumbs/>
 
           <div className="all-header-avatar-box">
             <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
-              <Avatar className="all-header-avatar" size="large" icon={<UserOutlined />} />
+              <Avatar 
+                className="all-header-avatar" 
+                size="large" 
+                icon={<UserOutlined />} 
+                shape="square"
+              />
             </Dropdown>
           </div>
 

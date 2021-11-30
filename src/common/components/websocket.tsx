@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input, Form } from 'antd';
 import { getCookie } from 'common/utils';
-import { searchCandidate } from 'api/modules/candidate';
+import { searchEmail } from 'api/modules/user';
 
 const ws = new WebSocket('ws:localhost:9090');
 
@@ -11,7 +11,7 @@ let identity: string = '候选人';
 export default class Websocket extends React.Component {
 
   componentDidMount() {
-    searchCandidate({ cookie }).then(res => {
+    searchEmail({ cookie }).then(res => {
       identity = res.data.interviewer === true ? '面试官' : identity;
     })
     ws.onopen = function(evt) {

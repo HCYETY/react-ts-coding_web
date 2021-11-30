@@ -16,3 +16,7 @@ export function testRegister(data: { email: string; cypher: string; captcha: str
 export function logout(data: { cookie: string }) {
   return post('/logout', data);
 }
+// 查找所有面试官或候选人的邮箱接口
+export function searchEmail(data?: { cookie?: string; interviewer?: boolean }) {
+  return post('/search_email', data);
+}

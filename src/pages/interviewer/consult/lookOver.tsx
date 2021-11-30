@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout } from 'antd';
+import { Button, Layout, message } from 'antd';
 
 import 'style/interviewer/examReport.css';
 import { search } from 'api/modules/candidate';
@@ -8,10 +8,16 @@ import { submit } from 'api/modules/candidate';
 import Navbar from 'common/components/navbar';
 import ExamReport from 'common/components/interviewer/examReport';
 import { connect } from 'react-redux';
+import { lookOver } from 'src/api/modules/paper';
 
 interface Prop {
   lookExam: string;
   lookEmail: string;
+}
+
+interface rateArrObj {
+  testName: string;
+  score: number;
 }
 
 class LookOver extends React.Component<Prop> {
@@ -33,9 +39,23 @@ class LookOver extends React.Component<Prop> {
     })
   }
 
-  // submit({ cookie }).then(res => {
+  rateArr: rateArrObj[] = [];
+  getRate = (testName: string, score: number) => {
+    this.rateArr.push({ testName, score });
+  }
 
-  // })
+  submitRate = () => {
+    const { lookExam, lookEmail } = this.props;
+    lookOver({ paper: lookExam, reqEmail: lookEmail, rate: this.rateArr }).then(res => {
+      console.log('submitRate res', res)
+      const { msg, data } = res;
+      if (data.status === true) {
+        message.success(msg);
+      } else {
+        message.error('试卷未完成批阅');
+      }
+    })
+  }
 
   render() {
     const { examInform, exam, test } = this.state;
@@ -49,17 +69,17 @@ class LookOver extends React.Component<Prop> {
           <div className="content">
             {
               examInform.map(item => {
-                // test.map(tmp => {
-                  // if (tmp['test_name'] === item['test_name']) {
-                    return(
-                      <ExamReport inform={ item } key={ item['test_name'] }/>
-                    )
-                  // }
-                // })
+                return(
+                  <ExamReport 
+                    key={ item['test_name'] }
+                    getRate={ this.getRate } 
+                    examInform={ item } 
+                  />
+                )
               })
             }
           </div>
-          {/* <Button onClick={ this.submit }>提交试卷评分</Button> */}
+          <Button onClick={ this.submitRate }>提交试卷评分</Button>
         </Layout.Content>
       </div>
     )

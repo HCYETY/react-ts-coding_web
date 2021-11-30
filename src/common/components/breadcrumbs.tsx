@@ -6,18 +6,21 @@ import { LeftOutlined } from '@ant-design/icons';
 import { routes } from 'common/const';
 import { flattenRoutes } from 'common/utils';
 
-interface Prop{
-  url: string;
-}
+export default class Breadcrumbs extends React.Component {
 
-export default class Breadcrumbs extends React.Component<Prop> {
-
-  componentWillReceiveProps(newProps: { match: { params: { id: any; }; }; }) {
-    const id = newProps.match.params.id;
-    console.log('id+++++', id)
-    // 一些操作
+  shouldComponentUpdate() {
+    const url = window.location.pathname;
+    const retArr = flattenRoutes(routes);
+    const breadcrumbs = this.getBreadcrumbs(retArr, url);
+    const len = breadcrumbs.length;
+    console.log('url', url)
+    console.log('retArr', retArr)
+    console.log('breadcrumbs', breadcrumbs)
+    console.log('len', len)
+    console.log('url', url)
+    return url === breadcrumbs[len-1].path;
   }
-  
+
   getBreadcrumb = (flattenRoutes: any[], pathSection: string) => {
     return flattenRoutes.find((ele: { breadcrumbName: any; path: any; }) => {
       const { breadcrumbName, path } = ele;

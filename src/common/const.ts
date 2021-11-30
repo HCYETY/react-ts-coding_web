@@ -21,7 +21,8 @@ export const EXAM_INFORM: string = '/show-exam/exam-inform';
 export const LOOK_OVER: string = '/show-exam/look-over';
 
 export const INTERVIEW_MANAGE: string = '/interview-manage';
-export const INTERVIEW_ROOM: string = '/interview-room';
+export const INTERVIEW: string = '/interview';
+export const INTERVIEW_ENTRANCE: string = '/interview-entrance';
 
 export const CANDIDATE: string = '/candidate';
 export const CANDIDATE_SHOW_TESTS: string = '/candidate/show-tests';
@@ -31,13 +32,19 @@ export const CANDIDATE_TEST: string = '/candidate/test';
 // 路由栈
 export const routes = [
   {
-    path: INTERVIEW_ROOM,
-    breadcrumbName: '面试间',
+    path: INTERVIEW_ENTRANCE,
+    breadcrumbName: '面试间入口',
     // component: InterviewRoom,
+    children: [
+      {
+        path: INTERVIEW,
+        breadcrumbName: '面试间',
+      }
+    ]
   },
   {
     path: INTERVIEW_MANAGE,
-    breadcrumbName: '面试管理',
+    breadcrumbName: '面试间管理',
   },
   {
     path: TEST_MANAGE,
@@ -73,10 +80,6 @@ export const routes = [
       }
     ]
   }
-  // {
-  //   // path: CANDIDATE,
-  //   // breadcrumbName: 
-  // }
 ]
 
 // 试题难度
