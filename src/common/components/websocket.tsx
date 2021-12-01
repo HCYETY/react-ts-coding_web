@@ -3,25 +3,40 @@ import { Input, Form } from 'antd';
 import { getCookie } from 'common/utils';
 import { searchEmail } from 'api/modules/user';
 
-const ws = new WebSocket('ws:localhost:9090');
-
 const cookie = getCookie();
-let identity: string = '候选人';
 
 export default class Websocket extends React.Component {
 
+  socket: WebSocket = null;
+  identity: string = '候选人';
+
+  state = {
+    value: '',
+  }
+  
   componentDidMount() {
+    // 检测当前浏览器是什么浏览器来决定用什么socket
+    if ('WebSocket' in window) {
+      this.socket = new WebSocket('ws://localhost:8080/koa/ws');
+    } else if ('MozWebSocket' in window) {
+      // this.socket = new MozWebSocket('ws:localhost:7656');
+    } else {
+      // this.socket = new SockJS('ws:localhost:7656');
+    }
+
+    // 查看当前用户的身份，是面试官还是候选人
     searchEmail({ cookie }).then(res => {
-      identity = res.data.interviewer === true ? '面试官' : identity;
+      this.identity = res.data.interviewer === true ? '面试官' : this.identity;
     })
-    ws.onopen = function(evt) {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send('系统：您已连接到服务器!!!!!!!!!!!');
-        ws.send('系统：' + identity + "已经进入房间!!!!!!!!!!!");
+
+    // 连接成功时触发
+    this.socket.onopen = (evt) => {
+      if (this.socket.readyState === WebSocket.OPEN) {
+        this.socket.send('系统：您已连接到服务器!!!!!!!!!!!');
+        this.socket.send('系统：' + this.identity + "已经进入房间!!!!!!!!!!!");
       }
     };
-    
-    ws.onmessage = function(event) {
+    this.socket.onmessage = function(event) {
       const p = document.getElementById('responseText');
       p.innerText = p.innerText + '\n' + event.data;
     };
@@ -30,39 +45,41 @@ export default class Websocket extends React.Component {
     if (!window.WebSocket) {
       return;
     }
-    if (ws.readyState == WebSocket.OPEN) {
-      ws.send(identity + '：' + message.inputInform);
+    if (this.socket.readyState == WebSocket.OPEN) {
+      this.socket.send(this.identity + '：' + message.inputInform);
     } else {
       alert("连接没有开启.");
     }
   }
   componentWillUnmount() {
-    ws.close();
-    ws.onclose = function(event) {
+    this.socket.close();
+    this.socket.onclose = (event) => {
       var code = event.code;
       var reason = event.reason;
       var wasClean = event.wasClean;
       console.log('code',code)
       console.log('reason',reason)
       console.log('wasClean',wasClean)
-      if (ws.readyState === WebSocket.CLOSING) {
-        ws.send('系统：正在断开服务器');
-      } else if (ws.readyState === WebSocket.CLOSED) {
-        ws.send('系统：服务器已经断开');
+      if (this.socket.readyState === WebSocket.CLOSING) {
+        this.socket.send('系统：正在断开服务器');
+      } else if (this.socket.readyState === WebSocket.CLOSED) {
+        this.socket.send('系统：服务器已经断开');
       }
     };      
   }
 
   render() {
+    const { value } = this.state;
 
     return(
       <div>
         <div className="box-right-show-inform">
           <p id="responseText"></p>
+          {/* <p id="responseText">{ value }</p> */}
         </div>
 
         <Form onFinish={ this.send }>
-          <Form.Item name="inputInform">
+          <Form.Item name="inputInform" key="inputInform">
             <Input placeholder="请输入聊天内容"></Input>
           </Form.Item>
           <span>回车键发送</span>

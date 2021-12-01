@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button, Tabs, Space, notification, Radio, Form, Input, Alert, } from 'antd';
+import { Button, Tabs, Space, notification, Radio, Form, Input, Alert, message, } from 'antd';
 
 import 'style/interviewer/interviewRoom.css';
 import CodeEditor from 'common/components/candidate/codeEditor';
@@ -9,6 +9,7 @@ import { testObj } from 'common/types';
 import { showTest } from 'src/api/modules/test';
 
 import Websocket from 'common/components/websocket';
+import { submitInterview } from 'src/api/modules/interview';
 
 interface Prop {
 
@@ -66,7 +67,13 @@ export default class InterviewRoom extends React.Component<Prop, State> {
 
   // 面试官提交面试评价的回调函数
   submitEvaluation = (value: any) => {
-
+    const interviewer_link = window.location.pathname + window.location.search;
+    value.interviewer_link = interviewer_link;
+    submitInterview({ submitArr: value }).then(res => {
+      if (res.data.status === true) {
+        message.success(res.msg);
+      }
+    })
   }
 
   render() {
@@ -140,11 +147,11 @@ export default class InterviewRoom extends React.Component<Prop, State> {
                 </Form.Item>
                 <Alert message="注意：3-5分为通过，1-2分为淘汰" type="error" />
 
+                <span>评语（优势/劣势/需下轮面试官关注点）：</span>
                 <Form.Item
                   name="comment"
                   key="comment"
                 >
-                  <span>评语（优势/劣势/需下轮面试官关注点）：</span>
                   <Input.TextArea placeholder="在此输入您的评语，输入内容将即时保存"/>
                 </Form.Item>
 

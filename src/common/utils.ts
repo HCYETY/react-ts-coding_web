@@ -95,7 +95,7 @@ export function handleTime(arr: any, status?: number) {
 // 转化日期控件时间值
 export function transTime(time: number) {
   const timeDate = new Date(+time);
-  const getTime = new Date(+new Date(timeDate)+8*3600*1000)
+  const getTime = new Date(+new Date(timeDate) + 8 * 3600 * 1000)
     .toISOString()
     .replace(/T/g,' ')
     .replace(/\.[\d]{3}Z/,'');
