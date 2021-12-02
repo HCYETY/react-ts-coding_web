@@ -77,6 +77,7 @@ class App extends React.Component {
               <Route path={ CANDIDATE_SHOW_TESTS } component={ ShowTests }></Route> 
               <Route path={ CANDIDATE_WATCH_TEST } component={ WatchTest }></Route> 
               <Route path={ CANDIDATE_TEST } component={ Program }></Route>
+              <Route path={ INTERVIEW } component={ InterviewRoom }></Route>
               
               <Redirect to={ LOGIN }></Redirect>
             </Switch>

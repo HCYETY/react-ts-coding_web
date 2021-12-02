@@ -42,6 +42,21 @@ export function getCookie() {
   return cookie[1];
 }
 
+// 获取当前时间戳：毫秒格式 或者 hh:mm:ss格式
+// 不带参数是毫秒格式，否则为 hh:mm:ss 格式
+export function nowTime(data?: { click: boolean }): number | string {
+  if (data.click && data.click === true) {
+    const time = new Date();
+    const hour = time.getHours();
+    const minute = time.getMinutes();
+    const second = time.getSeconds();
+    const timer = hour + ':' + minute + ':' + second + ' ';
+    return timer;
+  }
+  const time = new Date().getTime();
+  return time;
+}
+
 // 求出日期之间的天数
 export function getDays(start: number, end: number, diff?: number) {
   // const left = new Date(start);

@@ -1,58 +1,68 @@
 import React from 'react';
-import { Input, Form } from 'antd';
-import { getCookie } from 'common/utils';
+import { Input, Form, message } from 'antd';
+import { getCookie, nowTime } from 'common/utils';
 import { searchEmail } from 'api/modules/user';
+import { v4 as uuidv4 } from 'uuid';
 
+interface Prop {
+
+}
+
+interface websocketMsg {
+  time: string;
+  identity: string;
+  msg: string;
+  name: string;
+}
+interface State {
+  value: websocketMsg[];
+}
 const cookie = getCookie();
 
-export default class Websocket extends React.Component {
+export default class Websocket extends React.Component<Prop, State> {
 
   socket: WebSocket = null;
-  identity: string = '候选人';
+  identity: string = null;
 
   state = {
-    value: '',
+    value: [],
   }
   
-  componentDidMount() {
+  async componentDidMount() {
+    // 查看当前用户的身份，是面试官还是候选人
+    await searchEmail({ cookie }).then(res => {
+      this.identity = res.data.identity;
+    })
+
     // 检测当前浏览器是什么浏览器来决定用什么socket
     if ('WebSocket' in window) {
-      this.socket = new WebSocket('ws://localhost:8080/koa/ws');
+      this.socket = new WebSocket('ws://localhost:8888');
     } else if ('MozWebSocket' in window) {
       // this.socket = new MozWebSocket('ws:localhost:7656');
     } else {
       // this.socket = new SockJS('ws:localhost:7656');
     }
 
-    // 查看当前用户的身份，是面试官还是候选人
-    searchEmail({ cookie }).then(res => {
-      this.identity = res.data.interviewer === true ? '面试官' : this.identity;
-    })
-
-    // 连接成功时触发
     this.socket.onopen = (evt) => {
       if (this.socket.readyState === WebSocket.OPEN) {
-        this.socket.send('系统：您已连接到服务器!!!!!!!!!!!');
-        this.socket.send('系统：' + this.identity + "已经进入房间!!!!!!!!!!!");
+        this.socket.send(JSON.stringify({ cookie, interviewIdentity: this.identity }));
       }
     };
-    this.socket.onmessage = function(event) {
-      const p = document.getElementById('responseText');
-      p.innerText = p.innerText + '\n' + event.data;
+    // 接收消息时触发
+    this.socket.onmessage = (event) => {
+      this.setState({ value: JSON.parse(event.data) });
     };
   }
-  send = (message: any) => {
-    if (!window.WebSocket) {
-      return;
-    }
-    if (this.socket.readyState == WebSocket.OPEN) {
-      this.socket.send(this.identity + '：' + message.inputInform);
-    } else {
-      alert("连接没有开启.");
-    }
+  // 发送 websocket 消息
+  send = (msg: any) => {
+    msg.id = cookie;
+    msg.interviewIdentity = this.identity;
+    this.socket.send(JSON.stringify(msg));
   }
+  // 断开 websocket 连接
   componentWillUnmount() {
     this.socket.close();
+    console.log("WebSocket onclose");
     this.socket.onclose = (event) => {
       var code = event.code;
       var reason = event.reason;
@@ -74,8 +84,18 @@ export default class Websocket extends React.Component {
     return(
       <div>
         <div className="box-right-show-inform">
-          <p id="responseText"></p>
-          {/* <p id="responseText">{ value }</p> */}
+          {
+            value.length > 0 && value.map(item => {
+              console.log(item)
+              return (
+                <div>
+                  <span>{ item.time }&nbsp;</span>
+                  <span style={{ color: 'blue' }}>{ item.identity === '系统' || item.id !== cookie ? item.identity : '我' }&nbsp;</span>
+                  <span>：{ !item.name ? null : item.id === cookie ? '你' : item.name }{ item.msg }</span>
+                </div>
+              )
+            })
+          }
         </div>
 
         <Form onFinish={ this.send }>

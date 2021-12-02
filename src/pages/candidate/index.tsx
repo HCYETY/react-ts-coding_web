@@ -129,6 +129,9 @@ class Candidate extends React.Component<any, any> {
               scroll={{ y: '100%' }}
             />
           </TabPane>
+          <TabPane tab="面试间" key="room">
+            <Link to={ `/interview/664009/candidate?code=9Dc1Bt0Wk` }>去面试</Link>
+          </TabPane>
         </Tabs>
       </div>
     )
