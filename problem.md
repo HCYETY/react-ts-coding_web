@@ -72,7 +72,6 @@ export default class Modify extends React.Component{
 
 7. 面试官阅卷功能：设计？111  redux、代码展示
 8. “题目列表”功能完善？
-9. 头部导航栏添加面包屑？1111  绑定路由
 10. 富文本编辑器更换？
  
 11. 代码编辑器删除小地图？111

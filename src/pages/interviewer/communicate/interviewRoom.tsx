@@ -6,21 +6,30 @@ import 'style/interviewer/interviewRoom.css';
 import CodeEditor from 'common/components/candidate/codeEditor';
 import ShowTest from 'pages/interviewer/communicate/showTest';
 import { testObj } from 'common/types';
-import { showTest } from 'src/api/modules/test';
-
-import Websocket from 'common/components/websocket';
-import { submitInterview } from 'src/api/modules/interview';
+import { showTest } from 'api/modules/test';
+import { submitInterview } from 'api/modules/interview';
+import { getCookie } from 'common/utils';
+import { searchEmail } from 'api/modules/user';
+import Socket from 'common/components/Socket';
+import Websocket from 'common/components/Socket';
 
 interface Prop {
 
 }
 
+interface websocketMsg {
+  time: string;
+  identity: string;
+  msg: string;
+  name: string;
+}
 interface showTestObj {
-  test_name: string;
+  testName: string;
   language: string;
   test: string;
 }
 interface State {
+  talk: websocketMsg[];
   showInterview: boolean;
   showTestSwitch: boolean;
   choiceTestSwitch: boolean;
@@ -28,18 +37,48 @@ interface State {
   allTest: testObj[];
 }
 
+const cookie = getCookie();
+
 export default class InterviewRoom extends React.Component<Prop, State> {
 
+  socket: Websocket = null;
+  identity: string = null;
+
   state = {
+    talk: [],
     showInterview: false,
     showTestSwitch: false,
     choiceTestSwitch: false,
     showTest: [],
     allTest: [],
   }
+  
+  async componentDidMount() {
+    // 查看当前用户的身份，是面试官还是候选人
+    await searchEmail({ cookie }).then(res => {
+      this.identity = res.data.identity;
+    })
 
-  componentDidMount() {
     this.openNotificationWithIcon('success');
+    this.socket = new Socket({ 
+      socketUrl: 'ws://localhost:8888',
+      identity: this.identity,
+      openMsg: { cookie, interviewIdentity: this.identity },
+      returnMessage: (receive: any) => this.setState({ talk: receive }),
+    });
+
+    try{
+      this.socket.connection();
+    } catch(e) {
+      message.error(e);
+    }
+  }
+
+  // 发送 websocket 消息
+  send = (msg: any) => {
+    msg.id = cookie;
+    msg.interviewIdentity = this.identity;
+    this.socket.sendMessage(msg);
   }
 
   // 弹出 antd 提醒框
@@ -51,16 +90,18 @@ export default class InterviewRoom extends React.Component<Prop, State> {
     });
   };
   
-
-  addTest =() => {
+  // 面试官自己编写试题
+  addTest = () => {
 
   }
-  choiceTest =() => {
+  // 面试官从已有题库中挑选试题
+  choiceTest = () => {
     const { choiceTestSwitch } = this.state;
     showTest().then(res => {
       this.setState({ choiceTestSwitch: !choiceTestSwitch, allTest: res.data.show });
     })
   }
+  // 面试官选择好试题之后，更改控制页面显示的按钮的状态
   getTest = (val: any) => {
     this.setState({ showTestSwitch: true, choiceTestSwitch: false, showTest: val });
   }
@@ -77,8 +118,8 @@ export default class InterviewRoom extends React.Component<Prop, State> {
   }
 
   render() {
-    const { showTestSwitch, choiceTestSwitch, showTest, allTest } = this.state;
-    
+    const { talk, showTestSwitch, choiceTestSwitch, showTest, allTest } = this.state;
+
     return(
       <div className="box">
         <div className="box-left">
@@ -101,7 +142,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
                           { choiceTestSwitch === false ? '再出一题' : '取消出题' }
                         </Button>
                       </div>
-                      <div className="testName">{ showTest.test_name }</div> 
+                      <div className="testName">{ showTest.testName }</div> 
                       <div className="proviso">{ showTest.language }</div> 
                       <div className="testInform" dangerouslySetInnerHTML={{ __html: showTest.test }}></div> 
                     </div>
@@ -164,18 +205,27 @@ export default class InterviewRoom extends React.Component<Prop, State> {
         </div>
 
         <div className="box-right">
-          <Websocket/>
-          {/* <div className="box-right-show-inform">
-            <p id="responseText">
-            </p>
+          {/* <Socket/> */}
+          <div className="box-right-show-inform">
+            {
+              talk.length > 0 && talk.map(item => {
+                return (
+                  <div>
+                    <span>{ item.time }&nbsp;</span>
+                    <span style={{ color: 'blue' }}>{ item.identity === '系统' || item.id !== cookie ? item.identity : '我' }&nbsp;</span>
+                    <span>：{ !item.name ? null : item.id === cookie ? '你' : item.name }{ item.msg }</span>
+                  </div>
+                )
+              })
+            }
           </div>
 
           <Form onFinish={ this.send }>
-            <Form.Item name="inputInform">
+            <Form.Item name="inputInform" key="inputInform">
               <Input placeholder="请输入聊天内容"></Input>
             </Form.Item>
             <span>回车键发送</span>
-          </Form> */}
+          </Form>
         </div>
       </div>
     )
