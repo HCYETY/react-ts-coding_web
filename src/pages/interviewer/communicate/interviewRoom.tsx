@@ -17,11 +17,15 @@ interface Prop {
 
 }
 
-interface websocketMsg {
+interface websocketTalkMsg {
   time: string;
   identity: string;
   msg: string;
   name: string;
+}
+interface websocketCodeMsg {
+  code: string;
+  isEditor: boolean;
 }
 interface showTestObj {
   testName: string;
@@ -29,7 +33,8 @@ interface showTestObj {
   test: string;
 }
 interface State {
-  talk: websocketMsg[];
+  talk: websocketTalkMsg[];
+  codeArr: websocketCodeMsg[];
   showInterview: boolean;
   showTestSwitch: boolean;
   choiceTestSwitch: boolean;
@@ -46,6 +51,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
 
   state = {
     talk: [],
+    codeArr: [],
     showInterview: false,
     showTestSwitch: false,
     choiceTestSwitch: false,
@@ -64,7 +70,14 @@ export default class InterviewRoom extends React.Component<Prop, State> {
       socketUrl: 'ws://localhost:8888',
       identity: this.identity,
       openMsg: { cookie, interviewIdentity: this.identity },
-      returnMessage: (receive: any) => this.setState({ talk: receive }),
+      returnMessage: (receive: any) => {
+        const len = Object.keys(receive[0]).length;
+        if (len === 2) {
+          this.setState({ codeArr: receive });
+        } else {
+          this.setState({ talk: receive });
+        }
+      }
     });
 
     try{
@@ -75,10 +88,15 @@ export default class InterviewRoom extends React.Component<Prop, State> {
   }
 
   // 发送 websocket 消息
-  send = (msg: any) => {
+  sendChat = (msg: any) => {
     msg.id = cookie;
     msg.interviewIdentity = this.identity;
     this.socket.sendMessage(msg);
+  }
+  // 编辑代码时发送 websocket 请求
+  sendCode = (code: any) => {
+    const codeObj = { code, isEditor: true };
+    this.socket.sendMessage(codeObj);
   }
 
   // 弹出 antd 提醒框
@@ -118,7 +136,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
   }
 
   render() {
-    const { talk, showTestSwitch, choiceTestSwitch, showTest, allTest } = this.state;
+    const { talk, codeArr, showTestSwitch, choiceTestSwitch, showTest, allTest } = this.state;
 
     return(
       <div className="box">
@@ -151,7 +169,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
                 <div className="program-right">
                   {
                     choiceTestSwitch === false ?
-                    <CodeEditor/> :
+                    <CodeEditor sendCode={ this.sendCode } code={ codeArr }/> :
                     allTest.map(item => {
                       return(
                         <ShowTest inform={ item } getTest={ this.getTest }/>
@@ -220,7 +238,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
             }
           </div>
 
-          <Form onFinish={ this.send }>
+          <Form onFinish={ this.sendChat }>
             <Form.Item name="inputInform" key="inputInform">
               <Input placeholder="请输入聊天内容"></Input>
             </Form.Item>
