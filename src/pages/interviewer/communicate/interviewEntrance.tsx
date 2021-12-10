@@ -7,29 +7,52 @@ import 'style/interviewer/interviewEntrance.less';
 import { findInterview } from 'api/modules/interview';
 import { findEmail } from 'common/utils';
 import Navbar from 'common/components/navbar';
+import { RefSelectProps } from 'antd/lib/select';
 
 interface Prop {
 
 }
 
 interface State {
-  arr: string[];
+  interviewArr: string[];
+  interviewRoomArr: string[];
+  interviewLinkArr: string[];
 }
 export default class InterviewRoom extends React.Component<Prop, State> {
 
   state = {
-    arr: [];
+    interviewArr: [],
+    interviewRoomArr: [],
+    interviewLinkArr: [],
   }
 
   async componentDidMount() {
     const res = await findEmail();
     const { allInterview } = res;
-    this.setState({ arr: allInterview });
+    this.setState({ interviewArr: allInterview });
+  }
+
+  changeSelect = async (value: any) => {
+    const { interviewRoomArr, interviewLinkArr } = this.state;
+    if (value) {
+      const res = await findInterview({ interviewer: value });
+      res.data.ret.map((item: { interview_room: any; interviewer_link: any; }) => {
+        interviewRoomArr.push(item.interview_room);
+        interviewLinkArr.push(item.interviewer_link);
+      })
+      this.setState({ interviewRoomArr, interviewLinkArr })
+    }
+  }
+  choiceInterviewLink = async (value: any) => {
+    console.log(value)
+    const { interviewRoomArr } = this.state;
+    interviewRoomArr.map(item => {
+      item
+    })
   }
 
   // 进入面试间的检验函数
   checkInterview = (value: any) => {
-    console.log('dddddddddd', value)
     findInterview({ findArr: value }).then(res => {
       if (res.data.status === true) {
         message.success(res.msg);
@@ -38,11 +61,10 @@ export default class InterviewRoom extends React.Component<Prop, State> {
         message.error(res.msg);
       }
     })
-    return value['interviewer_link'];
   }
 
   render() {
-    const { arr } = this.state;
+    const { interviewArr, interviewRoomArr, interviewLinkArr } = this.state;
     
     return(
       <div>
@@ -57,12 +79,12 @@ export default class InterviewRoom extends React.Component<Prop, State> {
             >
               <Select
                 showSearch
-                mode="multiple"
                 placeholder="选择参与面试的面试官邮箱账号"
+                onChange={ this.changeSelect }
               >
-                { arr.map((item: any) => {
+                { interviewArr.map((item: any) => {
                     return(
-                      <Select.Option value={ item } key={ item }>{ item }</Select.Option>
+                      <Select.Option  value={ item } key={ item }>{ item }</Select.Option>
                     )
                   }) }
               </Select>
@@ -74,7 +96,18 @@ export default class InterviewRoom extends React.Component<Prop, State> {
               key="interviewer_link"
               rules={[{ required: true }]}
             >
-              <Input placeholder="请输入要进入的面试间的链接"/>
+              <Select
+                showSearch
+                placeholder="请输入要进入的面试间的链接"
+                onFocus={ this.choiceInterviewLink }
+              >
+                { interviewLinkArr.map((item: any) => {
+                    return(
+                      <Select.Option value={ item } key={ item }>{ item }</Select.Option>
+                    )
+                  }) }
+              </Select>
+              {/* <Input onClick={ this.choice } placeholder="请输入要进入的面试间的链接"/> */}
             </Form.Item>
 
             <Form.Item 
@@ -83,7 +116,17 @@ export default class InterviewRoom extends React.Component<Prop, State> {
               key="interview_room"
               rules={[{ required: true }]}
             >
-              <InputNumber min={100000} max={999999}/>
+              <Select
+                showSearch
+                placeholder="请输入要进入的面试房间号"
+              >
+                { interviewRoomArr.map((item: any) => {
+                    return(
+                      <Select.Option value={ item } key={ item }>{ item }</Select.Option>
+                    )
+                  }) }
+              </Select>
+              {/* <InputNumber onClick={ this.choice } min={100000} max={999999}/> */}
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

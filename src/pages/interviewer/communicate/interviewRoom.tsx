@@ -8,7 +8,7 @@ import ShowTest from 'pages/interviewer/communicate/showTest';
 import { testObj } from 'common/types';
 import { showTest } from 'api/modules/test';
 import { submitInterview } from 'api/modules/interview';
-import { getCookie } from 'common/utils';
+import { getCookie, nowTime } from 'common/utils';
 import { searchEmail } from 'api/modules/user';
 import Socket from 'common/components/Socket';
 import Websocket from 'common/components/Socket';
@@ -25,16 +25,16 @@ interface websocketTalkMsg {
 }
 interface websocketCodeMsg {
   code: string;
-  isEditor: boolean;
+  cookie: string;
 }
 interface showTestObj {
-  testName: string;
+  test_ame: string;
   language: string;
   test: string;
 }
 interface State {
   talk: websocketTalkMsg[];
-  codeArr: websocketCodeMsg[];
+  codeObj: websocketCodeMsg;
   showInterview: boolean;
   showTestSwitch: boolean;
   choiceTestSwitch: boolean;
@@ -51,7 +51,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
 
   state = {
     talk: [],
-    codeArr: [],
+    codeObj: {},
     showInterview: false,
     showTestSwitch: false,
     choiceTestSwitch: false,
@@ -71,9 +71,8 @@ export default class InterviewRoom extends React.Component<Prop, State> {
       identity: this.identity,
       openMsg: { cookie, interviewIdentity: this.identity },
       returnMessage: (receive: any) => {
-        const len = Object.keys(receive[0]).length;
-        if (len === 2) {
-          this.setState({ codeArr: receive });
+        if (Object.keys(receive[0]).filter(item => item==='code').length !== 0) {
+          this.setState({ codeObj: receive[0] });
         } else {
           this.setState({ talk: receive });
         }
@@ -94,9 +93,8 @@ export default class InterviewRoom extends React.Component<Prop, State> {
     this.socket.sendMessage(msg);
   }
   // 编辑代码时发送 websocket 请求
-  sendCode = (code: any) => {
-    const codeObj = { code, isEditor: true };
-    this.socket.sendMessage(codeObj);
+  sendCode = (operationObj: any) => {
+    this.socket.sendMessage(operationObj);
   }
 
   // 弹出 antd 提醒框
@@ -136,8 +134,8 @@ export default class InterviewRoom extends React.Component<Prop, State> {
   }
 
   render() {
-    const { talk, codeArr, showTestSwitch, choiceTestSwitch, showTest, allTest } = this.state;
-
+    const { talk, codeObj, showTestSwitch, choiceTestSwitch, showTest, allTest } = this.state;
+console.log('@@@@####', showTest)
     return(
       <div className="box">
         <div className="box-left">
@@ -149,8 +147,10 @@ export default class InterviewRoom extends React.Component<Prop, State> {
                     showTestSwitch === false ?
                     <div className="program-left-before">
                       <Space direction="vertical">
-                        <Button onClick={ this.addTest }>新增试题</Button>
-                        <Button onClick={ this.choiceTest }>从题库中选题</Button>
+                        <Button onClick={ this.addTest }>自定义试题</Button>
+                        <Button onClick={ this.choiceTest }>
+                          { choiceTestSwitch === false ? '从题库中选题' : '取消选题' }
+                        </Button>
                       </Space>
                     </div> :
                     <div className="program-inform">
@@ -160,16 +160,18 @@ export default class InterviewRoom extends React.Component<Prop, State> {
                           { choiceTestSwitch === false ? '再出一题' : '取消出题' }
                         </Button>
                       </div>
-                      <div className="testName">{ showTest.testName }</div> 
+                      <div className="testName">{ showTest.test_name }</div> 
                       <div className="proviso">{ showTest.language }</div> 
-                      <div className="testInform" dangerouslySetInnerHTML={{ __html: showTest.test }}></div> 
+                      <div className="testInform" >
+                        <span dangerouslySetInnerHTML={{ __html: showTest.test }}></span>  
+                      </div> 
                     </div>
                   }
                 </div>
                 <div className="program-right">
                   {
                     choiceTestSwitch === false ?
-                    <CodeEditor sendCode={ this.sendCode } code={ codeArr }/> :
+                    <CodeEditor sendCode={ this.sendCode } codeObj={ codeObj }/> :
                     allTest.map(item => {
                       return(
                         <ShowTest inform={ item } getTest={ this.getTest }/>

@@ -5,7 +5,7 @@ export function createInterview(data: any) {
   return post('/create_interview', data);
 }
 // 查询面试间信息接口
-export function findInterview(data?: { findArr: any }) {
+export function findInterview(data?: { interviewer?: string, findArr?: any }) {
   return post('/find_interview', data);
 }
 // 提交面试结构接口

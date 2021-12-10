@@ -45,7 +45,7 @@ export function getCookie() {
 // 获取当前时间戳：毫秒格式 或者 hh:mm:ss格式
 // 不带参数是毫秒格式，否则为 hh:mm:ss 格式
 export function nowTime(data?: { click: boolean }): number | string {
-  if (data.click && data.click === true) {
+  if (data && data.click === true) {
     const time = new Date();
     const hour = time.getHours();
     const minute = time.getMinutes();

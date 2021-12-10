@@ -21,28 +21,23 @@ export default class Navbar extends React.Component {
     let { openKeys } = this.state;
     const rootSubmenuKeys = ['writtenExamination', 'interviewExamination'];
     let latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
-    console.log('this',this)
     if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
       this.setState({ openKeys: keys });
     } else {
       latestOpenKey = latestOpenKey ? [latestOpenKey] : [];
-      this.setState({ openKeys: latestOpenKey }, () => {
-        console.log('%%%%', openKeys === latestOpenKey);
-      });
-      console.log('#', openKeys === latestOpenKey);
+      this.setState({ openKeys: latestOpenKey });
     }
   }
 
   render() {
-    const { openKeys } = this.state;
-    console.log('@@@', this.state.openKeys === openKeys);
+    // const { openKeys } = this.state;
     const selectedKeys = [`/${ window.location.pathname.split('/')[1] }`];
 
     return(
       <Menu
-        selectedKeys={ selectedKeys }   // 当前展开的菜单项
+        selectedKeys={ selectedKeys }   // 当前选中的菜单项
         openKeys={ this.state.openKeys }	          // 当前展开的 SubMenu 菜单项 key 数组
-        onOpenChange={ this.onOpenChange }
+        onOpenChange={ this.onOpenChange.bind(this) }
         mode="inline"
         theme="dark"
         className="all-left-menu"

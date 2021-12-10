@@ -2,6 +2,9 @@ import React from 'react';
 import { Input, Form, message } from 'antd';
 import { getCookie, nowTime } from 'common/utils';
 import { searchEmail } from 'api/modules/user';
+import ReconnectingWebsocket from 'reconnecting-websocket';
+import { Client, TextOperation,  } from 'ot';
+// import sharedb from 'sharedb/lib/client';
 
 interface Prop {
   socketUrl: string;   // 连接 websocket 的地址
@@ -27,6 +30,7 @@ export default class Websocket extends React.Component<Prop, State> {
 
     // 检测当前浏览器是什么浏览器来决定用什么socket
     if ('WebSocket' in window) {
+      // this.socket = new ReconnectingWebsocket(this.props.socketUrl);
       this.socket = new WebSocket(this.props.socketUrl);
     } else if ('MozWebSocket' in window) {
       // this.socket = new MozWebSocket('ws:localhost:7656');

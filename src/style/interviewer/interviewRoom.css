@@ -1,7 +1,6 @@
 .box{
   display: flex;
   margin: 15px;
-  height: 100%;
 }
 .box-left{
   width: 75%;
@@ -13,14 +12,15 @@
 }
 .program-left{
   width: 30%;
+  height: 51.875rem;
   padding: 10px;
   background: red;
   align-items: center;
   justify-content: center;
+  overflow: auto;
 }
 .program-left-before{
   display: grid;
-  height: 100%;
   justify-content: center;
   align-content: center;
 }
@@ -28,8 +28,9 @@
   display: flex;
   justify-content: space-between;
 }
-.testInform{
-  overflow-y: auto;
+.program-inform{
+  overflow: auto;
+
 }
 .program-right{
   width: 70%;
