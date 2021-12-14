@@ -17,7 +17,7 @@ interface State {
 
 }
 
-export default class Websocket extends React.Component<Prop, State> {
+export default class Webrtc extends React.Component<Prop, State> {
 
   socket: WebSocket = null;
   // identity: string = null;

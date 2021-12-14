@@ -1,6 +1,7 @@
 .box{
   display: flex;
   margin: 15px;
+  overflow: hidden;
 }
 .box-left{
   width: 75%;
@@ -12,7 +13,6 @@
 }
 .program-left{
   width: 30%;
-  height: 51.875rem;
   padding: 10px;
   background: red;
   align-items: center;
@@ -30,12 +30,13 @@
 }
 .program-inform{
   overflow: auto;
-
 }
 .program-right{
   width: 70%;
   background: skyblue;
-  overflow: hidden;
+}
+.program-right-after{
+  overflow: auto;
 }
 
 .box-right{

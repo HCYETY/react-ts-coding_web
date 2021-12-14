@@ -11,7 +11,7 @@ import { submitInterview } from 'api/modules/interview';
 import { getCookie, nowTime } from 'common/utils';
 import { searchEmail } from 'api/modules/user';
 import Socket from 'common/components/Socket';
-import Websocket from 'common/components/Socket';
+import Webrtc from 'common/components/Webrtc';
 
 interface Prop {
 
@@ -32,6 +32,14 @@ interface showTestObj {
   language: string;
   test: string;
 }
+// interface showTestObj {
+//   num: string;
+//   test_name: string;
+//   test: string;
+//   level: string;
+//   point: number;
+//   tags: Array<string>;
+// }
 interface State {
   talk: websocketTalkMsg[];
   codeObj: websocketCodeMsg;
@@ -46,12 +54,12 @@ const cookie = getCookie();
 
 export default class InterviewRoom extends React.Component<Prop, State> {
 
-  socket: Websocket = null;
+  socket: Socket = null;
   identity: string = null;
 
   state = {
     talk: [],
-    codeObj: {},
+    codeObj: { code: '', cookie: '' },
     showInterview: false,
     showTestSwitch: false,
     choiceTestSwitch: false,
@@ -119,6 +127,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
   }
   // 面试官选择好试题之后，更改控制页面显示的按钮的状态
   getTest = (val: any) => {
+    console.log(val, '@@@@@')
     this.setState({ showTestSwitch: true, choiceTestSwitch: false, showTest: val });
   }
 
@@ -135,7 +144,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
 
   render() {
     const { talk, codeObj, showTestSwitch, choiceTestSwitch, showTest, allTest } = this.state;
-console.log('@@@@####', showTest)
+    
     return(
       <div className="box">
         <div className="box-left">
@@ -174,7 +183,9 @@ console.log('@@@@####', showTest)
                     <CodeEditor sendCode={ this.sendCode } codeObj={ codeObj }/> :
                     allTest.map(item => {
                       return(
-                        <ShowTest inform={ item } getTest={ this.getTest }/>
+                        <div className="program-right-after">
+                          <ShowTest inform={ item } getTest={ this.getTest }/>
+                        </div>
                       )
                     })
                   }
@@ -225,7 +236,10 @@ console.log('@@@@####', showTest)
         </div>
 
         <div className="box-right">
-          {/* <Socket/> */}
+          {/* 视频通话部分 */}
+          <Webrtc/>
+
+          {/* 文字聊天部分 */}
           <div className="box-right-show-inform">
             {
               talk.length > 0 && talk.map(item => {
