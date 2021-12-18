@@ -25,7 +25,20 @@ const offerOptions = {
   offerToReceiveVideo: 1
 }
 
-export default class Webrtc extends React.Component {
+interface Prop {
+  sendVideo,
+}
+
+interface State {
+
+}
+
+export default class Webrtc extends React.Component<Prop, State> {
+
+  state = {
+    beginVideo: false
+  }
+
   componentDidMount(): void {
     localVideo = document.getElementById("localVideo");
     remoteVideo = document.getElementById("remoteVideo");
@@ -44,7 +57,6 @@ export default class Webrtc extends React.Component {
       .then(function(mediaStream) {
         localVideo.srcObject = mediaStream;
         localStream = mediaStream;
-        console.log('localstreaM不是改变了吗', localStream)
         localVideo.onloadedmetadata = function(e) {
           localVideo.play();
         };
@@ -56,18 +68,20 @@ export default class Webrtc extends React.Component {
 
   // 视频通话呼叫
   callHandle = async () => {
+    // 先打开摄像头
+    await this.openCamera();
     // 视频轨道
-    // const videoTracks = localStream.getVideoTracks();
+    const videoTracks = localStream.getVideoTracks();
     // // 音频轨道
-    // const audioTracks = localStream.getAudioTracks();
+    const audioTracks = localStream.getAudioTracks();
     // // 判断视频轨道是否有值
-    // if (videoTracks.length > 0) {
-    //   console.log(`使用的设备为: ${videoTracks[0].label}.`);
-    // }
+    if (videoTracks.length > 0) {
+      console.log(`使用的设备为: ${videoTracks[0].label}.`);
+    }
     // // 判断音频轨道是否有值
-    // if (audioTracks.length > 0) {
-    //   console.log(`使用的设备为: ${audioTracks[0].label}.`);
-    // }
+    if (audioTracks.length > 0) {
+      console.log(`使用的设备为: ${audioTracks[0].label}.`);
+    }
     const servers: RTCConfiguration = null;
     let configuration = {
       "iceServers": [{
@@ -83,16 +97,18 @@ export default class Webrtc extends React.Component {
     // 监听 ICE 状态变化
     localPeerConnection.addEventListener('iceconnectionstatechange', this.handleConnectionChange)
 
-    remotePeerConnection = new RTCPeerConnection(servers);
-    remotePeerConnection.addEventListener('icecandidate', this.handleConnection);
-    remotePeerConnection.addEventListener('iceconnectionstatechange', this.handleConnectionChange);
-    // 远程客户获取到远端流后的事件
-    remotePeerConnection.addEventListener('track', this.gotRemoteMediaStream);
+    // remotePeerConnection = new RTCPeerConnection(servers);
+    // remotePeerConnection.addEventListener('icecandidate', this.handleConnection);
+    // remotePeerConnection.addEventListener('iceconnectionstatechange', this.handleConnectionChange);
 
-    // 将音视频流添加到 RTCPeerConnection 对象中
-    // 注意：新的协议中已经不再推荐使用 addStream 方法来添加媒体流，应使用 addTrack 方法
-    // localPeerConnection.addStream(localStream);
-    console.log("看看localstaream是何方神圣", localStream)
+    // 4.显示远端媒体流
+    // remotePeerConnection.addEventListener('track', event => {
+    localPeerConnection.addEventListener('track', event => {
+      if (remoteVideo['srcObject'] !== event.streams[0]) {
+        remoteVideo['srcObject'] = event.streams[0];
+        remoteStream = event.streams[0];
+      }
+    });
     // 遍历本地流的所有轨道
     localStream.getTracks().forEach((track: any) => {
       localPeerConnection.addTrack(track, localStream)
@@ -106,23 +122,14 @@ export default class Webrtc extends React.Component {
     } catch(err) {
       console.log('createdOffer 错误', err);
     }
-  }
 
-  hangupHandle = () => {
-    // 关闭连接并设置为空
-    localPeerConnection.close();
-    remotePeerConnection.close();
-    localPeerConnection = null;
-    remotePeerConnection = null;
-    // hangupBtn.disabled = true;
-    // callBtn.disabled = false;
+    this.setState({ beginVideo: true });
   }
 
   // getUserMedia 获得流后，将音视频流展示并保存到 localStream
   gotLocalMediaStream = (mediaStream: any) => {
     localVideo['srcObject'] = mediaStream; 
     localStream = mediaStream; 
-    // callBtn.disabled = false;
   }
 
   createdOffer = async (description) => {
@@ -132,6 +139,8 @@ export default class Webrtc extends React.Component {
     await localPeerConnection.setLocalDescription(description) 
       .then(() => {
         console.log('local 设置本地描述信息成功');
+        const { sendVideo } = this.props;
+        sendVideo({ sdp: description });
       }).catch((err: any) => {
         console.log('local 设置本地描述信息错误', err)
       });
@@ -180,6 +189,9 @@ export default class Webrtc extends React.Component {
     const iceCandidate = event.candidate;
 
     if (iceCandidate) {
+      const { sendVideo } = this.props;
+      // 交换 ICE 候选，通过 WebSocket 发送
+      // sendVideo({ candidate: iceCandidate });
       // 创建 RTCIceCandidate 对象
       const newIceCandidate = new RTCIceCandidate(iceCandidate);
       // 得到对端的 RTCPeerConnection
@@ -196,14 +208,6 @@ export default class Webrtc extends React.Component {
     }
   }
 
-  // 4.显示远端媒体流
-  gotRemoteMediaStream = (event) => {
-    if (remoteVideo['srcObject'] !== event.streams[0]) {
-      remoteVideo['srcObject'] = event.streams[0];
-      remoteStream = event.streams[0];
-      console.log('remote 开始接受远端流')
-    }
-  }
 
   handleConnectionChange = (event: { target: any; }) => {
     const peerConnection = event.target;
@@ -236,14 +240,25 @@ export default class Webrtc extends React.Component {
 
   render() {
 
+    const { beginVideo } = this.state;
+    // const { getVideo } = this.props;
+    const cookie = getCookie();
+
     return(
       <div>
-        <video id="localVideo" autoPlay muted src=""></video>
-        <video id="remoteVideo" autoPlay src=""></video>
-        <Button id="hangup-button" onClick={ this.openCamera }> 打开摄像头 </Button>
-        <Button onClick={ this.callHandle }> 视频通话 </Button>
-        <Button onClick={ this.closeCamera }>关闭摄像头</Button>
-        <Button onClick={ this.hangup }>挂断视频通话</Button>
+        <video id="remoteVideo" autoPlay></video>
+        <video id="localVideo" autoPlay muted></video>
+        {
+          beginVideo === false ? 
+          <div>
+            {/* <Button id="hangup-button" onClick={ this.openCamera }> 打开摄像头 </Button> */}
+            <Button onClick={ this.callHandle }> 视频通话 </Button>
+          </div> : 
+          <div>
+            <Button onClick={ this.closeCamera }>关闭摄像头</Button>
+            <Button onClick={ this.hangup }>挂断视频通话</Button>
+          </div>
+        }
       </div>
     )
   }
