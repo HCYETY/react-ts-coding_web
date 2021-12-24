@@ -3,12 +3,12 @@ import Modify from "src/pages/interviewer/edit/modify";
 import Edit from "src/pages/interviewer/edit/show";
 import Login from "src/pages/login";
 import ShowExam from 'pages/interviewer/consult/showExam';
-import InterviewRoom from "src/pages/interviewer/communicate/interviewRoom";
+import InterviewRoom from "src/pages/interviewer/interview/room";
 import ExamInform from 'pages/interviewer/consult/examInform';
 import LookOver from "src/pages/interviewer/consult/lookOver";
 import { Route } from 'common/types';
 
-export const REQUESTIP: string = 'http://localhost:8080/api';
+export const REQUESTIP: string = 'http://120.79.193.126:8080/api';
 export const LOGIN: string = '/login';
 
 export const TEST_MANAGE: string = '/test-manage';
@@ -146,3 +146,16 @@ export enum PROGRAM_THEME {
   VS_DARK = 'vs-dark',
   HC_BLACK = 'hc-black',
 };
+
+// websocket 收到信息时的 type
+export enum WS_TYPE {
+  CONNECT = 'connect',
+  TALK = 'talk',
+  CODE = 'code',
+  REQ_VIDEO = 'req-video',
+  RES_VIDEO = 'res-video',
+  VIDEO_OFFER = 'video-offer',
+  VIDEO_ANSWER = 'video-answer',
+  NEW_ICE_CANDIDATE = 'new-ice-candidate',
+  HANG_UP = 'hang-up',
+}

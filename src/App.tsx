@@ -13,9 +13,9 @@ import ShowExamContainer from 'src/pages/interviewer/consult/showExam';
 import ExamInformContainer from 'pages/interviewer/consult/examInform';
 import LookOverContainer from 'pages/interviewer/consult/lookOver';
 
-import InterviewEntrance from 'pages/interviewer/communicate/interviewEntrance';
-import InterviewManage from 'pages/interviewer/communicate/interviewManage';
-import InterviewRoom from 'pages/interviewer/communicate/interviewRoom';
+import InterviewEntrance from 'pages/interviewer/interview/entrance';
+import InterviewManage from 'pages/interviewer/interview/manage';
+import InterviewRoom from 'pages/interviewer/interview/room';
 
 import Candidate from 'pages/candidate';
 import ShowTests from 'pages/candidate/showTests';

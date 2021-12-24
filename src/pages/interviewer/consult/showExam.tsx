@@ -14,7 +14,7 @@ import { showPaper } from 'api/modules/paper';
 
 import { connect } from 'react-redux';
 import { GET_EXAM } from 'useRedux/constant';
-import { transTime } from 'common/utils';
+import { getCookie, transTime } from 'common/utils';
 
 interface Prop {
   lookExam: string;
@@ -29,7 +29,8 @@ class ShowExam extends React.Component<Prop> {
   }
 
   componentDidMount() {
-    showPaper().then(result => {
+    const cookie = getCookie();
+    showPaper({ cookie, interviewer: true }).then(result => {
       const res = result.data.show;
       const nowtime = new Date().getTime();
       console.log('res', res)

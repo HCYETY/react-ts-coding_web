@@ -12,7 +12,8 @@ import { getCookie, nowTime } from 'src/common/utils';
 interface Prop {
   sendCode?: any;        // 发送 websocket 请求的函数
   getProgramCode?: any;  // 获取代码
-  codeObj: any;
+  codeObj?: any;
+  language?: string;
 }
 
 interface State {

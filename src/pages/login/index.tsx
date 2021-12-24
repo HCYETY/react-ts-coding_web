@@ -217,7 +217,7 @@ export default class Login extends PureComponent<any> {
             <Tabs.TabPane tab="邮箱注册" key="register">
               <Form
                 name="register"
-                className="register-form box"
+                className="register-form"
                 id="front"
                 onFinish={ this.submitRegister }
                 scrollToFirstError   // 提交失败自动滚动到第一个错误字段

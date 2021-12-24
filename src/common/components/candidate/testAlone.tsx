@@ -9,7 +9,6 @@ import { getExamLevel } from 'common/utils';
 export default class TestAlone extends React.Component<any, any> {
   render() {
     const { watch, over, values } = this.props;
-    console.log('item', values)
     const num = values.num, 
       title = values.test_name, 
       level = values.level, 
@@ -26,7 +25,6 @@ export default class TestAlone extends React.Component<any, any> {
       } else if (timeBegin <= nowtime &&  nowtime <= timeEnd) {
         window.location.href = `${ CANDIDATE_TEST }?test=${ title }`;
       }
-      console.log(nowtime, timeBegin, timeEnd)
     }
     function nodoJump() {
       PubSub.publish('isProgram', { status: false });

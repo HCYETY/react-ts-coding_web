@@ -1,5 +1,5 @@
 .ant-drawer-wrapper-body{
-  background: rgb(23, 33, 51);
+  /* background: rgb(23, 33, 51); */
   color: rgba(175,180,189,1);
 }
 .top{
@@ -25,7 +25,7 @@
   justify-content: center;
   align-items: center;
   border-color: rgba(132,139,150,1);
-  background: rgb(23, 33, 51);
+  /* background: rgb(23, 33, 51); */
   color: white;
 }
 .background-button{

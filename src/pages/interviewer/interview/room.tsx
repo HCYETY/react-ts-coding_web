@@ -4,7 +4,7 @@ import { Button, Tabs, Space, notification, Radio, Form, Input, Alert, message, 
 
 import 'style/interviewer/interviewRoom.css';
 import CodeEditor from 'common/components/candidate/codeEditor';
-import ShowTest from 'pages/interviewer/communicate/showTest';
+import ShowTest from 'pages/interviewer/interview/showTest';
 import { testObj } from 'common/types';
 import { showTest } from 'api/modules/test';
 import { submitInterview } from 'api/modules/interview';
@@ -12,6 +12,7 @@ import { getCookie, nowTime } from 'common/utils';
 import { searchEmail } from 'api/modules/user';
 import Socket from 'common/components/Socket';
 import Webrtc from 'common/components/Webrtc';
+import { WS_TYPE } from 'src/common/const';
 
 interface Prop {
 
@@ -28,7 +29,7 @@ interface websocketCodeMsg {
   cookie: string;
 }
 interface showTestObj {
-  test_ame: string;
+  test_name: string;
   language: string;
   test: string;
 }
@@ -43,6 +44,42 @@ interface showTestObj {
 interface videobj {
   candidate: string;
   id: string;
+  type: WS_TYPE;
+}
+interface reqVideobj {
+  showVideo: boolean;
+  id: string;
+  identity: string;
+  type: WS_TYPE;
+  sign: boolean;
+}
+interface resVideobj {
+  canVideo: boolean;
+  id: string;
+  identity: string;
+  type: WS_TYPE;
+  sign: boolean;
+}
+interface resOffObj {
+  offer: any;
+  id: string;
+  identity: string;
+  type: WS_TYPE;
+  sign: boolean;
+}
+interface resAnsObj {
+  sdp: any;
+  id: string;
+  identity: string;
+  type: WS_TYPE;
+  sign: boolean;
+}
+interface resIceObj {
+  candidate: any;
+  id: string;
+  identity: string;
+  type: WS_TYPE;
+  sign: boolean;
 }
 interface State {
   talk: websocketTalkMsg[];
@@ -50,10 +87,13 @@ interface State {
   showInterview: boolean;
   showTestSwitch: boolean;
   choiceTestSwitch: boolean;
-  showVideo: boolean;
-  canVideo: boolean;
+  reqVideo: reqVideobj;
+  resVideo: resVideobj;
+  resOff: resOffObj;
+  resAns: resAnsObj;
+  resIce: resIceObj;
   // getVideo: videobj;
-  showTest: showTestObj[];
+  showTest: showTestObj;
   allTest: testObj[];
 }
 
@@ -70,9 +110,12 @@ export default class InterviewRoom extends React.Component<Prop, State> {
     showInterview: false,
     showTestSwitch: false,
     choiceTestSwitch: false,
-    showVideo: false,
-    canVideo: false,
-    showTest: [],
+    reqVideo: { showVideo: false, id: '', type: null, identity: '', sign: false },
+    resVideo: { canVideo: false, id: '', type: null, identity: '', sign: false },
+    resOff: { offer: null, id: '', type: null, identity: '', sign: false },
+    resAns: { sdp: null, id: '', type: null, identity: '', sign: false },
+    resIce: { candidate: null, id: '', type: null, identity: '', sign: false },
+    showTest: { test_name: '', test: '', language: '', sign: false},
     allTest: [],
   }
 
@@ -82,19 +125,55 @@ export default class InterviewRoom extends React.Component<Prop, State> {
       this.identity = res.data.identity;
     })
 
+    let talkArr = [];
+
     this.openNotificationWithIcon('success');
     this.socket = new Socket({ 
-      socketUrl: 'ws://localhost:8888',
+      socketUrl: 'ws://120.79.193.126:9090',
       identity: this.identity,
-      openMsg: { cookie, interviewIdentity: this.identity },
-      returnMessage: (receive: any) => {
-        if (Object.keys(receive[0]).filter(item => item==='code').length !== 0) {
-          this.setState({ codeObj: receive[0] });
-        } else if (receive.canVideo) {
-          this.setState({ showVideo: true, canVideo: receive.canVideo });
-        } else {
-          this.setState({ talk: receive });
+      openMsg: { cookie, identity: this.identity, type: WS_TYPE.CONNECT },
+      retMsg: (receive: any) => {
+        const type = receive instanceof Array ? receive[0].type : receive.type;
+        switch (type) {
+          case WS_TYPE.CONNECT:
+          case WS_TYPE.TALK:
+            // const { talk } = this.state;
+            // const arr = [...talk, receive];
+            // this.setState({ talk: arr });
+            talkArr.push(receive);
+            this.setState({ talk: talkArr });
+            break;
+          case WS_TYPE.CODE:
+            this.setState({ codeObj: receive[0] });
+            break;
+          case WS_TYPE.REQ_VIDEO:
+            this.setState({ reqVideo: receive });
+            break;
+          case WS_TYPE.RES_VIDEO:
+            this.setState({ resVideo: receive });
+            break;
+          case WS_TYPE.VIDEO_OFFER:
+            this.setState({ resOff: receive });
+          case WS_TYPE.VIDEO_ANSWER:
+            this.setState({ resAns: receive });
+            break;
+          case WS_TYPE.NEW_ICE_CANDIDATE:
+            this.setState({ resIce: receive });
+            break;
+          case WS_TYPE.HANG_UP:
+            break;
+          default:
+            return;
         }
+        // if (receive instanceof Array && Object.keys(receive[0]).filter(item => item==='code').length !== 0) {
+        //   this.setState({ codeObj: receive[0] });
+        // } else if (receive.showVideo) {
+        //   this.setState({ reqVideo: receive });
+        // } else if (receive.canVideo) {
+        //   this.setState({ resVideo: receive });
+        // } else {
+        //   this.setState({ talk: receive });
+        // }
       }
     });
 
@@ -108,28 +187,20 @@ export default class InterviewRoom extends React.Component<Prop, State> {
   // 发送 websocket 聊天消息
   sendChat = (msg: any) => {
     msg.id = cookie;
-    msg.interviewIdentity = this.identity;
+    msg.identity = this.identity;
+    msg.type = WS_TYPE.TALK;
     this.socket.sendMessage(msg);
   }
   // 编辑代码时发送 websocket 请求
-  sendCode = (operationObj: any) => {
-    this.socket.sendMessage(operationObj);
+  sendCode = (msg: any) => {
+    msg.type = WS_TYPE.CODE;
+    this.socket.sendMessage(msg);
   }
-  // 发送本地视频流
-  sendVideo = (val: any) => {
-    console.log('查看视频流', val);
-    val.id = cookie;
-    this.socket.sendMessage(val);
-  }
-  // 接受通话，告知对端建立连接
-  videok = () => {
-    this.setState({ showVideo: false });
-  }
-  // 拒绝通话，告知对端断开连接
-  handleCancel = () => {
-    // this.socket.sendMessage({ candidate: '', msg: '对方拒绝视频通话'});
-    this.setState({ showVideo: false });
-    message.success("你已拒绝视频通话");
+  // 发送视频请求
+  sendVideo = (msg: any) => {
+    msg.id = cookie;
+    msg.identity = this.identity;
+    this.socket.sendMessage(msg);
   }
 
   // 弹出 antd 提醒框
@@ -169,7 +240,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
   }
 
   render() {
-    const { talk, codeObj, showTestSwitch, choiceTestSwitch, showVideo, showTest, allTest } = this.state;
+    const { talk, codeObj, showTestSwitch, choiceTestSwitch, reqVideo, resVideo, resOff, resAns, showTest, allTest, resIce } = this.state;
     
     return(
       <div className="box">
@@ -263,7 +334,14 @@ export default class InterviewRoom extends React.Component<Prop, State> {
 
         <div className="box-right">
           {/* 视频通话部分 */}
-          <Webrtc sendVideo={ this.sendChat } />
+          <Webrtc 
+            sendVideo={ this.sendVideo } 
+            reqVideo={ reqVideo } 
+            resVideo={ resVideo } 
+            resOff={ resOff } 
+            resAns={ resAns }
+            resIce={ resIce }
+          />
 
           {/* 文字聊天部分 */}
           <div className="box-right-show-inform">
@@ -281,23 +359,12 @@ export default class InterviewRoom extends React.Component<Prop, State> {
           </div>
 
           <Form onFinish={ this.sendChat }>
-            <Form.Item name="inputInform" key="inputInform">
+            <Form.Item name="msg" key="msg">
               <Input placeholder="请输入聊天内容"></Input>
             </Form.Item>
             <span>回车键发送</span>
           </Form>
         </div>
-
-        <Modal 
-          title="视频通话" 
-          visible={ showVideo } 
-          onOk={ this.videok } 
-          onCancel={ this.handleCancel }
-          cancelText="拒绝"
-          okText="接受"
-        >
-          <p>收到一个视频通话，是否接通？</p>
-        </Modal>
       </div>
     )
   }

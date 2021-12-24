@@ -24,7 +24,7 @@ import copy from 'copy-to-clipboard';
 import Navbar from 'common/components/navbar';
 import { createInterview, findInterview } from 'api/modules/interview';
 import { searchEmail } from 'api/modules/user';
-import { findEmail, transTime } from 'src/common/utils';
+import { findEmail, getCookie, transTime } from 'src/common/utils';
 
 interface Prop {
   interviewer: string[];
@@ -64,7 +64,8 @@ export default class interviewManage extends React.Component<Prop, State> {
 
   // 渲染表格信息
   renderInform = () => {
-    findInterview().then(result => {
+    const cookie = getCookie();
+    findInterview({ cookie }).then(result => {
       const arr = result.data.ret.slice();
       arr.map((item: { interview_begin_time: string; }) => {
         const time = transTime(+item.interview_begin_time);

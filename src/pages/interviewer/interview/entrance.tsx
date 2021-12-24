@@ -31,24 +31,20 @@ export default class InterviewRoom extends React.Component<Prop, State> {
     const { allInterview } = res;
     this.setState({ interviewArr: allInterview });
   }
-
+  interviewRoomInform = [];
   changeSelect = async (value: any) => {
-    const { interviewRoomArr, interviewLinkArr } = this.state;
-    if (value) {
-      const res = await findInterview({ interviewer: value });
-      res.data.ret.map((item: { interview_room: any; interviewer_link: any; }) => {
-        interviewRoomArr.push(item.interview_room);
-        interviewLinkArr.push(item.interviewer_link);
-      })
-      this.setState({ interviewRoomArr, interviewLinkArr })
-    }
+    const res = await findInterview({ interviewer: value });
+    this.interviewRoomInform = res.data.ret;
+    let linkArr = [];
+    this.interviewRoomInform.map(item => {
+      linkArr.push(item.interviewer_link);
+    })
+    this.setState({ interviewLinkArr: linkArr });
   }
   choiceInterviewLink = async (value: any) => {
-    console.log(value)
-    const { interviewRoomArr } = this.state;
-    interviewRoomArr.map(item => {
-      item
-    })
+    const findInterview = this.interviewRoomInform.filter(item => item.interviewer_link === value);
+    const newRoomArr = [findInterview[0].interview_room];
+    this.setState({ interviewRoomArr: newRoomArr });
   }
 
   // 进入面试间的检验函数
@@ -99,7 +95,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
               <Select
                 showSearch
                 placeholder="请输入要进入的面试间的链接"
-                onFocus={ this.choiceInterviewLink }
+                onChange={ this.choiceInterviewLink }
               >
                 { interviewLinkArr.map((item: any) => {
                     return(

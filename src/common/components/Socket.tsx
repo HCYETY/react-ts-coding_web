@@ -10,7 +10,7 @@ interface Prop {
   socketUrl: string;   // 连接 websocket 的地址
   identity: string;    // 开启 websocket 的当前用户身份
   openMsg: any;        // 连接成功时要发送的数据
-  returnMessage: any;  // 接收数据的函数
+  retMsg: any;  // 接收数据的函数
 }
 
 interface State {
@@ -51,8 +51,8 @@ export default class Webrtc extends React.Component<Prop, State> {
   };
   // 后端向前端推得数据
   onmessage = (event: { data: string; }) => {
-    let { returnMessage } = this.props;
-    returnMessage && returnMessage(JSON.parse(event.data));
+    let { retMsg } = this.props;
+    retMsg && retMsg(JSON.parse(event.data));
   };
   // 关闭连接触发
   onclose = (event: any) => {

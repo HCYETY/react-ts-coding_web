@@ -9,12 +9,11 @@ import { showTest } from 'api/modules/test';
 import { search, submit } from 'api/modules/candidate';
 import { CANDIDATE, TEST_STATUS } from 'common/const';
 
-const url = getUrlParam('paper');
-const cookie = getCookie();
-const obj = { paper: url, cookie: cookie };
-console.log('url', url)
-
 export default class ShowTests extends React.Component {
+  url = getUrlParam('paper');
+  cookie = getCookie();
+  obj = { paper: this.url, cookie: this.cookie };
+
   state = {
     tableArr: [] = [],
     visible: false,
@@ -28,10 +27,8 @@ export default class ShowTests extends React.Component {
   }
 
   async componentDidMount() {
-    const res = await showTest(obj);
-    console.log('obj', obj)
-    console.log('res', res)
-    const ans = await search(obj);
+    const res = await showTest(this.obj);
+    const ans = await search(this.obj);
     const ret = ans.data.ret[0];
     ret.test_status = ret.test_status === TEST_STATUS.DONE ? true : false;
     this.setState({ 
@@ -74,7 +71,7 @@ export default class ShowTests extends React.Component {
   // 提交试卷事件
   submitPaper = () => {
     if (this.state.inputInfo === '确定提前交卷') {
-      submit(obj).then(res => {
+      submit(this.obj).then(res => {
         if (res.data.status) {
           message.success(res.msg);
           window.location.href = CANDIDATE;
