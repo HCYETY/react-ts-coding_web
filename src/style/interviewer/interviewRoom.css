@@ -14,7 +14,7 @@
 .program-left{
   width: 30%;
   padding: 10px;
-  background: red;
+  /* background: red; */
   align-items: center;
   justify-content: center;
   overflow: auto;
