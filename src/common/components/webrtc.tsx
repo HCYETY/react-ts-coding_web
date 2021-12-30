@@ -18,7 +18,10 @@ let remoteVideo;
 // 设置约束
 const mediaStreamConstraints = {
   audio: true,
-  video: true
+  video: {
+    width: 150,
+    height: 150
+  }
 }
 
 // 设置仅交换视频
@@ -45,6 +48,8 @@ let myPeerConnection = null;
 const cookie = getCookie();
 
 export default class Webrtc extends React.Component<Prop, State> {
+
+  candidates = [];
 
   state = {
     beginVideo: false,
@@ -74,6 +79,7 @@ export default class Webrtc extends React.Component<Prop, State> {
 
     await navigator.mediaDevices.getUserMedia(mediaStreamConstraints)
       .then(function(mediaStream) {
+        console.log('本地视频：', mediaStream)
         localVideo.srcObject = mediaStream;
         localStream = mediaStream;
         // myPeerConnection = mediaStream;
@@ -104,6 +110,8 @@ export default class Webrtc extends React.Component<Prop, State> {
     if (!localPeerConnection) {
       let configuration = {
         "iceServers": [{
+          // "urls": "stun:stun.stunprotocol.org"
+          // "urls": "turn:turnserver.com"
           "urls": "stun:stun.l.google.com:19302"
         }]
       };
@@ -112,13 +120,14 @@ export default class Webrtc extends React.Component<Prop, State> {
       localPeerConnection = new RTCPeerConnection(configuration);
       localPeerConnection.onicecandidate = event => this.handleConnection(localPeerConnection, event);
       localPeerConnection.oniceconnectionstatechange = event => this.handleConnectionChange(localPeerConnection, event);
-      localPeerConnection.ontrack = this.gotRemoteStream;
-
+      
       // 遍历本地流的所有轨道
       localStream.getTracks().forEach((track: any) => {
         localPeerConnection.addTrack(track, localStream);
       });
-      
+
+      localPeerConnection.ontrack = this.gotRemoteStream;
+
       const { resVideo } = this.props;
       resVideo.sign = false;
 
@@ -136,7 +145,7 @@ export default class Webrtc extends React.Component<Prop, State> {
     try{
       await localPeerConnection.setLocalDescription(offer);
       console.log('A 保存offfer成功');
-      this.sendToWs({ offer, type: WS_TYPE.VIDEO_OFFER, sign: true });
+      this.sendToWs({ offer: localPeerConnection.localDescription, type: WS_TYPE.VIDEO_OFFER, sign: true });
       console.log('A 发送offfer成功');
       this.setState({ beginVideo: true });
     } catch(err) {
@@ -184,20 +193,18 @@ export default class Webrtc extends React.Component<Prop, State> {
     const { resOff } = this.props;
     resOff.sign = false;
 
-    // await this.openCamera();
-    // await this.localCall();
-
-    // const remoteDescription = new RTCSessionDescription(msg.offer);
-    localPeerConnection.setRemoteDescription(msg.offer) 
+    const remoteDescription = new RTCSessionDescription(msg.offer);
+    localPeerConnection.setRemoteDescription(remoteDescription) 
+    // localPeerConnection.setRemoteDescription(msg.offer) 
     .then(async () => {
       console.log('B 保存offer成功');
       const answer = await localPeerConnection.createAnswer();
       console.log('B 创建answer成功');
       try{
           await localPeerConnection.setLocalDescription(answer); 
-          // await remotePeerConnection.setLocalDescription(answer); 
           // console.log('B 保存answer成功');
-          this.sendToWs({ sdp: answer, type: WS_TYPE.VIDEO_ANSWER, sign: true })
+          // this.sendToWs({ sdp: answer, type: WS_TYPE.VIDEO_ANSWER, sign: true })
+          this.sendToWs({ sdp: localPeerConnection.localDescription, type: WS_TYPE.VIDEO_ANSWER, sign: true })
           console.log('B 发送answer成功');
           // this.createdAnswer(answer);
         } catch(err) {
@@ -210,16 +217,14 @@ export default class Webrtc extends React.Component<Prop, State> {
   }
   handleAnswer = async (msg) => {
     console.log('处理接收到的answer......', msg)
-    console.log(localPeerConnection, remotePeerConnection)
-    // console.log(`local:\n${description.sdp}`)
     // const { resAns } = this.props;
     // resAns.sign = false;
     msg.sign = false;
     const remoteDescription = new RTCSessionDescription(msg.sdp);
     localPeerConnection.setRemoteDescription(remoteDescription)
+    // localPeerConnection.setRemoteDescription(msg.sdp)
       .then(() => {
         console.log('A 保存answer成功');
-        // this.sendToWs({ sdp: description, type: WS_TYPE.VIDEO_ANSWER });
       }).catch((err: any) => {
         console.log('A 保存answer错误', err);
       });
@@ -227,34 +232,51 @@ export default class Webrtc extends React.Component<Prop, State> {
 
   // 3.端与端建立连接
   handleConnection = (PeerConnection: any, event: { candidate: any; }) => { 
-    // let pc = PeerConnection === localPeerConnection ? remotePeerConnection : localPeerConnection;
-    // pc.addIceCandidate(event.candidate)
-    //   .then(
-    //     () => {
-    //       console.log('addIceCandidate success')
-    //       // this.sendToWs({ candidate: event.candidate, type: WS_TYPE.NEW_ICE_CANDIDATE, sign: true });
-    //     },
-    //     error => console.log('failed to add ICE Candidate', error.toString())
-    //   )
     if (event.candidate) {
-      this.sendToWs({ type: WS_TYPE.NEW_ICE_CANDIDATE, candidate: event.candidate, sign: true });
+      this.sendToWs({ 
+        type: WS_TYPE.NEW_ICE_CANDIDATE, 
+        candidate: event.candidate, 
+        sign: true 
+      });     
     } 
   }
-  handleIceCandidate = (msg: any) => {
-    // localPeerConnection.addIceCandidate(msg.candidate);
+  handleIceCandidate = async (msg: any) => {
+    // msg && this.candidates.push(msg);
+    // if (this.setedRemoteDesc) {
+    //   this.candidates.forEach(candidate => {
+    //     localPeerConnection.addIceCandidate(new RTCIceCandidate(msg));
+    //   });
+    // }
+
     const candidate = new RTCIceCandidate(msg.candidate);
-    localPeerConnection.addIceCandidate(candidate);
+    await localPeerConnection.addIceCandidate(candidate);
+    console.log('可以接收addIceCandidate')
     const { resIce } = this.props;
     resIce.sign = false;
   }
+//   addCandidate = (candidate) => {
+//     // console.log('addCandidate', candidate);
+//     candidate && this.candidates.push(candidate);
+//     if (this.setedRemoteDesc) {
+//         this.candidates.forEach(candidate => {
+//           localPeerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+//         });
+//     }
+// } 
   gotRemoteStream = event => {
+    console.log('设置远端视频');
     if (remoteVideo.srcObject !== event.streams[0]) {
       console.log('远端视频放置完毕', event.streams[0])
-      remoteVideo.srcObject = event.streams[0];
+      remoteVideo['srcObject'] = event.streams[0];
     }
   };
   handleConnectionChange = (pc, event) => {
     console.log("ICE state:", pc.iceConnectionState);
+    if (pc.iceConnectionState === 'disconnected') {
+      console.log('对方已关闭连接');
+      localStream.getVideoTracks()[0].stop();
+      remoteVideo['srcObject'] = null;
+    }
   };
 
 
@@ -274,12 +296,12 @@ export default class Webrtc extends React.Component<Prop, State> {
       localPeerConnection.onicecandidate = null;
       localPeerConnection.oniceconnectionstatechange = null;
   
-      if (remoteVideo.srcObject) {
-        remoteVideo.srcObject.getTracks().forEach(track => track.stop());
+      if (remoteVideo['srcObject']) {
+        remoteVideo['srcObject'].getTracks().forEach(track => track.stop());
       }
   
-      if (localVideo.srcObject) {
-        localVideo.srcObject.getTracks().forEach(track => track.stop());
+      if (localVideo['srcObject']) {
+        localVideo['srcObject'].getTracks().forEach(track => track.stop());
       }
   
       localPeerConnection.close();
@@ -323,7 +345,8 @@ export default class Webrtc extends React.Component<Prop, State> {
   render() {
     const { beginVideo, } = this.state;
     const { reqVideo, resVideo, resOff, resAns, resIce } = this.props;
-    console.log('两个全局变量：', localPeerConnection, remotePeerConnection);
+    // console.log('五个属性：', reqVideo, resVideo, resOff, resAns, resIce);
+    // console.log('两个全局变量：', localPeerConnection);
     !resVideo.type ? null : resVideo.canVideo === true && resVideo.id !== cookie && resVideo.sign === true ? this.localCall({ type: 'local' }) : resVideo.canVideo === false && resVideo.id !== cookie ? this.handleRefuse() : null;
     !resOff.type ? null : resOff.id !== cookie && resOff.sign === true ? this.handleOffer(resOff) : null;
     !resAns.type ? null : resAns.id !== cookie && resAns.sign === true ? this.handleAnswer(resAns) : null;

@@ -14,8 +14,8 @@ import copy from 'copy-to-clipboard';
 
 import 'style/candidate/candidateExam.css';
 import { showPaper } from 'api/modules/paper';
-import { getCookie, handleTime, transTime, } from 'common/utils';
-import { PAPER_STATUS, CANDIDATE_SHOW_TESTS,  } from 'common/const';
+import { getCookie, handleTime, nowTime, transTime, } from 'common/utils';
+import { PAPER_STATUS, CANDIDATE_SHOW_TESTS, INTERVIEW_STATUS,  } from 'common/const';
 import { GET_PROGRAM_EXAM } from 'src/useRedux/constant';
 import { findInterview } from 'src/api/modules/interview';
 
@@ -50,6 +50,7 @@ class Candidate extends React.Component<Prop, State> {
     const res = await findInterview({ cookie, isInterviewer: false });
     res.data.ret.map(item => {
       item['interview_begin_time'] = transTime(+item['interview_begin_time']);
+      item['interview_status'] = nowTime() >= item['interview_status'] ? INTERVIEW_STATUS.ING : INTERVIEW_STATUS.ON;
     })
     this.setState({ interviewInform: res.data.ret });
   }
@@ -116,10 +117,9 @@ class Candidate extends React.Component<Prop, State> {
         dataIndex: 'action',
         key: 'action',
         render: (text: any, record: { paper: string; }) => {
-          // changeEmail(record.paper);
           return(
             <Space size="middle">
-              <Link to={ `${ CANDIDATE_SHOW_TESTS }?paper=${ record.paper }` }> 查看试卷 </Link>
+              <Link onClick={ () => changeEmail(record.paper) } to={ `${ CANDIDATE_SHOW_TESTS }?paper=${ record.paper }` }> 查看试卷 </Link>
             </Space>
           )
         }
@@ -146,6 +146,7 @@ class Candidate extends React.Component<Prop, State> {
           )
         }
       },
+      { title: '状态', dataIndex: 'interview_status', key: 'interview_status' },
       {
         title: '操作',
         dataIndex: 'action',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rate } from 'antd';
+import { Form, InputNumber, } from 'antd';
 
 import { showTest } from 'api/modules/test';
 import 'style/interviewer/examReport.css';
@@ -30,7 +30,6 @@ interface State {
   tableArr: string[];
   testContent: string;
   testPoint: number;
-  value: number;
 }
 
 export default class ExamReport extends React.Component<Prop, State> {
@@ -39,7 +38,6 @@ export default class ExamReport extends React.Component<Prop, State> {
     tableArr: [],
     testContent: '',
     testPoint: 0,
-    value: 3,
   }
   
   componentDidMount() {
@@ -49,50 +47,61 @@ export default class ExamReport extends React.Component<Prop, State> {
     })
   }
 
-  handleChange = (value: number) => {
-    const { testPoint } = this.state;
-    const step =  testPoint / 5;
-    this.props.getRate(this.props.examInform['test_name'], value * step);
-    this.setState({ value });
-  };
+  returnNumber = (score: number) => {
+    const { examInform, getRate } = this.props;
+    getRate(examInform['test_name'], score);
+  }
 
   render() {
-    const { tableArr, value, testContent, testPoint } = this.state;
-    const { examInform } = this.props;
-    const step = testPoint / 5;
-    const program_time = transTime(examInform['answer_end'] - examInform['answer_end']);
+    const { tableArr, testContent, testPoint } = this.state;
+    const { examInform, getRate } = this.props;
+    const use_time = transTime(examInform['answer_end'] - examInform['answer_begin']);
+    const show = JSON.stringify(examInform['program_answer'], undefined, 2);
 
     return(
       <div className="report">
-        <div className="report-top">{ examInform['test_name'] }</div>
-        <div className="report-content">
-          <div className="report-content-left">
-            <span dangerouslySetInnerHTML={{ __html: testContent }}></span>
-          </div>
-          <div className="report-content-right">
+        <div className="report-content-left">
+          <h2 className="report-content-top">{ examInform['test_name'] }</h2>
+          <span dangerouslySetInnerHTML={{ __html: testContent }}></span>
+        </div>
+
+
+        <div className="report-content-right">
 
             <div className="report-content-right-top">
-              <span>用时{ program_time }</span>
-              <span>语言{ examInform['program_language'] }</span>
-              <span>提交次数{ examInform['submit_num'] }</span>
+              <span>用时：{ use_time }</span>
+              <span>语言：{ examInform['program_language'] }</span>
+              <span>提交次数：{ examInform['submit_num'] }</span>
             </div>
 
             <div className="report-content-right-content">
-              <p dangerouslySetInnerHTML={{ __html: examInform['program_answer'] }}></p>
+              <p>{ JSON.parse(show) }</p>
+              {/* <p dangerouslySetInnerHTML={{ __html: examInform['program_answer'] }}></p> */}
             </div>
 
             <div className="report-content-right-bottom">
-              <span>
-                评分
-                <Rate 
-                  character={ ({ index }) => (index + 1) * step } 
-                  onChange={ this.handleChange } 
-                  value={ value } 
-                />
-              </span>
+              <div>
+                <div>满分：{ testPoint }</div>
+                <div>
+                  评分：
+                  <InputNumber 
+                    min={ 0 } 
+                    max={ testPoint } 
+                    size="small" 
+                    onChange={ this.returnNumber }
+                  />
+                </div>
+                {/* <Form.Item 
+                  label="评分"
+                  name="testRate"
+                  key="testRate"
+                  rules={[{ required: true }]}
+                >
+                  <InputNumber min={ 0 } max={ testPoint } size="small"/>
+                </Form.Item> */}
+              </div>
             </div>
 
-          </div>
         </div>
       </div>
     )

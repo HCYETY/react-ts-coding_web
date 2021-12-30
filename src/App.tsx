@@ -40,9 +40,11 @@ import {
   INTERVIEW,
   INTERVIEW_ENTRANCE,
 } from 'common/const';
+import Navbar from 'common/components/navbar';
 
 
 class App extends React.Component {
+
   componentDidMount() {
     const cookie = getCookie();
     const url = window.location.pathname;
@@ -54,37 +56,37 @@ class App extends React.Component {
   }
   
   render() {
-      return (
-        <div>
-          <Head/>
-          <Router>
-            <Switch>
-              <Route path={ LOGIN } component={ Login } exact></Route>
+    return (
+      <div>
+        { window.location.pathname !== LOGIN ? <Head/> : null }
 
-              <Route path={ TEST_MANAGE } component={ Edit } exact></Route>
-              <Route path={ TEST_ADD } component={ Add }></Route>
-              <Route path={ TEST_MODIFY } component={ Modify }></Route>
+        <Router>
+          <Switch>
+            <Route path={ LOGIN } component={ Login } exact></Route>
 
-              <Route path={ SHOW_EXAM } component={ ShowExamContainer } exact></Route>
-              <Route path={ EXAM_INFORM } component={ ExamInformContainer }></Route> 
-              <Route path={ LOOK_OVER } component={ LookOverContainer }></Route>
+            <Route path={ TEST_MANAGE } component={ Edit } exact></Route>
+            <Route path={ TEST_ADD } component={ Add }></Route>
+            <Route path={ TEST_MODIFY } component={ Modify }></Route>
 
-              <Route path={ INTERVIEW_ENTRANCE } component={ InterviewEntrance } exact></Route> 
-              <Route path={ INTERVIEW_MANAGE } component={ InterviewManage } exact></Route> 
-              <Route path={ INTERVIEW } component={ InterviewRoom }></Route> 
+            <Route path={ SHOW_EXAM } component={ ShowExamContainer } exact></Route>
+            <Route path={ EXAM_INFORM } component={ ExamInformContainer }></Route> 
+            <Route path={ LOOK_OVER } component={ LookOverContainer }></Route>
 
-              <Route path={ CANDIDATE } component={ Candidate } exact></Route>
-              <Route path={ CANDIDATE_SHOW_TESTS } component={ ShowTests }></Route> 
-              <Route path={ CANDIDATE_WATCH_TEST } component={ WatchTest }></Route> 
-              <Route path={ CANDIDATE_TEST } component={ Program }></Route>
-              <Route path={ INTERVIEW } component={ InterviewRoom }></Route>
-              
-              <Redirect to={ LOGIN }></Redirect>
-            </Switch>
-          </Router>
-        </div>
-      )
-    // }
+            <Route path={ INTERVIEW_ENTRANCE } component={ InterviewEntrance } exact></Route> 
+            <Route path={ INTERVIEW_MANAGE } component={ InterviewManage } exact></Route> 
+            <Route path={ INTERVIEW } component={ InterviewRoom }></Route> 
+
+            <Route path={ CANDIDATE } component={ Candidate } exact></Route>
+            <Route path={ CANDIDATE_SHOW_TESTS } component={ ShowTests }></Route> 
+            <Route path={ CANDIDATE_WATCH_TEST } component={ WatchTest }></Route> 
+            <Route path={ CANDIDATE_TEST } component={ Program }></Route>
+            <Route path={ INTERVIEW } component={ InterviewRoom }></Route>
+            
+            <Redirect to={ LOGIN }></Redirect>
+          </Switch>
+        </Router>
+      </div>
+    )
   }
 }
 

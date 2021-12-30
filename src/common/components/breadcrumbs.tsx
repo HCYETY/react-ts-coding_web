@@ -60,7 +60,7 @@ export default class Breadcrumbs extends React.Component {
     const breadcrumbs = this.getBreadcrumbs(retArr, url);
 
     return(
-      <div>
+      <div className='all-header-breadcrumb'>
         <Row>
           <LeftOutlined onClick={ () => window.history.back() }/>
           <Breadcrumb>
@@ -68,11 +68,11 @@ export default class Breadcrumbs extends React.Component {
               breadcrumbs.map(item => (
                 !item ? null :
                 item.path === url ? 
-                <Breadcrumb.Item key={ item.path }>
-                  { item.breadcrumbName }
+                <Breadcrumb.Item className='all-header-breadcrumb-font' key={ item.path }>
+                  <span className='all-header-breadcrumb-font'>{ item.breadcrumbName }</span>
                 </Breadcrumb.Item> : 
                 <Breadcrumb.Item href={ item.path } key={ item.path }>
-                  { item.breadcrumbName }
+                  <span className='all-header-breadcrumb-font'>{ item.breadcrumbName }</span>
                 </Breadcrumb.Item>
               ))
             }

@@ -71,10 +71,9 @@ export default class Modify extends React.Component<any, any> {
   // 提交修改信息
   onFinish = async (values: any) => {
     const { tableArr, inform, hour, minute } = this.state;
-    values.answerTime = hour + '小时' + minute + '分钟';
+    // values.answerTime = hour + '小时' + minute + '分钟';
     values.modifyTests = tableArr;
     values.oldPaper = inform.paper;
-    console.log(values)
     const res = await modifyPaper(values);
     if (res.data.status) {
       message.success(res.msg);

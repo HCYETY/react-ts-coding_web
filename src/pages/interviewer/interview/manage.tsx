@@ -11,18 +11,22 @@ import {
   FormInstance,
   DatePicker,
   message,
+  Popconfirm,
 } from 'antd';
 import {
   FileSearchOutlined,
   LinkOutlined,
+  DeleteOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import locale from 'antd/es/date-picker/locale/zh_CN';
 import copy from 'copy-to-clipboard';
 
+import 'style/interviewer/interviewManage.less';
 import Navbar from 'common/components/navbar';
-import { createInterview, findInterview } from 'api/modules/interview';
+import { createInterview, deleteInterview, findInterview } from 'api/modules/interview';
 import { searchEmail } from 'api/modules/user';
 import { findEmail, getCookie, transTime } from 'src/common/utils';
 
@@ -44,6 +48,7 @@ interface State {
   interviewerArr: string[];
   candidateArr: string[];
   informArr: informObj[];
+  selectedRowKeys: string[];
 }
 
 export default class interviewManage extends React.Component<Prop, State> {
@@ -56,6 +61,7 @@ export default class interviewManage extends React.Component<Prop, State> {
     interviewerArr: [],
     candidateArr: [],
     informArr: [],
+    selectedRowKeys: [] = [],
   }
 
   componentDidMount() {
@@ -65,10 +71,11 @@ export default class interviewManage extends React.Component<Prop, State> {
   // 渲染表格信息
   renderInform = () => {
     const cookie = getCookie();
-    findInterview({ cookie }).then(result => {
+    findInterview({ cookie, isInterviewer: true }).then(result => {
       const arr = result.data.ret.slice();
-      arr.map((item: { interview_begin_time: string; }) => {
+      arr.map((item: { interview_begin_time: string; key: any; interview_room: any; }) => {
         const time = transTime(+item.interview_begin_time);
+        item.key = item.interview_room;
         item.interview_begin_time = time;
       })
       this.setState({ informArr: arr });
@@ -103,9 +110,31 @@ export default class interviewManage extends React.Component<Prop, State> {
     return current && current < moment().endOf('day');
   }
 
+  // 删除面试间的按钮事件
+  deleteRoom = async () => {
+    const { selectedRowKeys } = this.state;
+    if (selectedRowKeys.length > 0) {
+      const res = await deleteInterview({ inform: selectedRowKeys });
+      if (res.data.status === true) {
+        message.success(res.msg);
+        this.setState({ informArr: res.data.findInterview });
+      }
+    }
+  };
+  // 表格复选框的选择情况
+  onSelectChange = (selectedRowKeys: any) => {
+    this.setState({ selectedRowKeys });
+  };
+
   render() {
-    const { visible, value, candidateArr, interviewerArr, informArr } = this.state;
+    const { visible, value, candidateArr, interviewerArr, informArr, selectedRowKeys } = this.state;
+    
+    const rowSelection = {
+      onChange: this.onSelectChange,
+      selectedRowKeys,
+    };
     const interviewArr = [
+      { title: '候选人', dataIndex: 'candidate', key: 'candidate' },
       { 
         title: '面试官',
         dataIndex: 'interviewer',
@@ -122,7 +151,6 @@ export default class interviewManage extends React.Component<Prop, State> {
           </span>
         ),
       },
-      { title: '候选人', dataIndex: 'candidate', key: 'candidate' },
       { title: '面试时间', dataIndex: 'interview_begin_time', key: 'interview_begin_time' },
       { title: '面试房间号', dataIndex: 'interview_room', key: 'interview_room' },
       { 
@@ -155,16 +183,42 @@ export default class interviewManage extends React.Component<Prop, State> {
           </div>
         )
       },
+      { title: '状态', dataIndex: 'interview_status', key: 'interview_status' },
     ]
 
     return(
       <div className="site-layout">
         <Navbar/>
-        <Button onClick={ this.showModal } type="primary">添加新面试</Button>
+
+        <Popconfirm 
+          title="您确定要 删除试卷 吗？" 
+          okText="确定删除" 
+          cancelText="取消" 
+          onConfirm={ this.deleteRoom }
+        >
+          <Button 
+            icon={ <DeleteOutlined/> }
+            className='interviewButton' 
+            type="primary"
+          >
+            删除面试间
+          </Button>
+        </Popconfirm>
+
+        <Button 
+          icon={ <PlusOutlined/> }
+          className='interviewButton' 
+          onClick={ this.showModal } 
+          type="primary"
+        >
+          添加新面试
+        </Button>
 
         <Table
+          rowSelection={ rowSelection }
           columns={ interviewArr }
-          dataSource={ informArr }
+          dataSource={ [...informArr] }
+          bordered
         />
 
         <Modal 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { message, Tag } from 'antd';
 import { DoubleRightOutlined, CheckCircleOutlined } from '@ant-design/icons';
 
@@ -20,15 +21,19 @@ export default class TestAlone extends React.Component<any, any> {
     const nowtime = new Date().getTime();
 
     function doJump() {
+      let url: string = 'javascript:;';
       if (nowtime < timeBegin || timeEnd < nowtime) {
         message.error('不在答题时间范围之内无法进行答题');
       } else if (timeBegin <= nowtime &&  nowtime <= timeEnd) {
-        window.location.href = `${ CANDIDATE_TEST }?test=${ title }`;
+        // window.location.href = `${ CANDIDATE_TEST }?test=${ title }`;
+        url = `${ CANDIDATE_TEST }?test=${ title }`;
       }
+      return url;
     }
     function nodoJump() {
       PubSub.publish('isProgram', { status: false });
-      window.location.href = `${ CANDIDATE_WATCH_TEST }?test=${ title }`;
+      // window.location.href = `${ CANDIDATE_WATCH_TEST }?test=${ title }`;
+      return `${ CANDIDATE_WATCH_TEST }?test=${ title }`;
     }
 
     return(
@@ -59,16 +64,16 @@ export default class TestAlone extends React.Component<any, any> {
           <div className="exam-box-right">
             {
               (watch === true && over === true) ?  
-              <a className='exam-status' onClick={ nodoJump }>
+              <Link className='exam-status' to={ nodoJump }>
                 点击查看
                 <DoubleRightOutlined />
-              </a> :
+              </Link> :
               (watch === false && over === true) ? 
               <span className='exam-status exam-status-finish'>已完成<CheckCircleOutlined/></span> : 
-              <a className='exam-status' onClick={ doJump }>
+              <Link className='exam-status' to={ doJump }>
                 去做题
                 <DoubleRightOutlined />
-              </a>
+              </Link>
             }
           </div>
 

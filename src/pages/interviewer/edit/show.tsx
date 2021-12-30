@@ -17,7 +17,6 @@ import {
   FormOutlined,
 } from '@ant-design/icons';
 
-import 'style/interviewer/show.less';
 import Navbar from 'common/components/navbar';
 import { TEST_ADD, TEST_MODIFY } from 'common/const';
 import { showPaper, deletePaper } from 'api/modules/paper';
@@ -123,7 +122,7 @@ export default class Edit extends React.Component {
       { title: '截止时间', dataIndex: 'time_end', key: 'time_end' },
       { title: '剩余时间', dataIndex: 'remaining_time', key: 'remaining_time' },
       { title: '作答时长', dataIndex: 'answer_time', key: 'answer_time' },
-      { 
+      {
         title: '操作', 
         dataIndex: 'action', 
         key: 'action',
@@ -152,19 +151,19 @@ export default class Edit extends React.Component {
             onConfirm={ this.delete }
           >
             <Button 
-              className="site-layout-content-button" 
               icon={ <DeleteOutlined/> }
-              type="primary" 
+              type="primary"
+              style={{ margin: '0px 5px 8px 10px' }}
             >
               删除试卷
             </Button>
           </Popconfirm>
 
           <Button 
-            className="site-layout-content-button" 
             icon={ <PlusOutlined/> }
             onClick={ this.add } 
-            type="primary" 
+            type="primary"
+            style={{ margin: '0px 5px 8px 10px' }}
           >
             新建试卷
           </Button>

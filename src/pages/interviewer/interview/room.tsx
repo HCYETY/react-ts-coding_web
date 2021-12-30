@@ -239,6 +239,11 @@ export default class InterviewRoom extends React.Component<Prop, State> {
     })
   }
 
+  handleEnter = (e) => {
+    console.log('看看输入框按下回车后的响应：', e, e.target, e.target.value)
+    e.target.value = '';
+  }
+
   render() {
     const { talk, codeObj, showTestSwitch, choiceTestSwitch, reqVideo, resVideo, resOff, resAns, showTest, allTest, resIce } = this.state;
     
@@ -360,7 +365,7 @@ export default class InterviewRoom extends React.Component<Prop, State> {
 
           <Form onFinish={ this.sendChat }>
             <Form.Item name="msg" key="msg">
-              <Input placeholder="请输入聊天内容"></Input>
+              <Input placeholder="请输入聊天内容" onPressEnter={ this.handleEnter }></Input>
             </Form.Item>
             <span>回车键发送</span>
           </Form>

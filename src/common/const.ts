@@ -8,7 +8,7 @@ import ExamInform from 'pages/interviewer/consult/examInform';
 import LookOver from "src/pages/interviewer/consult/lookOver";
 import { Route } from 'common/types';
 
-export const REQUESTIP: string = 'http://120.79.193.126:8080/api';
+export const REQUESTIP: string = 'http://localhost:8080/api';
 export const LOGIN: string = '/login';
 
 export const TEST_MANAGE: string = '/test-manage';
@@ -117,6 +117,14 @@ export enum PAPER_CONSULT {
   YES = '已批阅',
   NO = '未批阅',
 }
+
+// 面试间的状态
+export enum INTERVIEW_STATUS {
+  NO = '未开始',
+  ING = '进行中',
+  ON = '已结束'
+}
+
 // 动态生成试卷标签
 export const ARR = ['数组', '字符串', '排序', '矩阵', '模拟', '枚举', '字符串匹配', '桶排序', '计数排序', '基数排序', '双指针', '链表', '堆栈', '队列', '图'];
 export const TAGS = [
@@ -141,11 +149,7 @@ export const TAGS = [
 // 代码编辑器的语言
 export const PROGRAM_LANGUAGE = ['cpp', 'java', 'python', 'javascript', 'ruby', 'swift', 'go', 'rust', 'php', 'typescript'];
 // 代码编辑器的主题
-export enum PROGRAM_THEME {
-  VS = 'vs',
-  VS_DARK = 'vs-dark',
-  HC_BLACK = 'hc-black',
-};
+export const PROGRAM_THEME = ['vs', 'vs-dark', 'hc-black',];
 
 // websocket 收到信息时的 type
 export enum WS_TYPE {

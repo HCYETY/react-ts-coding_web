@@ -1,34 +1,27 @@
 .content{
-  margin: 10px;
-  padding: 10px;
+  margin: 15px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,.1);
   background: white;
 }
 
 .report{
-  /* margin: 10px; */
-  padding-bottom: 10px;
-  border-bottom: 1px solid red;
-  /* border-bottom: 1px solid rgba(167, 168, 168, 0.05); */
-}
-
-.report-top{
-  padding: 10px 0px;
-}
-
-.report-content{
-  display: flex;
-  justify-content: start;
-}
-.report-content-left{
-  flex-grow: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid #000;
+  padding: 20px;
 }
 .report-content-right{
-  flex-grow: 1;
+  margin-left: 20px;
 }
 .report-content-right-top{
+  width: 250px;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 10px;
   display: grid;
 }
 .report-content-right-content{
+  background: #c0c0c0;
+  margin: 20px 0px;
 }

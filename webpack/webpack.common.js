@@ -42,7 +42,8 @@ const commonConfig = {
       filename: "static/css/[name].[hash].css",
     }),
     new WebpackDeepScopeAnalysisPlugin(),
-    new MonacoWebpackPlugin(['cpp', 'java', 'python', 'javaccript', 'ruby', 'swift', 'go', 'rust', 'php', 'typescript']),
+    // new MonacoWebpackPlugin(['cpp', 'java', 'python', 'javascript', 'ruby', 'swift', 'go', 'rust', 'php', 'typescript']),
+    new MonacoWebpackPlugin(['apex', 'azcli', 'bat', 'clojure', 'coffee', 'cpp', 'csharp', 'csp', 'css', 'dockerfile', 'fsharp', 'go', 'handlebars', 'html', 'ini', 'java', 'javascript', 'json', 'less', 'lua', 'markdown', 'msdax', 'mysql', 'objective', 'perl', 'pgsql', 'php', 'postiats', 'powerquery', 'powershell', 'pug', 'python', 'r', 'razor', 'redis', 'redshift', 'ruby', 'rust', 'sb', 'scheme', 'scss', 'shell', 'solidity', 'sql', 'st', 'swift', 'typescript', 'vb', 'xml', 'yaml'])
   ],
   module: {
     rules: [{

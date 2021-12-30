@@ -53,7 +53,7 @@ class ExamInform extends React.Component<Prop> {
   componentDidMount() {
     const cookie = getCookie(), paper = this.props.lookExam;
     lookOver({ cookie, paper }).then(item => {
-      this.setState({ tableArr: item.data.ret });
+      this.setState({ tableArr: item.data.ret }); 
     })
     showTest({ paper }).then(item => {
       this.setState({ examContent: item.data.show });
@@ -66,7 +66,7 @@ class ExamInform extends React.Component<Prop> {
   render() {
     const { tableArr, examContent, examInform, } = this.state;
     const candidateColumns = [
-      { title: '答题状态', dataIndex: 'test_status', key: 'test_status' },
+      { title: '作答情况', dataIndex: 'test_status', key: 'test_status' },
       { title: '候选人', dataIndex: 'email', key: 'email' },
       { 
         title: '总分', 
@@ -158,13 +158,10 @@ class ExamInform extends React.Component<Prop> {
           </div>
           <Layout.Content>
             <Tabs defaultActiveKey="exam-report">
-              <Tabs.TabPane 
-                tab="试卷报告" 
-                key="exam-report"
-                disabled={ true }
-              >
-                Content of Tab Pane 1
+              <Tabs.TabPane tab="试卷报告" key="exam-report">
+                试卷每道题的作答情况，比如正确率--用折线图、柱形图表示
               </Tabs.TabPane>
+
               <Tabs.TabPane tab="参与候选人" key="join-candidate">
                 <Table
                   bordered

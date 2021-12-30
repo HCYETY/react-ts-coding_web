@@ -25,16 +25,25 @@ let monacoInstance: monaco.editor.IStandaloneCodeEditor = null;
 export default class CodeEditor extends React.Component<Prop, State> {
   state = {
     language: 'javascript',
-    theme: PROGRAM_THEME.VS,
+    theme: 'vs',
   }
 
   // 组件挂载后加载编辑器
   componentDidMount() {
     monacoInstance  = monaco.editor.create(document.getElementById("container"), {
-      value: `console.log("hello,world")`,
+      value: `头部
+      作答时间
+      阅卷
+      删除面试间
+      
+      视频
+      编辑冲突`,
       contextmenu: true,
       language:"javascript",
-      theme: PROGRAM_THEME.VS,
+      theme: 'vs',
+      minimap: {
+        enabled: false
+      }
     });
 
     // 获取编辑器的内容
@@ -83,32 +92,33 @@ export default class CodeEditor extends React.Component<Prop, State> {
   //   })
   // }
   
+  // 动态修改语言
+  changeLanguage = (value: any) => {
+    monacoInstance.onDidChangeModelLanguage(e => {
+      monaco.editor.setModelLanguage(monacoInstance.getModel(), value);
+    })
+    this.setState({ language: value });
+  }
+  // 动态修改主题
+  changeTheme = (value: any) => {
+    monaco.editor.defineTheme('myTheme', {
+      base: value,// 要继承的基础主题，即内置的三个：vs、vs-dark、hc-black
+      inherit: false,// 是否继承
+      rules: [// 高亮规则，即给代码里不同token类型的代码设置不同的显示样式
+        { token: '', foreground: '000000', background: 'fffffe' }
+      ],
+      colors: {// 非代码部分的其他部分的颜色，比如背景、滚动条等
+        // [editorBackground]: '#FFFFFE'
+      }
+    });
+    monaco.editor.setTheme('myTheme');
+    this.setState({ theme: value });
+  }
+  
   // 组件卸载后销毁编辑器
   componentWillUnmount() {
     monacoInstance.dispose();
   }
-  
-  // 动态修改语言
-  changeLanguage = (value: any) => {
-    this.setState({ language: value });
-    monaco.editor.setModelLanguage(monacoInstance.getModel(), this.state.language);
-  }
-  // 动态修改主题
-  // changeTheme = (value: any) => {
-  //   this.setState({ theme: value });
-  //   monaco.editor.defineTheme('myTheme', {
-  //     base: 'vs',// 要继承的基础主题，即内置的三个：vs、vs-dark、hc-black
-  //   inherit: false,// 是否继承
-  //   rules: [// 高亮规则，即给代码里不同token类型的代码设置不同的显示样式
-  //       { token: '', foreground: '000000', background: 'fffffe' }
-  //   ],
-  //   colors: {// 非代码部分的其他部分的颜色，比如背景、滚动条等
-  //       [editorBackground]: '#FFFFFE'
-  //   }
-  //   });
-  //   monaco.editor.setTheme('myTheme');
-  //   console.log('修改主题')
-  // }
 
   render() {
     const { language, theme } = this.state;
@@ -117,10 +127,23 @@ export default class CodeEditor extends React.Component<Prop, State> {
       <>
         <div className="right-top">
           <Select 
+            defaultValue={ theme } 
+            style={{ width: 120, margin: 10 }} 
+            onChange={ this.changeTheme }
+          >
+            {
+              PROGRAM_THEME.map(item => {
+                return(
+                  <Select.Option value={ item } key={ item }> { item } </Select.Option>
+                )
+              })
+            }
+          </Select>
+          
+          <Select 
             defaultValue={ language } 
-            style={{ width: 120 }} 
+            style={{ width: 120, margin: 10 }} 
             onChange={ this.changeLanguage }
-            className="right-top-button"
           >
             {
               PROGRAM_LANGUAGE.map(item => {

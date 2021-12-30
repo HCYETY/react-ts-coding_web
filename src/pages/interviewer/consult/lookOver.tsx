@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Layout, message } from 'antd';
+import { Button, Card, Form, Layout, message } from 'antd';
 
 import 'style/interviewer/examReport.css';
 import { search } from 'api/modules/candidate';
@@ -41,16 +41,17 @@ class LookOver extends React.Component<Prop> {
 
   rateArr: rateArrObj[] = [];
   getRate = (testName: string, score: number) => {
-    this.rateArr.push({ testName, score });
+    const find = this.rateArr.find(item =>  item.testName === testName);
+    find ? find['score'] = score : this.rateArr.push({ testName, score });
   }
 
   submitRate = () => {
     const { lookExam, lookEmail } = this.props;
+    console.log(lookExam, lookEmail)
     lookOver({ paper: lookExam, reqEmail: lookEmail, rate: this.rateArr }).then(res => {
       console.log('submitRate res', res)
-      const { msg, data } = res;
-      if (data.status === true) {
-        message.success(msg);
+      if (res.data.status === true) {
+        message.success(res.msg);
       } else {
         message.error('试卷未完成批阅');
       }
@@ -64,23 +65,22 @@ class LookOver extends React.Component<Prop> {
       <div className="site-layout">
         <Navbar/>
 
-        <Layout.Content>
-          <div className="top"></div>
-          <div className="content">
-            {
-              examInform.map(item => {
-                return(
-                  <ExamReport 
-                    key={ item['test_name'] }
-                    getRate={ this.getRate } 
-                    examInform={ item } 
-                  />
-                )
-              })
-            }
-          </div>
-          <Button onClick={ this.submitRate }>提交试卷评分</Button>
-        </Layout.Content>
+        <div className="content">
+          {/* <Form onFinish={ this.submitRate }> */}
+            { examInform.map(item => {
+              return(
+                <ExamReport 
+                  key={ item['test_name'] }
+                  getRate={ this.getRate } 
+                  examInform={ item } 
+                />
+              )
+            }) }
+            {/* <Form.Item wrapperCol={{ offset: 10, span: 16 }}> */}
+              <Button type="primary" onClick={ this.submitRate }>提交试卷评分</Button>
+            {/* </Form.Item> */}
+          {/* </Form> */}
+        </div>
       </div>
     )
   }

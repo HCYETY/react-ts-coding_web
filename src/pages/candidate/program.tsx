@@ -63,7 +63,7 @@ class Program extends React.Component<Prop, State> {
   state = {
     code: '',
     language: 'javascript',
-    theme: PROGRAM_THEME.VS,
+    theme: 'vs',
     visible: false,
     exam: [],
     examTest: [],
@@ -73,12 +73,16 @@ class Program extends React.Component<Prop, State> {
     testFilter: [] 
   }
 
+  
   componentDidMount() {
+    const { programExam } = this.props;
+    const testName = getUrlParam('test');
+
     search({ cookie }).then(res => {
       const ret = res.data.ret;
       const examArr: string[] = [];
       const examTestArr: examTestObj[] = [];
-      console.log(ret)
+
       ret.map((item: any) => {
         if (examArr.indexOf(item.paper) === -1) {
           examArr.push(item.paper);
@@ -93,7 +97,7 @@ class Program extends React.Component<Prop, State> {
         filterArr: ret
       });
     })
-    // submit()
+    submit({ cookie, paper: programExam, testName, submit: false });
   }
 
   // 获取子组件（代码编辑器）的 code
@@ -104,9 +108,9 @@ class Program extends React.Component<Prop, State> {
   submitCode = async () => {
     const { code, language } = this.state;
     const { programExam } = this.props;
-    const url = getUrlParam('test');
-    const res = await submit({ cookie, paper: programExam, testName: url, code, language, status: false, submit: true });
-    if (res.status === true) {
+    const testName = getUrlParam('test');
+    const res = await submit({ cookie, paper: programExam, testName, code, language, status: false, submit: true });
+    if (res.data.status === true) {
       message.success('代码提交成功');
     } else {
       message.error('代码提交失败');

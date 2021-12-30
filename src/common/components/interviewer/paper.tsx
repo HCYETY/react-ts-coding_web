@@ -162,7 +162,16 @@ export default class Paper extends React.Component<get, any> {
           label="试卷作答时长" 
           className="time"
         >
-          {
+          <Radio.Group  buttonStyle="solid">
+            <Radio.Button value="30分钟">30分钟</Radio.Button>
+            <Radio.Button value="45分钟">45分钟</Radio.Button>
+            <Radio.Button value="1小时">1小时</Radio.Button>
+            <Radio.Button value="1小时30分钟">1小时30分钟</Radio.Button>
+            <Radio.Button value="2小时">2小时</Radio.Button>
+            <Radio.Button value="2小时30分钟">2小时30分钟</Radio.Button>
+            {/* <Radio.Button onClick={ this.handleTime } className="choice-time-button">手动设置</Radio.Button>  */}
+          </Radio.Group>
+          {/* {
             setTime === false ? 
             <Radio.Group  buttonStyle="solid">
               <Radio.Button value="30分钟">30分钟</Radio.Button>
@@ -182,7 +191,7 @@ export default class Paper extends React.Component<get, any> {
                 </Dropdown>
                 <Button onClick={ this.handleTime } className="choice-time-button">快速选择</Button>
             </Space >
-          }
+          } */}
         </Form.Item>
 
 

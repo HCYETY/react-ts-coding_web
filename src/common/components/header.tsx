@@ -16,9 +16,10 @@ import {
 } from '@ant-design/icons';
 
 import 'style/basic.less';
+import logoImg from 'img/logo.png';
 import { logout } from 'api/modules/user';
 import { getCookie } from 'common/utils';
-import { LOGIN, } from 'common/const';
+import { CANDIDATE, LOGIN, } from 'common/const';
 import Breadcrumbs from 'common/components/breadcrumbs';
 
 export default class Head extends React.PureComponent{
@@ -74,6 +75,13 @@ export default class Head extends React.PureComponent{
       <>
         <div className="all-header-div"></div>
         <div className="all-header">
+          <a href={ CANDIDATE }>
+            <div className="all-header-logo">
+              <img src={ logoImg }/>
+              <h1>react-ts</h1>
+            </div>
+          </a>
+
           <Breadcrumbs/>
 
           <div className="all-header-avatar-box">
