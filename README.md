@@ -1,6 +1,17 @@
-## 项目概述
-该项目是一个在线编程笔试平台，主要功能是候选人在线完成代码编写，面试官可查看编程结果。  
-该项目包含了前端和后端两种技术栈，前端采用的是React框架，后端采用的是NodeJs。
+## 项目地址
+GitHub 前端仓库地址：[https://github.com/HCYETY/Online-programming-platform](https://github.com/HCYETY/Online-programming-platform)
+
+GitHub 后端仓库地址：[https://github.com/HCYETY/Online-programming-platform_service](https://github.com/HCYETY/Online-programming-platform_service)
+
+项目演示地址：[http://www.syandeg.com](http://www.syandeg.com)
+## 项目介绍
+在线编程笔试平台是一个前后端分离项目，按照用户角色（面试官和候选人）分为面试官侧和候选人侧，主要功能是候选人在线完成代码编写，面试官可查看编程结果。
+
+项目主要功能：
+
+## 项目技术栈
+前端：React + TypeScript ，后端：NodeJs + MYSQL + Koa 。
+## 项目结构
 ## 项目任务拆解
 1. 登录/注册模块
 - 支持邮箱登录和注册
@@ -13,6 +24,13 @@
 7. 在线语音聊天模块
 8. 在线编程模块支持运行JS代码
 9.  在线编程模块支持协同编辑
+## 技术选型
+|技术|说明|理由|
+|:--:|:--:|:--:|
+|Ant Design|前端 UI 设计|成熟的 UI 组件库，GitHub 上有 `166 watch` & `32.5k fork` & `78.1k star`|
+||||
+||||
+||||
 ## 项目进度
 - [x] 2021-09-04：实现登录/注册的静态页面
 - [x] 2021-09-19：实现登录/注册逻辑（包括账号密码登录、登录拦截，session 身份验证）
@@ -31,4 +49,6 @@
 - [x] 2021-12-03: 实现在线聊天功能
 - [ ] 2021-12-10：解决编辑冲突问题
 - [x] 2021-12-14：项目持续待机中，先学小程序开发去了
-## 项目文件简介
+## 项目展示
+### PC 端
+## 安装
