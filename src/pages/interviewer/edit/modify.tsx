@@ -11,7 +11,7 @@ import moment from 'moment';
 import { modifyPaper } from 'api/modules/paper';
 import { showTest } from 'api/modules/test';
 import { TEST_MANAGE, TAGS } from 'common/const';
-import { getUrlParam } from 'common/utils';
+import { getCookie, getUrlParam } from 'common/utils';
 import Navbar from 'common/components/navbar';
 import Foot from 'common/components/footer';
 import Tabler from 'src/common/components/interviewer/tabler';
@@ -40,7 +40,7 @@ export default class Modify extends React.Component<any, any> {
 
   componentDidMount() {
     const url = getUrlParam('paper');
-    const req = { paper: url };
+    const req = { paper: url, cookie: getCookie() };
     showTest(req).then((testRes) => {
       const arr = [];
       for (let ch of testRes.data.show) {
@@ -56,6 +56,7 @@ export default class Modify extends React.Component<any, any> {
         }
         arr.push(obj)
       }
+      console.log('ddddd', testRes.data)
       this.setState({
         tableArr: arr,
         loading: false,

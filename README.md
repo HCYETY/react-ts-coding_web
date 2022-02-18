@@ -51,4 +51,25 @@ GitHub 后端仓库地址：[https://github.com/HCYETY/Online-programming-platfo
 - [x] 2021-12-14：项目持续待机中，先学小程序开发去了
 ## 项目展示
 ### PC 端
-## 安装
+1. 登录/注册
+![登录界面](https://z3.ax1x.com/2021/11/02/IkyIBQ.png)
+![注册界面](https://z3.ax1x.com/2021/11/02/Ik63gf.png)
+#### 面试官侧
+2. 试题管理
+![试卷展示](https://s4.ax1x.com/2022/02/18/H7OIxS.png)
+![添加试题之试卷信息](https://s4.ax1x.com/2022/02/18/H7X6zT.png)
+![添加试题之试题信息](https://s4.ax1x.com/2022/02/18/H7Xhw9.png)
+![修改试卷1](https://s4.ax1x.com/2022/02/18/H7XLOe.png)
+![修改试卷2](https://s4.ax1x.com/2022/02/18/H7jekn.png)
+3. 阅卷管理
+![试卷展示](https://s4.ax1x.com/2022/02/18/H7jMlT.png)
+![试卷详细信息之1](https://s4.ax1x.com/2022/02/18/H7jYkR.png)
+![试卷详细信息之2](https://s4.ax1x.com/2022/02/18/H7j0XD.png)
+![试卷详细信息之3](https://s4.ax1x.com/2022/02/18/H7js7d.png)
+![批阅试卷](https://s4.ax1x.com/2022/02/18/H7jR9P.png)
+4. 面试间管理
+![面试间信息展示](https://s4.ax1x.com/2022/02/18/H7jfc8.png)
+![添加面试间](https://s4.ax1x.com/2022/02/18/H7jbhq.png)
+5. 面试间入口
+![进入面试间](https://s4.ax1x.com/2022/02/18/H7jO3V.png)
+#### 候选人侧
