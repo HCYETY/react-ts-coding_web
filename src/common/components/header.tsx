@@ -6,6 +6,7 @@ import {
   Dropdown,
   Popconfirm,
   PageHeader,
+  Switch 
 } from 'antd';
 import { 
   UserOutlined,
@@ -83,6 +84,9 @@ export default class Head extends React.PureComponent{
           </a>
 
           <Breadcrumbs/>
+
+          <input id="modeCheckBox" type="checkbox"/>
+          <label id="modeBtn" htmlFor="modeCheckBox"></label>
 
           <div className="all-header-avatar-box">
             <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">

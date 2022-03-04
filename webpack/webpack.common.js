@@ -6,6 +6,8 @@ const {
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackDeepScopeAnalysisPlugin = require('webpack-deep-scope-plugin').default;
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+// const TerserPlugin = require('terser-webpack-plugin');
+// const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 const postCssLoaderConfig = {
   loader: 'postcss-loader',
@@ -89,6 +91,26 @@ const commonConfig = {
     ]
   },
   optimization: {
+    // minimize: true,
+    // minimizer: [
+    //   new TerserPlugin({
+    //     parallel: 4, // 开启几个进程来处理压缩，默认是 os.cpus().length - 1
+    //   }),
+    //   new OptimizeCSSAssetsPlugin({
+    //     cssProcessor: require("cssnano"), //引⼊cssnano配置压缩选项
+    //     cssProcessorOptions: {
+    //       discardComments: { removeAll: true }
+    //     }
+    //   }),
+    //   // new OptimizeCSSAssetsPlugin({
+    //   //   assetNameRegExp: /\.optimize\.css$/g,
+    //   //   cssProcessor: require('cssnano'),
+    //   //   cssProcessorPluginOptions: {
+    //   //     preset: ['default', { discardComments: { removeAll: true } }],
+    //   //   },
+    //   //   canPrint: true,
+    //   // })
+    // ],
     splitChunks: {
       cacheGroups: {
         vender: {

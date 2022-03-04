@@ -5,13 +5,20 @@ GitHub 后端仓库地址：[https://github.com/HCYETY/Online-programming-platfo
 
 项目演示地址：[http://www.syandeg.com](http://www.syandeg.com)
 ## 项目介绍
-在线编程笔试平台是一个前后端分离项目，按照用户角色（面试官和候选人）分为面试官侧和候选人侧，主要功能是候选人在线完成代码编写，面试官可查看编程结果。
+该项目是一个前后端分离项目，按照用户角色分为两部分，分别是面试官和候选人，主要功能是候选人在线完成代码编写，面试官可查看编程结果，同时面试官和候选人还可进行实时文字交流。
 
-项目主要功能：
+项目实现：
+- 将项目前端和后端部署于服务器上，并实现了自动化部署。
+- 使用 WebSocket 实时更新聊天信息。面试官和候选人各自进入面试间后，客户端会显示房间信息及聊天情况，当两个人都进入面试间后，即可开始实时文字交流。
+- 使用 Cookie 存储用户登录时后端生成的随机码，使用 nodemailer 发送邮件信息（如注册验证码等）。
+- 相关数据诸如用户登录信息，试卷和试题信息等全部存储于后端 MySQL 数据库中，前端需要的数据渲染均通过请求后端接口获取。
+- 使用 react-monaco-editor 代码编辑器，自定义功能选项以编写代码；使用 wangEditor 富文本编辑器，完成试题的自定义编写。
+- 使用 Ant Design 完成 UI 设计，几乎使用了其中 80% 的组件。
+- 后端使用 Koa 框架，通过 koa-cors 实现前后端跨域。
 
 ## 项目技术栈
-前端：React + TypeScript ，后端：NodeJs + MYSQL + Koa 。
-## 项目结构
+前端：React + TypeScript ，后端：Node.js + MySQL + Koa 。
+
 ## 项目任务拆解
 1. 登录/注册模块
 - 支持邮箱登录和注册
@@ -28,9 +35,6 @@ GitHub 后端仓库地址：[https://github.com/HCYETY/Online-programming-platfo
 |技术|说明|理由|
 |:--:|:--:|:--:|
 |Ant Design|前端 UI 设计|成熟的 UI 组件库，GitHub 上有 `166 watch` & `32.5k fork` & `78.1k star`|
-||||
-||||
-||||
 ## 项目进度
 - [x] 2021-09-04：实现登录/注册的静态页面
 - [x] 2021-09-19：实现登录/注册逻辑（包括账号密码登录、登录拦截，session 身份验证）
@@ -55,21 +59,21 @@ GitHub 后端仓库地址：[https://github.com/HCYETY/Online-programming-platfo
 ![登录界面](https://z3.ax1x.com/2021/11/02/IkyIBQ.png)
 ![注册界面](https://z3.ax1x.com/2021/11/02/Ik63gf.png)
 #### 面试官侧
-2. 试题管理
+2. 试题管理  
 ![试卷展示](https://s4.ax1x.com/2022/02/18/H7OIxS.png)
 ![添加试题之试卷信息](https://s4.ax1x.com/2022/02/18/H7X6zT.png)
 ![添加试题之试题信息](https://s4.ax1x.com/2022/02/18/H7Xhw9.png)
 ![修改试卷1](https://s4.ax1x.com/2022/02/18/H7XLOe.png)
 ![修改试卷2](https://s4.ax1x.com/2022/02/18/H7jekn.png)
-3. 阅卷管理
+3. 阅卷管理  
 ![试卷展示](https://s4.ax1x.com/2022/02/18/H7jMlT.png)
 ![试卷详细信息之1](https://s4.ax1x.com/2022/02/18/H7jYkR.png)
 ![试卷详细信息之2](https://s4.ax1x.com/2022/02/18/H7j0XD.png)
 ![试卷详细信息之3](https://s4.ax1x.com/2022/02/18/H7js7d.png)
 ![批阅试卷](https://s4.ax1x.com/2022/02/18/H7jR9P.png)
-4. 面试间管理
+4. 面试间管理  
 ![面试间信息展示](https://s4.ax1x.com/2022/02/18/H7jfc8.png)
 ![添加面试间](https://s4.ax1x.com/2022/02/18/H7jbhq.png)
-5. 面试间入口
+5. 面试间入口  
 ![进入面试间](https://s4.ax1x.com/2022/02/18/H7jO3V.png)
 #### 候选人侧

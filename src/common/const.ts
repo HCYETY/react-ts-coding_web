@@ -8,7 +8,7 @@ import ExamInform from 'pages/interviewer/consult/examInform';
 import LookOver from "src/pages/interviewer/consult/lookOver";
 import { Route } from 'common/types';
 
-export const REQUESTIP: string = 'http://localhost:8080/api';
+export const REQUESTIP: string = 'http://www.syandeg.com:8080/api';
 export const LOGIN: string = '/login';
 
 export const TEST_MANAGE: string = '/test-manage';

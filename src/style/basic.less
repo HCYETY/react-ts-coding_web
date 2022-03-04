@@ -38,6 +38,29 @@
       line-height: 1em;
     }
   }
+
+  #modeCheckBox {
+    display: none;
+  }
+  #modeCheckBox:checked + .all-header {
+    background-color: black;
+    color: white;
+    transition: all 1s;
+  }
+  #modeBtn {
+    font-size: 2rem;
+    float: right;
+  }
+  #modeBtn:hover{
+    cursor: pointer;
+  }
+  #modeBtn::after {
+    content: '🌞';
+  }
+  #modeCheckBox:checked + #modeBtn::after {
+    content: '🌜';
+  }
+  
   .all-header-avatar-box{
     cursor: pointer;
     margin: 5px 10px;

@@ -78,6 +78,22 @@ export default class Login extends PureComponent<any> {
       }
     } catch(err) { message.error(err); }
   };
+  // 使用测试账号登录，传值为 true 则面试官登录，否则为候选人登录
+  testLogin = async (identity: boolean) => {
+    const email = identity === true ? '1164939253@qq.com' : 'lxlandsx@outlook.com';
+    const cypher = '111111';
+    const data = { email, cypher };
+    const res = await testLogin(data);
+    // 登录成功
+    if (res.data.isLogin === true) {
+      message.success(res.msg);
+      if (res.data.interviewer === true) {
+        window.location.href = TEST_MANAGE;
+      } else {
+        window.location.href = CANDIDATE;
+      }
+    }
+  }
   // 注册
   submitRegister = async (values: any) => {
     try {
@@ -112,6 +128,26 @@ export default class Login extends PureComponent<any> {
 
         <div className="app-content">
           <Tabs activeKey={ activeKey } onChange={ this.change } centered>
+
+            <Tabs.TabPane tab="测试登录" key="test">
+              <Row>
+                <Button 
+                  type="primary" 
+                  className='testLogin-form-button' 
+                  onClick={ () => this.testLogin(true) }
+                >
+                  面试官账号登录
+                </Button>
+              </Row>
+              <Row>
+                <Button 
+                  type="primary" 
+                  className='testLogin-form-button' 
+                  onClick={ () => this.testLogin(false) }
+                >
+                  候选人账号登录</Button>
+              </Row>
+            </Tabs.TabPane>
 
             <Tabs.TabPane tab="邮箱登录" key="login">
               <Form 
